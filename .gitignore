@@ -21,7 +21,6 @@ erl_crash.dump
 
 # App artifacts
 /db
-
 /config/*.secret.exs
 /priv/cert/*
 tags
