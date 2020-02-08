@@ -23,6 +23,7 @@ erl_crash.dump
 /db
 
 /config/*.secret.exs
+/priv/cert/*
 tags
 test/tmp/*
 .elixir_ls
