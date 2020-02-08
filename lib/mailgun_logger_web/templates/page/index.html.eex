@@ -1,0 +1,14 @@
+<h1>Main dashboard</h1>
+
+<div>
+  <div class="warn">
+    <strong>Note:</strong>
+    no accounts found...
+    <%= link "create an account", to: account_path(@conn, :new) %> to start receiving logs.
+  </div>
+  <h2>Some stats</h2>
+  <dl>
+    <dt>Total events in db:</dt>
+    <dd><%= @total_events %></dd>
+  </dl>
+</div>

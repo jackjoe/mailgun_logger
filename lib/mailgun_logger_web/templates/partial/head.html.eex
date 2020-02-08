@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jack + Joe">
+    <meta name="version" content="<%= Application.spec(:mailgun_logger, :vsn) %>">
+    <meta name="env" content="<%= Application.get_env(:mailgun_logger, :deploy_env) %>">
+    <title>Mailgun Logger v<%= Application.spec(:mailgun_logger, :vsn) %></title>
+    <link rel="icon" type="image/png" href="<%= static_path(@conn, "/images/favicon.png") %>" />
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/style.css") %>">
+  </head>
+  <body>

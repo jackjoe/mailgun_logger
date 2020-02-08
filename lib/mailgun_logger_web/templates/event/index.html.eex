@@ -1,0 +1,41 @@
+<h1>Events</h1>
+
+<%= form_for @conn, event_path(@conn, :index), [method: "get", class: ""], fn f -> %>
+  <%= text_input f, :q, class: "", placeholder: "Search events" %>
+  <%= submit "Search" %>
+<% end %>
+
+<br />
+
+<table cellspacing="0">
+  <thead>
+    <tr>
+      <th>event</th>
+      <th>level</th>
+      <th>recipient</th>
+      <th>timestamp</th>
+      <th>from</th>
+      <th>subject</th>
+      <th>account</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for event <- @page do %>
+    <tr>
+      <td><%= event.event %></td>
+      <td width="100"><%= event_type(event.log_level) %></td>
+      <td><%= event.recipient %></td>
+      <td><%= event.timestamp %></td>
+      <td><%= event.message_from %></td>
+      <td title="<%= event.message_subject %>"><%= subject(event) %></td>
+      <td><%= event.account.domain %></td>
+      <td>
+        <%= link "detail", to: event_path(@conn, :show, event) %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paging_links(@conn, @page) %>

@@ -1,0 +1,47 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <p>These settings can be found on your Mailgun dashboard. An account covers a sending domain / API key combo. If you have multiple domains, add them on seperate accounts.</p>
+
+  <%= if get_flash(@conn, :info) do %>
+    <div class="alert alert-info" role="info">
+      <%= get_flash(@conn, :info) %>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <label>Sending domain <a href="https://app.mailgun.com/app/sending/domains" target="blank">?</a></label>
+    <%= text_input f, :domain, class: "form-control" %>
+    <%= error_tag f, :domain %>
+  </div>
+
+  <div class="form-group">
+    <label for="account_api_key">API key <a href="https://app.mailgun.com/app/account/security/api_keys" target="blank">?</a></label>
+    <%= text_input f, :api_key, class: "form-control" %>
+    <%= error_tag f, :api_key %>
+  </div>
+
+  <div class="form-group">
+    <div class="form-check">
+      <%= checkbox f, :is_active, class: "form-check-input" %>
+      <%= label f, :is_active, class: "form-check-label" %>
+      <%= error_tag f, :is_active %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="form-check">
+      <%= checkbox f, :is_eu, class: "form-check-input" %>
+      <%= label f, :is_eu, class: "form-check-label" %>
+      <%= error_tag f, :is_eu %>
+    </div>
+  </div>
+
+  <div class="form-group mt-5">
+    <%= submit "submit" %>
+  </div>
+<% end %>

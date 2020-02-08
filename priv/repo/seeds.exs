@@ -1,0 +1,1 @@
+MailgunLogger.Seeder.run()

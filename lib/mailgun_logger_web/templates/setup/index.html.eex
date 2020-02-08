@@ -1,0 +1,28 @@
+<%= form_for @changeset, setup_path(@conn, :create_root), fn f -> %>
+  <h1><%= gettext("Welcome newbie!") %></h1>
+  <hr />
+  <p>Looks like this is the first time you are accessing Mailgun Logger.</p>
+  <p>Create the admin account below:</p>
+
+  <div class="form-group">
+    <%= label f, :email, class: "control-label" %>
+    <%= text_input f, :email, class: "form-control" %>
+    <%= error_tag f, :email %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :password, class: "control-label" %>
+    <%= password_input f, :password, class: "form-control" %>
+    <%= error_tag f, :password %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :password_confirmation, class: "control-label" %>
+    <%= password_input f, :password_confirmation, class: "form-control" %>
+    <%= error_tag f, :password_confirmation %>
+  </div>
+
+  <div class="form-group mt-5">
+    <%= submit "submit" %>
+  </div>
+<% end %>

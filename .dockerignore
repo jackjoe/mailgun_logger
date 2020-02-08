@@ -1,0 +1,24 @@
+# .git/ # needed for Makefile
+.gitignore
+.dockerignore  # check and see if this is excluded by default
+.log
+.DS_Store
+*.ez
+*.tar.gz
+*.md
+
+# Generate on crash by the VM
+erl_crash.dump
+
+# Other
+tmp/
+Dockerfile
+test/
+elixir_ls
+
+# Tmp
+deps
+_build
+node_modules
+.yarn
+.yarn-cache

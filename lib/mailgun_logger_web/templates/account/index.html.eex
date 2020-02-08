@@ -1,0 +1,36 @@
+<h1>Accounts</h1>
+
+<table cellspacing="0">
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>API key</th>
+      <th>EU</th>
+      <th>Active</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for account <- @accounts do %>
+    <tr>
+      <td><%= account.domain %></td>
+      <td><%= account.api_key %></td>
+      <td>
+        <%= if account.is_eu do %>
+          EU
+        <% end %>
+      </td>
+      <td>
+        <%= if account.is_active do %>
+          <pre class="dot active">active</pre>
+        <% else %>
+         <pre class="dot inactive">inactive</pre>
+        <% end %>
+      </td>
+      <td><%= link "edit", to: account_path(@conn, :edit, account) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<br />
+<%= link "add account", to: account_path(@conn, :new) %>

@@ -1,0 +1,203 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+body {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100vh;
+  background: azure;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+#main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#main-nav ul {
+  display: inline;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+#main-nav li {
+  display: inline;
+}
+
+.modal-open {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  outline: none;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  display: none;
+}
+
+.modal.show {
+  display: block;
+  transform: translate(0, 0);
+}
+
+/* // Shell div to position the modal with bottom padding */
+.modal-dialog {
+  position: relative;
+  margin: auto;
+  max-width: 60vw;
+  margin-top: 50px;
+  background: #fff;
+  padding: 50px;
+}
+
+.modal-dialog .close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 3px;
+}
+
+thead th {
+  background: navy;
+  color: #fff;
+  text-align: left;
+}
+
+tbody tr:hover td {
+  background-color: LemonChiffon;
+}
+
+pre,
+code {
+  font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
+  page-break-inside: avoid;
+  font-family: monospace;
+  line-height: 1.6;
+  margin-bottom: 1.6em;
+  overflow: auto;
+  display: block;
+  word-wrap: break-word;
+}
+
+tr {
+  position: relative;
+}
+
+.pagination {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+  text-align: center;
+}
+
+.pagination li {
+  display: inline;
+}
+
+.pagination li a {
+  display: inline-block;
+  padding: 8px 12px;
+}
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  margin-bottom: 20px;
+}
+dl {
+  display: flex;
+  background: #fff;
+  flex-flow: row wrap;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+dt {
+  flex-basis: 20%;
+  padding: 5px 10px;
+  text-align: right;
+}
+dd {
+  flex-basis: 70%;
+  flex-grow: 1;
+  margin: 0;
+  padding: 5px 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background: lightgrey;
+  font-size: 0;
+}
+
+.dot.active {
+  background-color: mediumspringgreen;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 5px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label + input {
+  margin-top: 5px;
+}
+
+.btn-danger {
+  background: crimson;
+  color: #fff;
+  padding: 5px;
+  text-decoration: none;
+}
+
+.btn-danger:hover {
+  background: red;
+}
+
+.validation-error {
+  color: red;
+}
+
+footer {
+  margin: 20px 0;
+  font-size: 12px;
+}
+
+.warn {
+  padding: 10px;
+  background: orange;
+}

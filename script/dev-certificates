@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+if [ ! -f ./priv/cert/selfsigned.pem ]; then
+  echo "Installing dev certificates into priv/cert..."
+  mix phx.gen.cert
+fi

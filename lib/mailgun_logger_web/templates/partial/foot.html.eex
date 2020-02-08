@@ -1,0 +1,30 @@
+    <footer>
+      <%= link "Mailgun", to: page_path(@conn, :non_affiliation) %> Logger | created by Jack + Joe | MIT License
+    </footer>
+
+    <script charset="utf-8">
+      var modalButtons = document.querySelectorAll("[data-toggle='modal']")
+      Array.prototype.slice.call(modalButtons).forEach(el => {
+        var target = document.querySelector(el.dataset.target)
+        if (target) {
+          el.addEventListener('click', function(e) {
+            e.preventDefault()
+            target.classList.toggle('show')
+            target.querySelector('.close').focus()
+          })
+        }
+      })
+      var modals = document.querySelectorAll('.modal')
+      Array.prototype.slice.call(modals).forEach(function(modal) {
+        var id = modal.getAttribute('id')
+        modal
+          .querySelector("[data-dismiss='modal']")
+          .addEventListener('click', function() {
+            var modal = document.querySelector(`#${id}`)
+            modal.classList.toggle('show')
+          })
+      })
+    </script>
+    <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

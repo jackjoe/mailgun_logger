@@ -15,13 +15,28 @@ _This application is not affiliated, associated, authorized, endorsed by, or in 
 
 _Jack + Joe is not responsible for your use of this tool, neither for any persistance guarantees. Free comes at a price :)_
 
-## Getting started
+## Installation
 
 MailgunLogger is available as a Docker image at [docker_url]. To run it:
 
 ```
 $ do this
 $ do that
+```
+
+## Requirements
+
+## Contributing
+
+To run on your local machine, you need to setup shop first:
+
+```
+$ make setup
+```
+
+Then you can run the project:
+```
+$ make run
 ```
 
 ## TODO
