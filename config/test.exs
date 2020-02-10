@@ -18,8 +18,8 @@ config :mailgun_logger, MailgunLogger.Repo, pool: Ecto.Adapters.SQL.Sandbox
 
 # Configure your database
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("DB_USER", "john"),
-  password: System.get_env("DB_PASSWORD", "doe"),
+  username: System.get_env("DB_USER", "mailgun_logger_ci"),
+  password: System.get_env("DB_PASSWORD", "johndoe"),
   database: System.get_env("DB_NAME", "mailgun_logger_ci_test"),
   hostname: System.get_env("DB_HOST", "localhost"),
   pool_size: 10
