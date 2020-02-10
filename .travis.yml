@@ -10,7 +10,8 @@ before_script:
   # - echo "host all postgrex_md5_pw 127.0.0.1/32 md5" | sudo tee -a /etc/postgresql/$PGVERSION/main/pg_hba.conf
   # - echo "host all postgrex_cleartext_pw 127.0.0.1/32 password" | sudo tee -a /etc/postgresql/$PGVERSION/main/pg_hba.conf
   # - if [ `echo "$PGVERSION >= 10.0" | bc` -eq 1 ]; then echo "host all postgrex_scram_pw 127.0.0.1/32 scram-sha-256" | sudo tee -a /etc/postgresql/$PGVERSION/main/pg_hba.conf; fi
-  - psql -c 'create database mailgun_logger_ci_test;' -U postgres
+  - psql -c 'CREATE DATABASE mailgun_logger_ci_test;' -U postgres
+  - psql -c "CREATE USER john WITH PASSWORD 'doe';" -U postgres
   # - sudo service postgresql restart
 matrix:
   include:
