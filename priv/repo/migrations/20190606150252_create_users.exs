@@ -9,7 +9,6 @@ defmodule MailgunLogger.Repo.Migrations.CreateUsers do
       add(:encrypted_password, :string)
       add(:token, :string, size: 75)
       add(:reset_token, :string, default: nil)
-      add(:is_test, :boolean, default: false, null: false)
 
       timestamps()
     end

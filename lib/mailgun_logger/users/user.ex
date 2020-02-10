@@ -19,7 +19,6 @@ defmodule MailgunLogger.User do
           token: String.t(),
           encrypted_password: String.t(),
           reset_token: String.t(),
-          is_test: boolean(),
           password: String.t(),
           password_confirmation: String.t(),
           roles: Ecto.Association.NotLoaded.t() | [Role.t()],
@@ -34,7 +33,6 @@ defmodule MailgunLogger.User do
     field(:token, :string)
     field(:encrypted_password, :string)
     field(:reset_token, :string, default: nil)
-    field(:is_test, :boolean, default: false)
     field(:password, :string, virtual: true)
     field(:password_confirmation, :string, virtual: true)
 
@@ -56,7 +54,6 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
-    |> is_test()
   end
 
   @doc false
@@ -67,7 +64,6 @@ defmodule MailgunLogger.User do
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
-    |> is_test()
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -84,7 +80,6 @@ defmodule MailgunLogger.User do
     |> hash_password()
     |> generate_token()
     |> put_assoc(:roles, [Roles.get_role_by_name("admin")])
-    |> is_test()
   end
 
   @doc false
@@ -116,16 +111,6 @@ defmodule MailgunLogger.User do
     token = :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
     put_change(changeset, :token, token)
   end
-
-  defp is_test(%Ecto.Changeset{valid?: true, changes: %{email: email}} = changeset) do
-    put_change(
-      changeset,
-      :is_test,
-      Regex.match?(~r/@(noort|jackjoe|daele)\./, email)
-    )
-  end
-
-  defp is_test(changeset), do: changeset
 
   @doc false
   def full_name(nil), do: ""
