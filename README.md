@@ -56,6 +56,14 @@ $ make run
 ```
 
 All of the make targets are convenience wrappers around `mix`, feel free to run your own.
+If you are using your own environment variables, consider gathering them in an `.env` file and source that prior to running the make command:
+
+```
+# non POSIX uses `source` instead of `.`
+$ . .env && make run
+```
+
+Then head over to (https://0.0.0.0:7000)[https://0.0.0.0:7000].
 
 ## TODO
 

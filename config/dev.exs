@@ -7,9 +7,13 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   watchers: []
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
-  url: [host: System.get_env("HOST", "0.0.0.0"), scheme: "https", port: System.get_env("PORT", "4000")],
+  url: [
+    host: System.get_env("HOST", "0.0.0.0"),
+    scheme: "https",
+    port: System.get_env("PORT") || "7000"
+  ],
   https: [
-    port: System.get_env("PORT", "4000"),
+    port: System.get_env("PORT") || "7000",
     cipher_suite: :strong,
     keyfile: "priv/cert/selfsigned_key.pem",
     certfile: "priv/cert/selfsigned.pem"

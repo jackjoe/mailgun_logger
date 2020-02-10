@@ -29,3 +29,4 @@ test/tmp/*
 /test/tmp
 /doc
 Dockerfile-jackjoe
+.env

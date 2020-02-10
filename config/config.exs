@@ -39,12 +39,11 @@ config :mailgun_logger, MailgunLogger.Mailer,
   domain: System.get_env("MAILGUN_DOMAIN"),
   from: System.get_env("MAILGUN_FROM")
 
-# Configure your database
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
-  password: System.get_env("ML_DB_PASSWORD", "johndoe"),
-  database: System.get_env("ML_DB_NAME", "mailgun_logger_ci_test"),
-  hostname: System.get_env("ML_DB_HOST", "localhost"),
+  username: System.get_env("ML_DB_USER") || "postgres",
+  password: System.get_env("ML_DB_PASSWORD") || "",
+  database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
+  hostname: System.get_env("ML_DB_HOST") || "localhost",
   pool_size: 10
 
 import_config "#{Mix.env()}.exs"
