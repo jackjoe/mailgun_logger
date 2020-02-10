@@ -21,7 +21,7 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 
 MailgunLogger is available as a Docker image at [docker_url]. To run it:
 
-```
+```bash
 $ docker run -d -p ... \
   -e "MB_DB_USER=username" \
   -e "MB_DB_PASSWORD=password" \
