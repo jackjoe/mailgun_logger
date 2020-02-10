@@ -20,4 +20,4 @@ config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER") || "mailgun_logger_ci",
   password: System.get_env("ML_DB_PASSWORD") || "johndoe",
   database: System.get_env("ML_DB_NAME") || "mailgun_logger_ci_test",
-  hostname: System.get_env("ML_DB_HOST") || "localhost",
+  hostname: System.get_env("ML_DB_HOST") || "localhost"

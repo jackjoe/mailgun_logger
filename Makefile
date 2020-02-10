@@ -22,28 +22,18 @@ Makefile: ;              		# skip prerequisite discovery
 install:
 	./script/setup
 
-build_and_run:
-	source .env && mix deps.get && make run
-
 run:
 	./script/run
 
 test: test_coverage
 
-test_ci:
-	source .env.ci && MIX_ENV=test mix test
-
 test_elixir:
-	echo "source .env.test && MIX_ENV=test mix"
-	source .env.test && MIX_ENV=test mix test
+	echo "export ML_DB_USER=postgres && MIX_ENV=test mix test"
+	export ML_DB_USER=postgres && MIX_ENV=test mix test
 
 test_coverage:
-	echo "source .env.test && MIX_ENV=test mix coveralls"
-	source .env.test && MIX_ENV=test mix coveralls
-
-refresh_database:
-	echo "source .env && mix ecto.drop && mix ecto.create && mix ecto.migrate"
-	source .env && mix ecto.drop && mix ecto.create && mix ecto.migrate
+	echo "export ML_DB_USER=postgres && MIX_ENV=test mix coveralls"
+	export ML_DB_USER=postgres && MIX_ENV=test mix coveralls
 
 #######################################
 # Docker
