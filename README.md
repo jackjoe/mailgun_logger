@@ -58,8 +58,7 @@ Then you can run the project:
 $ make run
 ```
 
-All of the make targets are convenience wrappers around `mix`, feel free to run your own.
-If you are using your own environment variables, consider gathering them in an `.env` file and source that prior to running the make command:
+All of the make targets are convenience wrappers around `mix`, feel free to run your own. If you are using your own environment variables, consider gathering them in an `.env` file and source that prior to running the make command:
 
 ```bash
 # non POSIX uses `source` instead of `.`
@@ -71,9 +70,9 @@ Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 ## TODO
 
 - [ ] check timestamp conversion!
-- [ ] clean up Makefile
-- [ ] add to travis / docker for CI
-- [ ] cleanup user is_test
+- [x] clean up Makefile
+- [x] add travis CI
+- [ ] add docker for CI
 - [ ] test coverage
 - [ ] provide generic logging agent? (no papertrail)
 
