@@ -66,7 +66,7 @@ If you are using your own environment variables, consider gathering them in an `
 $ . .env && make run
 ```
 
-Then head over to (https://0.0.0.0:7000)[https://0.0.0.0:7000].
+Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 
 ## TODO
 
