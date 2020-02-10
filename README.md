@@ -34,7 +34,7 @@ $ docker run -d -p ... \
 
 To run on your local machine, you need to setup shop first.  Mailgun Logger requires a Postgres database and uses the following environment variables along with their defaults, from `config/config.exs`:
 
-```
+```elixir
 # config/config.ex
 config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
@@ -45,21 +45,23 @@ config :mailgun_logger, MailgunLogger.Repo,
 
 Either export your own enviroment variables or adhere to the defaults. Then, for convenience, run:
 
-```
+```bash
+# runs mix local.hex, deps.get, compile; install dev certificates, make run (see below)
 $ make install
 ```
 
 which will install all dependencies and setup local dev https certificates using `phx.cert`.
 
 Then you can run the project:
-```
+```bash
+# runs `iex -S mix phx.server`
 $ make run
 ```
 
 All of the make targets are convenience wrappers around `mix`, feel free to run your own.
 If you are using your own environment variables, consider gathering them in an `.env` file and source that prior to running the make command:
 
-```
+```bash
 # non POSIX uses `source` instead of `.`
 $ . .env && make run
 ```
