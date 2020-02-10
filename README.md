@@ -32,9 +32,10 @@ $ docker run -d -p ... \
 
 ## Contributing
 
-To run on your local machine, you need to setup shop first.  Mailgun Logger requires a Postgres database available and uses the following environment variables along with their defaults, from `config/config.exs`:
+To run on your local machine, you need to setup shop first.  Mailgun Logger requires a Postgres database and uses the following environment variables along with their defaults, from `config/config.exs`:
 
 ```
+# config/config.ex
 config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
   password: System.get_env("ML_DB_PASSWORD", "johndoe"),
