@@ -1,5 +1,7 @@
 # Mailgun Logger
 
+[![Build Status](https://travis-ci.com/jackjoe/mailgun_logger.svg?branch=master)](https://travis-ci.com/jackjoe/mailgun_logger)
+
 Simple admin tool to get Mailgun persistence ad infinite.
 
 MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a Postgres database.
