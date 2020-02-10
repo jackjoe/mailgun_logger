@@ -41,10 +41,10 @@ config :mailgun_logger, MailgunLogger.Mailer,
 
 # Configure your database
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("DB_USER"),
-  password: System.get_env("DB_PASSWORD"),
-  database: System.get_env("DB_NAME"),
-  hostname: System.get_env("DB_HOST"),
+  username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
+  password: System.get_env("ML_DB_PASSWORD", "johndoe"),
+  database: System.get_env("ML_DB_NAME", "mailgun_logger_ci_test"),
+  hostname: System.get_env("ML_DB_HOST", "localhost"),
   pool_size: 10
 
 import_config "#{Mix.env()}.exs"

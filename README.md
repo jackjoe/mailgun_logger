@@ -20,24 +20,42 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 MailgunLogger is available as a Docker image at [docker_url]. To run it:
 
 ```
-$ do this
-$ do that
+$ docker run -d -p ... \
+  -e "MB_DB_USER=username" \
+  -e "MB_DB_PASSWORD=password" \
+  -e "MB_DB_NAME=mailgun_logger" \
+  -e "MB_DB_HOST=my_db_host" \
+  --name mailgun_logger jackjoe/mailgun_logger
 ```
 
 ## Requirements
 
 ## Contributing
 
-To run on your local machine, you need to setup shop first:
+To run on your local machine, you need to setup shop first.  Mailgun Logger requires a Postgres database available and uses the following environment variables along with their defaults, from `config/config.exs`:
 
 ```
-$ make setup
+config :mailgun_logger, MailgunLogger.Repo,
+  username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
+  password: System.get_env("ML_DB_PASSWORD", "johndoe"),
+  database: System.get_env("ML_DB_NAME", "mailgun_logger_ci_test"),
+  hostname: System.get_env("ML_DB_HOST", "localhost"),
 ```
+
+Either export your own enviroment variables or adhere to the defaults. Then, for convenience, run:
+
+```
+$ make install
+```
+
+which will install all dependencies and setup local dev https certificates using `phx.cert`.
 
 Then you can run the project:
 ```
 $ make run
 ```
+
+All of the make targets are convenience wrappers around `mix`, feel free to run your own.
 
 ## TODO
 
