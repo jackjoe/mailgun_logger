@@ -78,7 +78,7 @@ Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 
 ## License
 
-This software is licensed under [the MIT license](LICENSE.md).
+This software is licensed under [the MIT license](LICENSE).
 
 ## About Jack + Joe
 
