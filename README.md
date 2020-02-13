@@ -5,9 +5,9 @@
 Simple admin tool to get Mailgun persistence ad infinite.
 
 MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a Postgres database.
-For efficiency and less complexity, it retrieves events for the last two days (free accounts offer up to three days of persistance) and then inserts everything. Only new events will pass the unique constraint on the db.
+For efficiency and less complexity, it retrieves events for the last two days (free accounts offer up to three days of persistence) and then inserts everything. Only new events will pass the unique constraint on the db.
 
-This is done because, as stated in the Mailgun docs, it is not guaranteed that for a given time period, all actual events will be ready, since some take time to get into the system allthough they already happened.
+This is done because, as stated in the Mailgun docs, it is not guaranteed that for a given time period, all actual events will be ready, since some take time to get into the system although they already happened.
 
 See the docs for implementation details.
 
@@ -15,7 +15,7 @@ _**IMPORTANT**_
 
 _This application is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Mailgun, or any of its subsidiaries or its affiliates. The official Mailgun website can be found at [mailgun](https://mailgun.com)._
 
-_Jack + Joe is not responsible for your use of this tool, neither for any persistance guarantees. Free comes at a price :)_
+_Jack + Joe is not responsible for your use of this tool, neither for any persistence guarantees. Free comes at a price :)_
 
 ## Installation
 
@@ -23,10 +23,10 @@ MailgunLogger is available as a Docker image at [docker_url]. To run it:
 
 ```bash
 $ docker run -d -p ... \
-  -e "MB_DB_USER=username" \
-  -e "MB_DB_PASSWORD=password" \
-  -e "MB_DB_NAME=mailgun_logger" \
-  -e "MB_DB_HOST=my_db_host" \
+  -e "ML_DB_USER=username" \
+  -e "ML_DB_PASSWORD=password" \
+  -e "ML_DB_NAME=mailgun_logger" \
+  -e "ML_DB_HOST=my_db_host" \
   --name mailgun_logger jackjoe/mailgun_logger
 ```
 
