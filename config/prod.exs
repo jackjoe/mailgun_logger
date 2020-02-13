@@ -14,9 +14,7 @@ config :mailgun_logger,
 
 config :phoenix, :serve_endpoints, true
 
-config :logger,
-  backends: [:console, LoggerPapertrailBackend.Logger],
-  level: :info
+config :logger, level: :info
 
 # Quantum cron schedule
 config :mailgun_logger, MailgunLogger.Scheduler,
