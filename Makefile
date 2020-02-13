@@ -8,6 +8,7 @@ CURR_USER 							=$(shell whoami)
 APP_NAME 								?=`grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g'`
 APP_VSN 								?=`grep 'version:' mix.exs | cut -d '"' -f2`
 BUILD 									?=`git rev-parse --short HEAD`
+DOCKER_IMAGE           	="jackjoe/mailgun_logger"
 
 .SILENT: ;               		# no need for @
 .ONESHELL: ;             		# recipes execute in same shell
@@ -43,7 +44,6 @@ docker_build_prod:
 		--build-arg APP_NAME=$(APP_NAME) \
 		--build-arg APP_VSN=$(APP_VSN) \
 		--build-arg BUILD_ENV=prod \
-		--build-arg DEPLOY_ENV=production \
 		-t $(DOCKER_IMAGE):$(APP_VSN)-$(BUILD) \
 		-t $(DOCKER_IMAGE):prod-latest .
 

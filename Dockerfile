@@ -2,6 +2,8 @@ FROM jackjoe/elixir-phx AS builder
 
 ARG BUILD_ENV
 ARG MIX_ENV=prod
+ENV PORT ${PORT:-5050}
+ENV HOST ${HOST:-localhost}
 
 # Create and set home directory
 ENV HOME /opt/app
@@ -10,14 +12,9 @@ WORKDIR $HOME
 # Copy all application files
 COPY . ./
 
-# Install all production dependencies
+# Install all production dependencies + digest
 RUN mix deps.get --only $BUILD_ENV && \
-    mix deps.compile --include-children
-
-# Compile the entire project
-RUN yarn install --pure-lockfile && \
-    make _build_production_js && \
-    make _build_production_styles && \
+    mix deps.compile --include-children && \
     mix phx.digest
 
 RUN mix release production
