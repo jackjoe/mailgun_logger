@@ -1,7 +1,6 @@
 FROM jackjoe/elixir-phx AS builder
 
 ARG BUILD_ENV
-ARG DEPLOY_ENV
 ARG MIX_ENV=prod
 
 # Create and set home directory
@@ -12,21 +11,16 @@ WORKDIR $HOME
 COPY . ./
 
 # Install all production dependencies
-RUN source .env.$DEPLOY_ENV && \
-    mix deps.get --only $BUILD_ENV && \
+RUN mix deps.get --only $BUILD_ENV && \
     mix deps.compile --include-children
 
 # Compile the entire project
-RUN source .env.$DEPLOY_ENV && \
-    yarn install --pure-lockfile && \
+RUN yarn install --pure-lockfile && \
     make _build_production_js && \
     make _build_production_styles && \
     mix phx.digest
 
-RUN cat .env.$DEPLOY_ENV
-
-RUN source .env.$DEPLOY_ENV && \
-    mix release production
+RUN mix release production
 
 ##################################################
 
@@ -35,7 +29,6 @@ FROM jackjoe/alpine
 ARG APP_VSN
 ARG APP_NAME
 ARG BUILD_ENV
-ARG DEPLOY_ENV
 ARG MIX_ENV=prod
 
 # Env vars
