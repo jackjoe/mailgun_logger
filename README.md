@@ -13,7 +13,7 @@ See the docs for implementation details.
 
 _**IMPORTANT**_
 
-_This application is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Mailgun, or any of its subsidiaries or its affiliates. The official Mailgun website can be found at [mailgun](https://mailgun.com)._
+_This application is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Mailgun, or any of its subsidiaries or its affiliates. The official Mailgun website can be found at [Mailgun](https://mailgun.com)._
 
 _Jack + Joe is not responsible for your use of this tool, neither for any persistence guarantees. Free comes at a price :)_
 
@@ -22,7 +22,7 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/repository/docker/jackjoe/mailgun_logger/general). To run it:
 
 ```bash
-$ docker run -d -p ... \
+$ docker run -d -p 5050:5050 \
   -e "ML_DB_USER=username" \
   -e "ML_DB_PASSWORD=password" \
   -e "ML_DB_NAME=mailgun_logger" \
