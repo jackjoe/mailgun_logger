@@ -1,6 +1,5 @@
 FROM jackjoe/elixir-phx AS builder
 
-ARG BUILD_ENV
 ARG MIX_ENV=prod
 ENV PORT ${PORT:-5050}
 ENV HOST ${HOST:-localhost}
@@ -13,7 +12,7 @@ WORKDIR $HOME
 COPY . ./
 
 # Install all production dependencies + digest
-RUN mix deps.get --only $BUILD_ENV && \
+RUN mix deps.get --only prod && \
     mix deps.compile --include-children && \
     mix phx.digest
 
@@ -25,14 +24,13 @@ FROM jackjoe/alpine
 
 ARG APP_VSN
 ARG APP_NAME
-ARG BUILD_ENV
 ARG MIX_ENV=prod
 
 # Env vars
 # Create and set home directory
 ENV HOME /opt/app
 ENV APP_NAME $APP_NAME
-ENV PORT ${PORT:-5050}
+# ENV PORT ${PORT:-5050}
 
 WORKDIR $HOME
 EXPOSE $PORT
