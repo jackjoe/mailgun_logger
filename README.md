@@ -19,7 +19,7 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 
 ## Installation
 
-MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/repository/docker/jackjoe/mailgun_logger/general). To run it:
+MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/r/jackjoe/mailgun_logger). To run it:
 
 ```bash
 $ docker run -d -p 5050:5050 \
