@@ -30,3 +30,5 @@ test/tmp/*
 /doc
 Dockerfile-jackjoe
 .env
+docker-compose.yml
+

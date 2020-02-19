@@ -21,6 +21,8 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 
 MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/repository/docker/jackjoe/mailgun_logger/general). To run it:
 
+### Docker
+
 ```bash
 $ docker run -d -p 5050:5050 \
   -e "ML_DB_USER=username" \
@@ -28,6 +30,46 @@ $ docker run -d -p 5050:5050 \
   -e "ML_DB_NAME=mailgun_logger" \
   -e "ML_DB_HOST=my_db_host" \
   --name mailgun_logger jackjoe/mailgun_logger
+```
+
+### Docker Compose
+
+With the following `docker-compose.yml`:
+
+```yml
+version: "3"
+
+services:
+  db:
+    image: postgres
+    networks:
+      - webnet
+    environment:
+      POSTGRES_PASSWORD: logger
+      POSTGRES_USER: logger
+      POSTGRES_DB: mailgun_logger
+
+  web:
+    image: jackjoe/mailgun_logger
+    ports:
+      - "5050:5050"
+    networks:
+      - webnet
+    environment:
+      DB_HOST: db
+      ML_DB_USER: logger
+      ML_DB_PASSWORD: logger
+      ML_DB_NAME: mailgun_logger
+      ML_DB_HOST: db
+
+networks:
+  webnet:
+```
+
+Run:
+
+```bash
+$ docker-compose up
 ```
 
 ## Requirements
