@@ -9,8 +9,6 @@ until psql -h db -U "postgres" -c '\q' 2>/dev/null; do
   sleep 1
 done
 
-mix ecto.create
-
 ./bin/production eval "JackJoe.ReleaseTasks.migrate_and_seed"
 
 ./bin/production start
