@@ -3,6 +3,8 @@
 
 set -e
 
+mix ecto.create
+
 # Wait for Postgres to become available.
 until psql -h db -U "postgres" -c '\q' 2>/dev/null; do
   >&2 echo "Postgres is unavailable - sleeping"
