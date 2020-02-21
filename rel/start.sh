@@ -8,6 +8,9 @@ set -e
 #   >&2 echo "Postgres is unavailable - sleeping"
 #   sleep 1
 # done
+echo "Waiting for Postgres..."
+sleep 5
+echo "Starting app..."
 
 ./bin/production eval "JackJoe.ReleaseTasks.migrate_and_seed"
 
