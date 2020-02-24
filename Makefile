@@ -45,6 +45,7 @@ docker_build_prod:
 		--build-arg APP_VSN=$(APP_VSN) \
 		--build-arg BUILD_ENV=prod \
 		-t $(DOCKER_IMAGE):$(APP_VSN)-$(BUILD) \
+		-t $(DOCKER_IMAGE):latest \
 		-t $(DOCKER_IMAGE):prod-latest .
 
 _docker_push_version:
