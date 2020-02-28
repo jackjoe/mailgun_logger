@@ -3,7 +3,8 @@ defmodule MailgunLogger.Seeder do
 
   alias MailgunLogger.Repo
   alias MailgunLogger.Role
-  alias MailgunLogger.UserRole
+
+  # alias MailgunLogger.UserRole
 
   @roles [%Role{name: "superuser"}, %Role{name: "admin"}]
 
@@ -15,35 +16,33 @@ defmodule MailgunLogger.Seeder do
 
   defp insert_if_new(model) do
     if !exists(model) do
-      IO.puts(":> insert")
-      IO.inspect(model)
       Repo.insert!(model)
     end
   end
 
   # Bind roles and users (default)
-  defp bind_role(role_name, user) do
-    if !has_role(role_name, user.id) do
-      changeset =
-        UserRole.changeset(
-          %UserRole{},
-          %{
-            role_id: Repo.get_by!(Role, name: role_name).id,
-            user_id: Repo.get!(User, user.id).id
-          }
-        )
+  # defp bind_role(role_name, user) do
+  #   if !has_role(role_name, user.id) do
+  #     changeset =
+  #       UserRole.changeset(
+  #         %UserRole{},
+  #         %{
+  #           role_id: Repo.get_by!(Role, name: role_name).id,
+  #           user_id: Repo.get!(User, user.id).id
+  #         }
+  #       )
+  #
+  #     Repo.insert!(changeset)
+  #   end
+  #
+  #   user
+  # end
 
-      Repo.insert!(changeset)
-    end
-
-    user
-  end
-
-  defp has_role(role_name, user_id) do
-    Repo.get_by(UserRole, role_id: role_name_to_id(role_name), user_id: user_id)
-  end
-
-  defp role_name_to_id(role_name) do
-    Repo.get_by!(Role, name: role_name).id
-  end
+  # defp has_role(role_name, user_id) do
+  #   Repo.get_by(UserRole, role_id: role_name_to_id(role_name), user_id: user_id)
+  # end
+  #
+  # defp role_name_to_id(role_name) do
+  #   Repo.get_by!(Role, name: role_name).id
+  # end
 end
