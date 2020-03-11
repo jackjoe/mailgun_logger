@@ -74,8 +74,6 @@ $ docker-compose up
 
 Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 
-## Requirements
-
 ## Contributing
 
 To run on your local machine, you need to setup shop first.
