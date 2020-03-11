@@ -117,7 +117,7 @@ Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 - [ ] check timestamp conversion!
 - [x] clean up Makefile
 - [x] add travis CI
-- [ ] add docker for CI
+- [x] add docker for CI
 - [ ] test coverage
 - [ ] provide generic logging agent? (no papertrail)
 

@@ -1,14 +1,21 @@
 <h1>Main dashboard</h1>
 
 <div>
+  <%= if @total_accounts == 0 do %>
   <div class="warn">
     <strong>Note:</strong>
     no accounts found...
     <%= link "create an account", to: account_path(@conn, :new) %> to start receiving logs.
   </div>
+  <% end %>
+  <%= if get_flash(@conn, :info) do %>
+    <div class="info" role="info">
+      <%= get_flash(@conn, :info) %>
+    </div>
+  <% end %>
   <h2>Some stats</h2>
   <dl>
     <dt>Total events in db:</dt>
-    <dd><%= @total_events %></dd>
+    <dd><%= @total_events %> | <%= link "trigger new run", to: page_path(@conn, :trigger_run), method: "POST" %></dd>
   </dl>
 </div>

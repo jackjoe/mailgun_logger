@@ -39,6 +39,7 @@ defmodule MailgunLogger do
   - fetch the events for that timerange
   - persist
   """
+  @spec process_account(Account.t()) :: {:ok, [Event.t()]} | {:error, Ecto.Changeset.t()}
   def process_account(%Account{} = account) do
     range = gen_range()
     params = %{} |> Map.merge(range)

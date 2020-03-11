@@ -73,5 +73,6 @@ defmodule MailgunLoggerWeb.Router do
 
     get("/", PageController, :index)
     get("/non-affiliation", PageController, :non_affiliation)
+    post("/trigger_run", PageController, :trigger_run)
   end
 end
