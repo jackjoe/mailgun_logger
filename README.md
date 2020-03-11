@@ -72,6 +72,8 @@ Run:
 $ docker-compose up
 ```
 
+Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
+
 ## Requirements
 
 ## Contributing
