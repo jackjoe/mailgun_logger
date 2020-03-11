@@ -127,6 +127,6 @@ This software is licensed under [the MIT license](LICENSE).
 
 ## About Jack + Joe
 
-MailgunLogger is our very first open source project, and we are excited to get it out! We love open source and contributed to various tools over the years, and now we have our own!
+MailgunLogger is our very first open source project, and we are excited to get it out! We love open source and contributed to various tools over the years, and now we have our own! We use it ourselves as well.
 
 Get to know our projects, get in touch. [jackjoe.be](https://jackjoe.be)
