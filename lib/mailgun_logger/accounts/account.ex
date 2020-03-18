@@ -32,6 +32,6 @@ defmodule MailgunLogger.Account do
     account
     |> cast(attrs, [:api_key, :domain, :is_active, :is_eu])
     |> validate_required([:api_key, :domain])
-    |> unique_constraint(:accounts_pkey, name: :accounts_api_key_index)
+    |> unique_constraint(:api_key)
   end
 end
