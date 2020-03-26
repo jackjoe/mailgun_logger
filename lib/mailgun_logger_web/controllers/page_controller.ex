@@ -19,6 +19,6 @@ defmodule MailgunLoggerWeb.PageController do
 
     conn
     |> put_flash(:info, "Run triggered successfully. Data should be coming in...")
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 end

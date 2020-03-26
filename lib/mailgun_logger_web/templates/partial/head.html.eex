@@ -9,7 +9,7 @@
     <meta name="version" content="<%= Application.spec(:mailgun_logger, :vsn) %>">
     <meta name="env" content="<%= Application.get_env(:mailgun_logger, :deploy_env) %>">
     <title>Mailgun Logger v<%= Application.spec(:mailgun_logger, :vsn) %></title>
-    <link rel="icon" type="image/png" href="<%= static_path(@conn, "/images/favicon.png") %>" />
-    <link rel="stylesheet" href="<%= static_path(@conn, "/css/style.css") %>">
+    <link rel="icon" type="image/png" href="<%= Routes.static_path(@conn, "/images/favicon.png") %>" />
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>">
   </head>
   <body>

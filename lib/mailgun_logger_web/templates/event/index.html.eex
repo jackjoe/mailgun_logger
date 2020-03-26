@@ -1,6 +1,6 @@
 <h1>Events</h1>
 
-<%= form_for @conn, event_path(@conn, :index), [method: "get", class: ""], fn f -> %>
+<%= form_for @conn, Routes.event_path(@conn, :index), [method: "get", class: ""], fn f -> %>
   <%= text_input f, :q, class: "", placeholder: "Search events" %>
   <%= submit "Search" %>
 <% end %>
@@ -31,11 +31,16 @@
       <td title="<%= event.message_subject %>"><%= subject(event) %></td>
       <td><%= event.account.domain %></td>
       <td>
-        <%= link "detail", to: event_path(@conn, :show, event) %>
+        <%= link "detail", to: Routes.event_path(@conn, :show, event) %>
       </td>
     </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= paging_links(@conn, @page) %>
+<%= if !is_nil(@page.previous) && @page.previous != 0 do %>
+<%= link "prev", to: Routes.event_path(@conn, :index, page: @page.previous) %>&nbsp;
+<% end %>
+<%= if !is_nil(@page.next) && @page.next != 0 do %>
+<%= link "next", to: Routes.event_path(@conn, :index, page: @page.next) %>
+<% end %>

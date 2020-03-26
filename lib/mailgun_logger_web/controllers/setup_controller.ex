@@ -9,7 +9,7 @@ defmodule MailgunLoggerWeb.SetupController do
   def index(conn, _) do
     case Users.any_users?() do
       true ->
-        redirect(conn, to: page_path(conn, :index))
+        redirect(conn, to: Routes.page_path(conn, :index))
 
       false ->
         changeset = User.changeset(%User{})
@@ -19,7 +19,7 @@ defmodule MailgunLoggerWeb.SetupController do
 
   def create_root(conn, %{"user" => params}) do
     case Users.create_admin(params) do
-      {:ok, _} -> redirect(conn, to: page_path(conn, :index))
+      {:ok, _} -> redirect(conn, to: Routes.page_path(conn, :index))
       {:error, changeset} -> render(conn, :index, changeset: changeset)
     end
   end

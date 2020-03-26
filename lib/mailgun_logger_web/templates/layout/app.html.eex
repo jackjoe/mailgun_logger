@@ -1,11 +1,11 @@
 <%= render_partial("head.html", assigns) %>
   <nav id="main-nav">
-    <div><%= link "Mailgun Logger", to: page_path(@conn, :index) %></div>
+    <div><%= link "Mailgun Logger", to: Routes.page_path(@conn, :index) %></div>
     <ul>
-      <li><%= link "Dashboard", to: page_path(@conn, :index) %></li>
-      <li><%= link "Events", to: event_path(@conn, :index) %></li>
-      <li><%= link "Accounts", to: account_path(@conn, :index) %></li>
-      <li style="margin-left: 20px"><%= link "Logout", to: auth_path(@conn, :logout) %></li>
+      <li><%= link "Dashboard", to: Routes.page_path(@conn, :index) %></li>
+      <li><%= link "Events", to: Routes.event_path(@conn, :index) %></li>
+      <li><%= link "Accounts", to: Routes.account_path(@conn, :index) %></li>
+      <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
     </ul>
   </nav>
   <%= render @view_module, @view_template, assigns %>

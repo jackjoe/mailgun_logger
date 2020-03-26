@@ -21,8 +21,8 @@ defmodule MailgunLoggerWeb do
     quote do
       use Phoenix.Controller, namespace: MailgunLoggerWeb
       import Plug.Conn
-      import MailgunLoggerWeb.Router.Helpers
       import MailgunLoggerWeb.Gettext
+      alias MailgunLoggerWeb.Router.Helpers, as: Routes
     end
   end
 
@@ -42,7 +42,7 @@ defmodule MailgunLoggerWeb do
       import MailgunLoggerWeb.ErrorHelpers
       import MailgunLoggerWeb.Gettext
       import MailgunLoggerWeb.PagingHelpers
-      import MailgunLoggerWeb.Router
+      alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
       def render_partial(template, assigns \\ []) do
         render(MailgunLoggerWeb.PartialView, template, assigns)

@@ -7,18 +7,27 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Account
   alias MailgunLogger.Repo
 
-  @spec list_events_paged(map(), String.t()) :: any
-  def list_events_paged(params, q) do
-    params = MailgunLoggerWeb.PagingHelpers.scrivener_format_params(params)
+  @spec list_events_paged(map()) :: any
+  def list_events_paged(params) do
+    params = MailgunLoggerWeb.PagingHelpers.format_pager_params(params)
 
     Event
     |> select([n], n)
     |> join(:inner, [n], a in assoc(n, :account))
-    |> build_search_query(q)
-    |> build_order(params)
-    |> order_by([n], desc: n.timestamp)
+    |> order_by([n], desc: n.id)
     |> preload([_, a], account: a)
-    |> Repo.paginate(params)
+    |> Pager.paginate(Event, params)
+  end
+
+  def search_events(q) do
+    Event
+    |> select([n], n)
+    |> join(:inner, [n], a in assoc(n, :account))
+    |> build_search_query(q)
+    |> order_by([n], desc: n.id)
+    |> preload([_, a], account: a)
+    |> limit(@max_search_results)
+    |> Repo.all()
   end
 
   defp build_search_query(queryable, ""), do: queryable
@@ -38,11 +47,6 @@ defmodule MailgunLogger.Events do
 
     where(queryable, ^search)
   end
-
-  defp build_order(queryable, %{"sort" => sort, "order" => dir}),
-    do: order_by(queryable, [n], [{^dir, field(n, ^String.to_atom(sort))}])
-
-  defp build_order(queryable, _params), do: queryable
 
   @spec get_event(number) :: Event.t()
   def get_event(id) do

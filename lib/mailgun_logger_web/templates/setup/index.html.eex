@@ -1,4 +1,4 @@
-<%= form_for @changeset, setup_path(@conn, :create_root), fn f -> %>
+<%= form_for @changeset, Routes.setup_path(@conn, :create_root), fn f -> %>
   <h1><%= gettext("Welcome newbie!") %></h1>
   <hr />
   <p>Looks like this is the first time you are accessing Mailgun Logger.</p>

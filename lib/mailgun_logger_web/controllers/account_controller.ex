@@ -16,7 +16,7 @@ defmodule MailgunLoggerWeb.AccountController do
 
   def create(conn, %{"account" => params}) do
     case Accounts.create_account(params) do
-      {:ok, _} -> redirect(conn, to: account_path(conn, :index))
+      {:ok, _} -> redirect(conn, to: Routes.account_path(conn, :index))
       {:error, changeset} -> render(conn, :new, changeset: changeset)
     end
   end
@@ -31,7 +31,7 @@ defmodule MailgunLoggerWeb.AccountController do
     account = Accounts.get_account_by_id(id)
 
     case Accounts.update_account(account, params) do
-      {:ok, _} -> redirect(conn, to: account_path(conn, :index))
+      {:ok, _} -> redirect(conn, to: Routes.account_path(conn, :index))
       {:error, changeset} -> render(conn, :update, changeset: changeset)
     end
   end
@@ -43,6 +43,6 @@ defmodule MailgunLoggerWeb.AccountController do
 
     conn
     |> put_flash(:info, "Account deleted successfully.")
-    |> redirect(to: account_path(conn, :index))
+    |> redirect(to: Routes.account_path(conn, :index))
   end
 end

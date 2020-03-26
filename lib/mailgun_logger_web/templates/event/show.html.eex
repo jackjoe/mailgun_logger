@@ -1,4 +1,4 @@
-<%= link "< back", to: event_path(@conn, :index) %>
+<%= link "< back", to: Routes.event_path(@conn, :index) %>
 <hr>
 <h1>[<%= String.upcase(@event.log_level) %>] Event detail</h1>
 
@@ -21,7 +21,7 @@
   <dd>
   <ul>
     <%= for linked <- @event.linked_events do %>
-      <li><a href="<%= event_path(@conn, :show, linked) %>"><%= linked.event %> (<%=linked.timestamp %>)</a></li>
+      <li><a href="<%= Routes.event_path(@conn, :show, linked) %>"><%= linked.event %> (<%=linked.timestamp %>)</a></li>
     <% end %>
   </ul>
   </dd>

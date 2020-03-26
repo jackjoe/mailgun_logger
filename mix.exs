@@ -41,9 +41,7 @@ defmodule MailgunLogger.Mixfile do
       mod: {MailgunLogger.Application, []},
       extra_applications: [
         :logger,
-        :runtime_tools,
-        :scrivener,
-        :scrivener_ecto
+        :runtime_tools
       ]
     ]
   end
@@ -76,8 +74,6 @@ defmodule MailgunLogger.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:quantum, "~> 2.3"},
-      {:scrivener_ecto, "~> 2.0", override: true},
-      {:scrivener_html, git: "https://github.com/hlongvu/scrivener_html.git"},
       {:sweet_xml, "~> 0.6"},
       {:timex, "~> 3.5"}
     ]

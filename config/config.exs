@@ -25,10 +25,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
-config :scrivener_html,
-  routes_helper: MailgunLoggerWeb.Router.Helpers,
-  view_style: :bootstrap_v4
-
 config :logger,
   backends: [:console],
   level: :debug

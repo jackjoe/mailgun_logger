@@ -15,15 +15,6 @@ defmodule MailgunLoggerWeb.PagingHelpers do
     link(name, Keyword.merge([to: new_url], opts))
   end
 
-  def paging_links(conn, page) do
-    queries =
-      URI.decode_query(current_uri(conn).query || "")
-      |> Map.delete("page")
-      |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
-
-    Scrivener.HTML.pagination_links(page, queries)
-  end
-
   defp current_uri(conn) do
     (MailgunLoggerWeb.Router.Helpers.url(conn) <>
        conn.request_path <> "?" <> URI.encode_query(conn.params))
@@ -38,12 +29,13 @@ defmodule MailgunLoggerWeb.PagingHelpers do
     end
   end
 
-  def scrivener_format_params(params, defaults \\ %{}) do
-    order = (params["order"] || (defaults["order"] || "asc")) |> String.to_atom()
-    page_size = params["page_size"] || (defaults["page_size"] || 100)
+  def format_pager_params(params, defaults \\ %{}) do
+    page_size = params["page_size"] || (defaults["page_size"] || @page_size)
+    page = params["page"] || (defaults["page"] || nil)
 
     params
-    |> Map.merge(%{"page_size" => page_size, "order" => order})
+    |> Map.merge(%{"page_size" => page_size})
+    |> Map.merge(%{"page" => page})
     |> Map.merge(defaults)
   end
 end

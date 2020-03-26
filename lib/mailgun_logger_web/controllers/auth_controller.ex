@@ -11,11 +11,12 @@ defmodule MailgunLoggerWeb.AuthController do
 
   def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
     auth = Users.authenticate(email, password)
+
     case auth do
       {:ok, user} ->
         conn
         |> Auth.sign_in(user)
-        |> redirect(to: page_path(conn, :index))
+        |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, _reason} ->
         conn
@@ -28,6 +29,6 @@ defmodule MailgunLoggerWeb.AuthController do
     conn
     |> Auth.sign_out()
     |> put_flash(:info, gettext("Signed out"))
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 end
