@@ -5,7 +5,7 @@ defmodule MailgunLogger.AccountTest do
 
   @valid_attrs %{
     api_key: "api_key",
-    domain: "bol.com",
+    domain: "bol.com"
   }
 
   test "validates required fields" do
@@ -17,10 +17,10 @@ defmodule MailgunLogger.AccountTest do
 
   test "validates api_key uniqueness" do
     account = insert(:account)
-    changeset = Account.changeset(%Account{}, %{ @valid_attrs | api_key: account.api_key })
+    changeset = Account.changeset(%Account{}, %{@valid_attrs | api_key: account.api_key})
     assert changeset.valid?
     {:error, changeset} = Repo.insert(changeset)
     refute changeset.valid?
-    assert "has already been taken" in errors_on(changeset).accounts_pkey
+    assert "has already been taken" in errors_on(changeset).api_key
   end
 end
