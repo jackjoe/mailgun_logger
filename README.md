@@ -15,6 +15,8 @@ _**IMPORTANT**_
 
 _This application is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Mailgun, or any of its subsidiaries or its affiliates. The official Mailgun website can be found at [Mailgun](https://mailgun.com)._
 
+_This is NOT meant as a replacement for the excellent online tooling provided by Mailgun. Just simple storage, that's it._
+
 _Jack + Joe is not responsible for your use of this tool, neither for any persistence guarantees. Free comes at a price :)_
 
 ## Installation
