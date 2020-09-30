@@ -60,7 +60,6 @@ services:
     networks:
       - webnet
     environment:
-      DB_HOST: db
       ML_DB_USER: logger
       ML_DB_PASSWORD: logger
       ML_DB_NAME: mailgun_logger
@@ -68,6 +67,10 @@ services:
 
 networks:
   webnet:
+    external: false
+
+volumes:
+  db_data: {}
 ```
 
 Run:
