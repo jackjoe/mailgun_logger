@@ -3,9 +3,7 @@ cache: apt
 services:
   - mysql
 before_script:
-  - psql -c 'CREATE DATABASE mailgun_logger_ci_test;' -U postgres
-  - psql -c "CREATE USER mailgun_logger_ci WITH PASSWORD 'johndoe';" -U postgres
-  - psql -c "ALTER ROLE mailgun_logger_ci WITH CREATEDB;" -U postgres
+  - mysql -e 'CREATE DATABASE mailgun_logger_ci_test;'
 matrix:
   include:
     - elixir: 1.9
