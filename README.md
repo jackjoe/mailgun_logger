@@ -43,13 +43,15 @@ version: "3"
 
 services:
   db:
-    image: postgres
+    image: mysql
     networks:
       - webnet
     environment:
-      POSTGRES_PASSWORD: logger
-      POSTGRES_USER: logger
-      POSTGRES_DB: mailgun_logger
+      - MYSQL_PASSWORD=logger
+      - MYSQL_USER=logger
+      - MYSQL_DATABASE=mailgun_logger
+    volumes:
+      - db_data:/var/lib/mysql
 
   web:
     image: jackjoe/mailgun_logger
@@ -79,7 +81,7 @@ Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 ## Contributing
 
 To run on your local machine, you need to setup shop first.
-Mailgun Logger requires a Postgres database using the following environment variables along with their defaults:
+Mailgun Logger requires a MySQL database using the following environment variables along with their defaults:
 
 ```elixir
 # config/config.ex
@@ -129,7 +131,7 @@ This software is licensed under [the MIT license](LICENSE).
 
 ## About Jack + Joe
 
-MailgunLogger is our very first open source project, and we are excited to get it out! We love open source and contributed to various tools over the years, and now we have our own! We use it ourselves as well. 
+MailgunLogger is our very first open source project, and we are excited to get it out! We love open source and contributed to various tools over the years, and now we have our own! We use it ourselves as well.
 
 Our [announcement article](https://jackjoe.be/articles/mailgun-logger).
 
