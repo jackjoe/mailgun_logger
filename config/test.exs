@@ -17,7 +17,7 @@ config :logger, level: :warn
 config :mailgun_logger, MailgunLogger.Repo, pool: Ecto.Adapters.SQL.Sandbox
 
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("ML_DB_USER") || "mailgun_logger_ci",
-  password: System.get_env("ML_DB_PASSWORD") || "johndoe",
+  username: System.get_env("ML_DB_USER") || "travis",
+  password: System.get_env("ML_DB_PASSWORD") || "",
   database: System.get_env("ML_DB_NAME") || "mailgun_logger_ci_test",
   hostname: System.get_env("ML_DB_HOST") || "localhost"

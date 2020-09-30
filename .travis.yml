@@ -1,14 +1,7 @@
 language: elixir
 cache: apt
 services:
-  - postgresql
-addons:
-  postgresql:
-    - "9.4"
-    - "9.6"
-    - "10"
-    - "11"
-    - "12"
+  - mysql
 before_script:
   - psql -c 'CREATE DATABASE mailgun_logger_ci_test;' -U postgres
   - psql -c "CREATE USER mailgun_logger_ci WITH PASSWORD 'johndoe';" -U postgres
