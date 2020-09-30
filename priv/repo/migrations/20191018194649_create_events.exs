@@ -14,7 +14,7 @@ defmodule MailgunLogger.Repo.Migrations.CreateEvents do
       add(:message_id, :string, size: 100)
       add(:message_to, :string)
       add(:delivery_attempt, :integer)
-      add(:raw, :jsonb)
+      add(:raw, :json)
       add(:account_id, references("accounts"))
       timestamps()
     end

@@ -36,7 +36,7 @@ config :mailgun_logger, MailgunLogger.Mailer,
   from: System.get_env("MAILGUN_FROM")
 
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("ML_DB_USER") || "postgres",
+  username: System.get_env("ML_DB_USER") || "root",
   password: System.get_env("ML_DB_PASSWORD"),
   database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
   hostname: System.get_env("ML_DB_HOST") || "localhost",

@@ -51,13 +51,12 @@ defmodule MailgunLogger.Mixfile do
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
-  #
   # Type `mix help deps` for examples and options.
   defp deps do
     [
       {:argon2_elixir, "~> 2.0"},
-      {:bamboo, "~> 1.4.0"},
-      {:decimal, "~> 1.0"},
+      {:bamboo, "~> 1.5.0"},
+      {:decimal, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
@@ -65,14 +64,14 @@ defmodule MailgunLogger.Mixfile do
       {:gettext, "~> 0.16"},
       {:hackney, "~> 1.12"},
       {:httpoison, "~> 1.4"},
-      {:jason, "~> 1.1"},
+      {:jason, "~> 1.2"},
       {:phoenix, "~> 1.4.0"},
       {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:plug, "~> 1.7"},
       {:plug_cowboy, "~> 2.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:myxql, "~> 0.3"},
       {:quantum, "~> 2.3"},
       {:sweet_xml, "~> 0.6"},
       {:timex, "~> 3.5"}
