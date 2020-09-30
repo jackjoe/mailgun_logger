@@ -12,7 +12,7 @@ defmodule MailgunLogger.Factory do
   def account_factory() do
     %Account{
       api_key: sequence(:api_key, &"api_key_#{&1}"),
-      domain: sequence(:domain, &"#{&1}.com"),
+      domain: sequence(:domain, &"#{&1}.com")
     }
   end
 
@@ -20,7 +20,6 @@ defmodule MailgunLogger.Factory do
     %User{
       email: sequence(:email, &"joe-#{&1}@email.com"),
       password: @password,
-      password_confirmation: @password,
       encrypted_password: @encrypted_password,
       roles: [build(:role)]
     }

@@ -20,7 +20,6 @@ defmodule MailgunLogger.User do
           encrypted_password: String.t(),
           reset_token: String.t(),
           password: String.t(),
-          password_confirmation: String.t(),
           roles: Ecto.Association.NotLoaded.t() | [Role.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
@@ -34,7 +33,6 @@ defmodule MailgunLogger.User do
     field(:encrypted_password, :string)
     field(:reset_token, :string, default: nil)
     field(:password, :string, virtual: true)
-    field(:password_confirmation, :string, virtual: true)
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
@@ -45,9 +43,8 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email, :password, :password_confirmation])
-    |> validate_required([:email, :password, :password_confirmation])
-    |> validate_confirmation(:password)
+    |> cast(attrs, [:email, :password])
+    |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> validate_length(:password, min: 8)
@@ -70,9 +67,8 @@ defmodule MailgunLogger.User do
   @spec admin_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def admin_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :password_confirmation])
-    |> validate_required([:email, :password, :password_confirmation])
-    |> validate_confirmation(:password)
+    |> cast(attrs, [:email, :password])
+    |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> validate_length(:password, min: 8)
@@ -93,8 +89,8 @@ defmodule MailgunLogger.User do
   @spec password_reset_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def password_reset_changeset(%User{} = user, params) do
     user
-    |> cast(params, [:reset_token, :password, :password_confirmation])
-    |> validate_required([:password, :password_confirmation])
+    |> cast(params, [:reset_token, :password])
+    |> validate_required([:password])
     |> validate_confirmation(:password)
     |> hash_password()
   end

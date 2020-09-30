@@ -16,12 +16,6 @@
     <%= error_tag f, :password %>
   </div>
 
-  <div class="form-group">
-    <%= label f, :password_confirmation, class: "control-label" %>
-    <%= password_input f, :password_confirmation, class: "form-control" %>
-    <%= error_tag f, :password_confirmation %>
-  </div>
-
   <div class="form-group mt-5">
     <%= submit "submit" %>
   </div>

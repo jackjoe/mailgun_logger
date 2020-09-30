@@ -6,7 +6,6 @@ defmodule MailgunLogger.UserTest do
   @valid_attrs %{
     email: "john.doe@acme.com",
     password: "password",
-    password_confirmation: "password",
     client_group_id: nil
   }
 
@@ -15,7 +14,6 @@ defmodule MailgunLogger.UserTest do
     refute changeset.valid?
     assert "can't be blank" in errors_on(changeset).email
     assert "can't be blank" in errors_on(changeset).password
-    assert "can't be blank" in errors_on(changeset).password_confirmation
   end
 
   test "validates email" do
