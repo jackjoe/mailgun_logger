@@ -2,7 +2,7 @@ defmodule JackJoe.ReleaseTasks do
   @start_apps [
     :crypto,
     :ssl,
-    :postgrex,
+    :myxql,
     :ecto,
     :ecto_sql
   ]
