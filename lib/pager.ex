@@ -44,7 +44,7 @@ defmodule Pager do
     entries =
       query
       |> where([e], e.id <= ^next_id)
-      |> limit(^page_size + 1)
+      |> limit(^(page_size + 1))
       |> repo.all()
 
     {entries, next, previous} =
