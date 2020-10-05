@@ -30,7 +30,11 @@ defmodule MailgunLoggerWeb.PagingHelpers do
   end
 
   def format_pager_params(params, defaults \\ %{}) do
-    page_size = params["page_size"] || (defaults["page_size"] || 4)
+    page_size =
+      params["page_size"] ||
+        (defaults["page_size"] ||
+           String.to_integer(Application.get_env(:mailgun_logger, :ml_pagesize)))
+
     page = params["page"] || (defaults["page"] || nil)
 
     params

@@ -17,6 +17,9 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   pubsub: [name: MailgunLogger.PubSub, adapter: Phoenix.PubSub.PG2],
   instrumenters: []
 
+config :mailgun_logger,
+  ml_pagesize: System.get_env("ML_PAGESIZE") || "100"
+
 config :phoenix, :format_encoders, json: Jason
 config :phoenix, :json_library, Jason
 

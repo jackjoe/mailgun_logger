@@ -23,6 +23,19 @@ _Jack + Joe is not responsible for your use of this tool, neither for any persis
 
 MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/r/jackjoe/mailgun_logger). To run it:
 
+### Variables
+
+Following variables are available:
+
+[Required]
+- **ML_DB_USER**: database user
+- **ML_DB_PASSWORD**: database password
+- **ML_DB_NAME**: database name
+- **ML_DB_HOST**: database host
+
+[Optional]
+- **ML_PAGESIZE**: events per page
+
 ### Docker
 
 ```bash
@@ -130,9 +143,6 @@ Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 ## TODO
 
 - [ ] check timestamp conversion!
-- [x] clean up Makefile
-- [x] add travis CI
-- [x] add docker for CI
 - [ ] test coverage
 - [ ] provide generic logging agent? (no papertrail)
 
