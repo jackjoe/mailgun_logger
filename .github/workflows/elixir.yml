@@ -12,6 +12,16 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8.0.20
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: "user"
+          MYSQL_ROOT_PASSWORD: ""
+        options: --default-authentication-plugin=mysql_native_password
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Elixir
