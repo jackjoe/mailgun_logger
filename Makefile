@@ -9,7 +9,6 @@ APP_NAME 								?=`grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app
 APP_VSN 								?=`grep 'version:' mix.exs | cut -d '"' -f2`
 BUILD 									?=`git rev-parse --short HEAD`
 DOCKER_IMAGE           	="jackjoe/mailgun_logger"
-# cron-mon ip: 178.62.185.177
 IP                      =178.62.185.177
 APP_DIR 								=/app/mailgun-logger.jackjoe.be
 
@@ -32,12 +31,12 @@ run:
 test: test_coverage
 
 test_elixir:
-	echo "export ML_DB_USER=postgres && MIX_ENV=test mix test"
-	export ML_DB_USER=postgres && MIX_ENV=test mix test
+	echo "export ML_DB_USER=user && MIX_ENV=test mix test"
+	export ML_DB_USER=user && MIX_ENV=test mix test
 
 test_coverage:
-	echo "export ML_DB_USER=postgres && MIX_ENV=test mix coveralls"
-	export ML_DB_USER=postgres && MIX_ENV=test mix coveralls
+	echo "export ML_DB_USER=user && MIX_ENV=test mix coveralls"
+	export ML_DB_USER=user && MIX_ENV=test mix coveralls
 
 #######################################
 # Docker
