@@ -26,7 +26,7 @@ defmodule MailgunLogger.Events do
     |> build_search_query(q)
     |> order_by([n], desc: n.id)
     |> preload([_, a], account: a)
-    |> limit(@max_search_results)
+    |> limit(200)
     |> Repo.all()
   end
 
@@ -38,12 +38,12 @@ defmodule MailgunLogger.Events do
 
     search = false
 
-    search = dynamic([n], ^search or ilike(n.event, ^q))
-    search = dynamic([n], ^search or ilike(n.recipient, ^q))
-    search = dynamic([n], ^search or ilike(n.message_id, ^q))
-    search = dynamic([n], ^search or ilike(n.message_subject, ^q))
-    search = dynamic([n], ^search or ilike(n.message_from, ^q))
-    search = dynamic([n], ^search or ilike(n.message_to, ^q))
+    search = dynamic([n], ^search or like(n.event, ^q))
+    search = dynamic([n], ^search or like(n.recipient, ^q))
+    search = dynamic([n], ^search or like(n.message_id, ^q))
+    search = dynamic([n], ^search or like(n.message_subject, ^q))
+    search = dynamic([n], ^search or like(n.message_from, ^q))
+    search = dynamic([n], ^search or like(n.message_to, ^q))
 
     where(queryable, ^search)
   end
@@ -61,7 +61,7 @@ defmodule MailgunLogger.Events do
   def get_linked_events(event) do
     from(
       e in Event,
-      where: e.recipient == ^event.recipient,
+      # where: e.recipient == ^event.recipient,
       where: e.message_id == ^event.message_id,
       where: e.id != ^event.id,
       order_by: [desc: e.timestamp]
