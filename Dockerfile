@@ -30,7 +30,7 @@ ARG MIX_ENV=prod
 # Create and set home directory
 ENV HOME /opt/app
 ENV APP_NAME $APP_NAME
-# ENV PORT ${PORT:-5050}
+ENV PORT ${PORT:-5050}
 
 WORKDIR $HOME
 EXPOSE $PORT
