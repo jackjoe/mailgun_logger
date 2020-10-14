@@ -111,7 +111,7 @@ defmodule MailgunLogger.Events do
   defp conv_event_timestamp(%{"timestamp" => timestamp}) do
     timestamp
     |> Kernel.trunc()
-    |> Timex.from_unix()
+    |> DateTime.from_unix!()
   end
 
   def get_total_events() do

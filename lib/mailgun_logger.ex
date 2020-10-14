@@ -41,11 +41,8 @@ defmodule MailgunLogger do
   """
   @spec process_account(Account.t()) :: {:ok, [Event.t()]} | {:error, Ecto.Changeset.t()}
   def process_account(%Account{} = account) do
-    range = gen_range()
-    params = %{} |> Map.merge(range)
-
     Mailgun.Client.new(account)
-    |> Mailgun.Events.get_events(params)
+    |> Mailgun.Events.get_events(gen_range())
     |> MailgunLogger.Events.save_events(account)
   end
 
@@ -53,9 +50,11 @@ defmodule MailgunLogger do
   Generate a timerange from yesterday until today.
   """
   def gen_range() do
-    now = Timex.now()
-    yesterday = Timex.shift(now, days: -1) |> Timex.to_unix()
-    today = now |> Timex.to_unix()
+    now = DateTime.utc_now()
+    yesterday = DateTime.add(now, -1 * seconds_in_day(), :second) |> DateTime.to_unix()
+    today = DateTime.to_unix(now)
     %{begin: yesterday, end: today}
   end
+
+  defp seconds_in_day(), do: 60 * 60 * 24
 end

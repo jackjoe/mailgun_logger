@@ -4,7 +4,7 @@ defmodule MailgunLogger.Mixfile do
   def project do
     [
       app: :mailgun_logger,
-      version: "0.0.4",
+      version: "0.0.5",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -73,8 +73,7 @@ defmodule MailgunLogger.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:myxql, "~> 0.3"},
       {:quantum, "~> 2.3"},
-      {:sweet_xml, "~> 0.6"},
-      {:timex, "~> 3.5"}
+      {:sweet_xml, "~> 0.6"}
     ]
   end
 
