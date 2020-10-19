@@ -73,18 +73,18 @@ services:
 
   web:
     image: jackjoe/mailgun_logger
+    command: sh -c './wait-for db:3306 -- ./start.sh'
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     ports:
       - "5050:5050"
     networks:
       - webnet
     environment:
-      - ML_DB_USER: logger
-      - ML_DB_PASSWORD: logger
-      - ML_DB_NAME: mailgun_logger
-      - ML_DB_HOST: db
+      - ML_DB_USER=logger
+      - ML_DB_PASSWORD=logger
+      - ML_DB_NAME=mailgun_logger
+      - ML_DB_HOST=db
 
 networks:
   webnet:
