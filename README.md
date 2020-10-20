@@ -66,16 +66,12 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     volumes:
       - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 10
 
   web:
     image: jackjoe/mailgun_logger
-    command: sh -c './wait-for db:3306 -- ./start.sh'
     depends_on:
       - db
+    entrypoint: ["./wait-for", "db:3306", "--", "./start.sh"]
     ports:
       - "5050:5050"
     networks:
