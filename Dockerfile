@@ -36,11 +36,11 @@ WORKDIR $HOME
 EXPOSE $PORT
 
 COPY --from=builder $HOME/_build/$MIX_ENV/rel/production $HOME
+COPY --from=builder $HOME/script/wait-for $HOME
 
 ADD rel/start.sh .
 RUN chmod +x $HOME/start.sh
-
-RUN chmod +x ./script/wait-for
+RUN chmod +x ./wait-for
 
 HEALTHCHECK --interval=3s --timeout=3s --retries=10 CMD curl --fail -s http://localhost:$PORT/health || exit 1
 
