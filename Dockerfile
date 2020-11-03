@@ -40,7 +40,7 @@ COPY --from=builder $HOME/script/wait-for $HOME
 
 ADD rel/start.sh .
 RUN chmod +x $HOME/start.sh
-RUN chmod +x ./wait-for
+RUN chmod +x $HOME/wait-for
 
 HEALTHCHECK --interval=3s --timeout=3s --retries=10 CMD curl --fail -s http://localhost:$PORT/health || exit 1
 
