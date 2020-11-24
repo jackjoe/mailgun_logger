@@ -138,7 +138,6 @@ Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
 
 ## TODO
 
-- [ ] check timestamp conversion!
 - [ ] test coverage
 - [ ] provide generic logging agent? (no papertrail)
 
