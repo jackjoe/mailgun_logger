@@ -17,7 +17,14 @@ defmodule MailgunLogger.AccountTest do
 
   test "validates api_key uniqueness" do
     account = insert(:account)
-    changeset = Account.changeset(%Account{}, %{@valid_attrs | api_key: account.api_key})
+
+    changeset =
+      Account.changeset(%Account{}, %{
+        @valid_attrs
+        | api_key: account.api_key,
+          domain: account.domain
+      })
+
     assert changeset.valid?
     {:error, changeset} = Repo.insert(changeset)
     refute changeset.valid?
