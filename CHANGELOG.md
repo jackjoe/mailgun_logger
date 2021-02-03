@@ -2,6 +2,14 @@
 
 - TBD
 
+## 0.1.0 (2021-02-03)
+
+POSSIBLY BREAKING! (Possibly, but not surely, so no 1.0.0 yet!)
+
+We had to alter the unique index (stupid mistake... more tests, anyone ;) ?). We do have a migration but it could be possible you have to alter that index yourself. It should be fairly easy, just add a unique constraint on the `accounts` table for columsn `api_key` and `domain`.
+
+- fixed unique constraint for API key and domain on accounts. ([#7] [i7])
+
 ## 0.0.5 (2020-10-14)
 
 - removed Timex dependency
@@ -13,3 +21,5 @@ We are on Github!
 ### Added
 
 - Setup flow
+
+[i7]: https://github.com/jackjoe/mailgun_logger/issues/7
