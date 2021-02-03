@@ -4,7 +4,7 @@
 
 ## 0.1.0 (2021-02-03)
 
-POSSIBLY BREAKING! (Possibly, but not surely, so no 1.0.0 yet!)
+**POSSIBLY BREAKING! (Possibly, but not surely, so no 1.0.0 yet!)**
 
 We had to alter the unique index (stupid mistake... more tests, anyone ;) ?). We do have a migration but it could be possible you have to alter that index yourself. It should be fairly easy, just add a unique constraint on the `accounts` table for columsn `api_key` and `domain`.
 
