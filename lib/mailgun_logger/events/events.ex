@@ -80,7 +80,7 @@ defmodule MailgunLogger.Events do
     |> Enum.reduce(Ecto.Multi.new(), fn {changeset, index}, multi ->
       Ecto.Multi.insert(multi, Integer.to_string(index), changeset, on_conflict: :nothing)
     end)
-    |> Repo.transaction()
+    |> Repo.transaction(timeout: :infinity)
     |> case do
       {:ok, multi_result} ->
         {:ok, Map.values(multi_result) |> Enum.filter(&(!is_nil(&1.id)))}

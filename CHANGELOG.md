@@ -2,6 +2,10 @@
 
 - TBD
 
+## 0.1.1 (2021-02-16)
+
+- Fix database connection timeout when inserting a large amount of events with `Repo.transaction`, bu adding a infinit timeout to it.
+
 ## 0.1.0 (2021-02-03)
 
 **POSSIBLY BREAKING! (Possibly, but not surely, so no 1.0.0 yet!)**

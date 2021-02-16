@@ -6,16 +6,14 @@ defmodule MailgunLogger.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
-    import Supervisor.Spec
-
     children = [
-      supervisor(MailgunLogger.Repo, []),
-      supervisor(MailgunLoggerWeb.Endpoint, []),
+      {MailgunLogger.Repo, []},
+      {MailgunLoggerWeb.Endpoint, []}
     ]
 
     children =
       if Application.get_env(:mailgun_logger, :env) not in [:test, :dev] do
-        children ++ [worker(MailgunLogger.Scheduler, [])]
+        children ++ [{MailgunLogger.Scheduler, []}]
       else
         children
       end

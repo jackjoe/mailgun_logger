@@ -14,7 +14,7 @@ config :mailgun_logger,
 
 config :phoenix, :serve_endpoints, true
 
-# config :logger, level: :info
+config :logger, level: String.to_atom(System.get_env("ML_LOG_LEVEL")) || :info
 
 # Quantum cron schedule
 config :mailgun_logger, MailgunLogger.Scheduler,

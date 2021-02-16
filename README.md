@@ -35,6 +35,7 @@ Following variables are available:
 
 [Optional]
 - **ML_PAGESIZE**: events per page
+- **ML_LOG_LEVEL**: log level (info, debug, warn, ...)
 
 ### Docker
 
