@@ -30,7 +30,7 @@ config :logger, :console,
 
 config :logger,
   backends: [:console],
-  level: String.to_atom(System.get_env("ML_LOG_LEVEL")) || :debug
+  level: String.to_atom(System.get_env("ML_LOG_LEVEL", "debug")) || :debug
 
 config :mailgun_logger, MailgunLogger.Mailer,
   adapter: Bamboo.MailgunAdapter,
