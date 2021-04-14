@@ -14,7 +14,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: System.get_env("HOST")],
   secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: MailgunLogger.PubSub, adapter: Phoenix.PubSub.PG2],
+  pubsub_server: MailgunLogger.PubSub,
   instrumenters: []
 
 config :mailgun_logger,

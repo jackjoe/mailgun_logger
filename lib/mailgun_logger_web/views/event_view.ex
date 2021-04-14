@@ -4,6 +4,7 @@ defmodule MailgunLoggerWeb.EventView do
 
   def subject(%{message_subject: nil}), do: ""
   def subject(%{message_subject: ""}), do: ""
+
   def subject(%{message_subject: subject}) do
     case String.length(subject) > 20 do
       true -> "#{subject |> String.slice(0, 20) |> String.trim_trailing()}..."
@@ -11,7 +12,13 @@ defmodule MailgunLoggerWeb.EventView do
     end
   end
 
-  def event_type(event_type) when event_type in ~w(failed warn) do
+  def event_type(event_type) when event_type in ~w(warn) do
+    ~E"""
+    <span style="background-color: orange; padding: 3px 5px; color: #fff;"><%= event_type %></span>
+    """
+  end
+
+  def event_type(event_type) when event_type in ~w(failed error) do
     ~E"""
     <span style="background-color: red; padding: 3px 5px; color: #fff;"><%= event_type %></span>
     """
