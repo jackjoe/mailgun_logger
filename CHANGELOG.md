@@ -2,6 +2,11 @@
 
 - TBD
 
+## 0.1.2 (2021-04-14)
+
+- Upgrade to Phoenix 1.5.
+- Output error type in red and delivered mails in green.
+
 ## 0.1.1 (2021-02-16)
 
 - Fix database connection timeout when inserting a large amount of events with `Repo.transaction`, bu adding a infinit timeout to it.
