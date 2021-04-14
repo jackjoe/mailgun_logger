@@ -23,7 +23,7 @@
   <tbody>
     <%= for event <- @page do %>
     <tr>
-      <td><%= event.event %></td>
+      <td><%= event_name(event.event) %></td>
       <td width="100"><%= event_type(event.log_level) %></td>
       <td><%= event.recipient %></td>
       <td><%= event.timestamp %></td>

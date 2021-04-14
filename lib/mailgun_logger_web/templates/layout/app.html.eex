@@ -8,5 +8,5 @@
       <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
     </ul>
   </nav>
-  <%= render @view_module, @view_template, assigns %>
+  <%= @inner_content %>
 <%= render_partial("foot.html", assigns) %>
