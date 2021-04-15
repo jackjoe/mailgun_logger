@@ -22,6 +22,11 @@ defmodule MailgunLoggerWeb.Router do
     plug(MailgunLoggerWeb.Plugs.Auth)
   end
 
+  # Always except in prod
+  if Application.get_env(:mailgun_logger, :env) == :dev do
+    forward("/sent_emails", Bamboo.SentEmailViewerPlug)
+  end
+
   scope "/ping", MailgunLoggerWeb do
     pipe_through([:ping])
     get("/", PingController, :ping)

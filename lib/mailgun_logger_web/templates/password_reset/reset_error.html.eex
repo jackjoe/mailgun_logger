@@ -1,0 +1,20 @@
+<div class="mx-auto panel">
+    <h2 class="h2"><%= gettext "Password forgot" %></h2>
+    <h3 class="h3"><%= gettext "Invalid token" %></h3>
+    <p class="mb-4">
+    <%= raw(gettext(
+    """
+    This password reset link is invalid.
+    You can try to %{request_open} request a new password %{link_close} or
+    continue to the %{login_open}login screen%{link_close}.
+    """,
+    %{
+    request_open: "<a href=\"#{Routes.password_reset_path(@conn, :request_new)}\">",
+    login_open: "<a href=\"#{Routes.auth_path(@conn, :new)}\">",
+    link_close: "</a>"
+    }
+    ))
+    %>
+    </p>
+  </div>
+</div>

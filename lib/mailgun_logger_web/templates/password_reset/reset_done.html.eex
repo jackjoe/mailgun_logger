@@ -1,0 +1,6 @@
+<div class="mx-auto panel">
+    <h2 class="h2"><%= gettext "Password forgot" %></h2>
+    <p class="mb-4"><%= gettext "Your password was reset." %></p>
+    <%= link gettext("Login"), to: Routes.auth_path(@conn, :new), class: "btn btn-primary" %>
+  </div>
+</div>

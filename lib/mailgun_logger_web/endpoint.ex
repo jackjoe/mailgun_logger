@@ -60,4 +60,6 @@ defmodule MailgunLoggerWeb.Endpoint do
       {:ok, config}
     end
   end
+
+  def build_conn(), do: %Plug.Conn{private: %{phoenix_endpoint: MailgunLoggerWeb.Endpoint}}
 end

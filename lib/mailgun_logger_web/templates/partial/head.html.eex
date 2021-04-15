@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="Jack + Joe">
     <meta name="version" content="<%= Application.spec(:mailgun_logger, :vsn) %>">
-    <meta name="env" content="<%= Application.get_env(:mailgun_logger, :deploy_env) %>">
+    <meta name="env" content="<%= Application.get_env(:mailgun_logger, :env) %>">
     <title>Mailgun Logger v<%= Application.spec(:mailgun_logger, :vsn) %></title>
     <link rel="icon" type="image/png" href="<%= Routes.static_path(@conn, "/images/favicon.png") %>" />
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>">

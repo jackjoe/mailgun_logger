@@ -16,11 +16,11 @@
 
     <%= form_for @conn, Routes.auth_path(@conn, :create), [as: :user, novalidate: true], fn f -> %>
       <div class="form-group">
-        <%= label(f, :email, gettext("Email"), class: "form-label") %>
+        <%= label(f, :email, gettext("Email")) %>
         <%= email_input(f, :email, class: "form-control", required: true, autofocus: true) %>
       </div>
       <div class="form-group">
-        <%= label(f, :password, gettext("Password"), class: "form-label") %>
+        <%= label(f, :password, gettext("Password")) %>
         <%= password_input(f, :password, class: "form-control", required: true) %>
       </div>
 

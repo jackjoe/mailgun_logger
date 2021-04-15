@@ -12,7 +12,7 @@ defmodule MailgunLoggerWeb.PasswordResetController do
     case Users.gen_password_reset_token(email) do
       {:ok, user} ->
         user
-        |> MailgunLogger.Emails.reset_password(conn)
+        |> MailgunLogger.Emails.reset_password()
         |> MailgunLogger.Mailer.deliver_it_later()
 
       {_, _} ->

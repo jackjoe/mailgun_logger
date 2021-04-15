@@ -1,22 +1,33 @@
 defmodule MailgunLogger.Emails do
   use Bamboo.Phoenix, view: MailgunLoggerWeb.EmailView
   require Logger
-  import MailgunLoggerWeb.Gettext
+  # import MailgunLoggerWeb.Gettext
 
-  alias MailgunLogger.{User}
+  alias MailgunLogger.User
+  alias MailgunLoggerWeb.Endpoint
+  alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
-  def reset_password(user, conn) do
+  def reset_password(user) do
+    reset_url = Routes.password_reset_url(Endpoint.build_conn(), :reset_new, user.reset_token)
+
     content = """
-    You requested to receive a new password. Click on the following link to do so:
-    :reset_url
+    Reset your password
+    ===================
+
+    Hi!
+
+    You requested a new password. This can be set by visiting the following link:
+    #{reset_url}
+
+    See you soon!
+
+    Mailgun Logger
     """
 
     base_email()
     |> to({User.full_name(user), user.email})
-    |> subject(dgettext("email", "reset_password.subject"))
-    |> assign(:user, user)
-    |> assign(:conn, conn)
-    |> text_body(Gettext.gettext(content, reset_url: "foo"))
+    |> subject("Reset your password")
+    |> text_body(content)
     |> log(:reset_password)
   end
 

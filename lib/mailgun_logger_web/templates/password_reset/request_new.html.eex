@@ -1,0 +1,11 @@
+<div class="mx-auto panel">
+  <%= form_for @conn, Routes.password_reset_path(@conn, :request_create), fn _ -> %>
+    <h2 class="h2"><%= gettext "Password forgot" %></h2>
+    <p class="mb-4"><%= gettext "Enter the email address you registered with and we will send you an email with instructions on how to reset your password" %></p>
+    <div class="form-group">
+      <%= label :email, gettext("Email") %>
+      <%= email_input :password_reset, "email", required: true, class: "form-control" %>
+    </div>
+    <%= submit gettext("Send"), class: "btn btn-primary" %>
+  <% end %>
+</div>
