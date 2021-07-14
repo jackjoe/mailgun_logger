@@ -1,16 +1,26 @@
 <%= render_partial("head.html", assigns) %>
-  <nav id="main-nav">
-    <div><%= link "Mailgun Logger", to: Routes.page_path(@conn, :index) %></div>
-    <ul>
-      <%= if assigns[:current_user] do %>
-        <li><%= link "Dashboard", to: Routes.page_path(@conn, :index) %></li>
-        <li><%= link "Events", to: Routes.event_path(@conn, :index) %></li>
-        <li><%= link "Accounts", to: Routes.account_path(@conn, :index) %></li>
-        <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
-      <% else %>
-        <li style="margin-left: 20px"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
-      <% end %>
-    </ul>
-  </nav>
-  <%= @inner_content %>
+  <header id="app-header">
+
+    
+    <nav id="main-nav">
+      <div id="app-logo">
+        <a href="<%= Routes.page_path(@conn, :index) %>">
+          <img src="<%= Routes.static_path(@conn, "/images/favicon.png") %>" alt="" id="logo" />
+        </a>
+      </div>
+      <ul>
+        <%= if assigns[:current_user] do %>
+          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index) %></li>
+          <li><%= link "Events", to: Routes.event_path(@conn, :index) %></li>
+          <li><%= link "Accounts", to: Routes.account_path(@conn, :index) %></li>
+          <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
+        <% else %>
+          <li style="margin-left: 20px"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
+        <% end %>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <%= @inner_content %>
+  </main>
 <%= render_partial("foot.html", assigns) %>
