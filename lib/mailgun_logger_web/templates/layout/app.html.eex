@@ -1,7 +1,5 @@
 <%= render_partial("head.html", assigns) %>
   <header id="app-header">
-
-    
     <nav id="main-nav">
       <div id="app-logo">
         <a href="<%= Routes.page_path(@conn, :index) %>">
@@ -10,7 +8,7 @@
       </div>
       <ul>
         <%= if assigns[:current_user] do %>
-          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index) %></li>
+          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: "is-active" %></li>
           <li><%= link "Events", to: Routes.event_path(@conn, :index) %></li>
           <li><%= link "Accounts", to: Routes.account_path(@conn, :index) %></li>
           <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>

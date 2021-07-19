@@ -1,6 +1,8 @@
 :root {
   --c-blue-bright: #2649e4;
+  --c-blue-dark: #202631;
   --c-blue-pale: #f1f6fa;
+  --c-blue-light: #cdcfee;
   --c-gray-light: #f3f3f3;
 }
 
@@ -33,8 +35,9 @@ main {
 }
 
 #app-header {
-  padding: 10px;
   background-color: var(--c-blue-bright);
+  padding: 0;
+  margin: 0;
 }
 
 #main-nav {
@@ -45,10 +48,15 @@ main {
   margin: 0 auto;
 }
 
+#main-nav #app-logo a {
+  margin: 0;
+  padding: 0;
+}
+
 #main-nav ul {
-  display: inline;
-  padding-left: 0;
-  margin-left: 0;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
 }
 
 #main-nav li {
@@ -57,12 +65,31 @@ main {
 }
 
 #main-nav a {
-  color: white;
+  padding: 14px 8px;
+  color: var(--c-blue-light);
+  display: inline-block;
   text-decoration: none;
+  position: relative;
 }
 
-#main-nav a:visited {
+#main-nav a:hover {
   color: white;
+}
+
+#main-nav a.is-active {
+  background-color: var(--c-blue-dark);
+  color: white;
+}
+
+#main-nav a.is-active:after {
+  /* position: absolute;
+  display: block;
+  content: "";
+  height: 2px;
+  background-color: yellow;
+  width: 100%;
+  bottom: 0;
+  left: 0; */
 }
 
 .modal-open {
