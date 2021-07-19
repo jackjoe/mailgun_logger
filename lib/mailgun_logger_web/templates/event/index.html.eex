@@ -1,13 +1,28 @@
 <h1>Events</h1>
 
-<%= form_for @conn, Routes.event_path(@conn, :index), [method: "get", class: ""], fn f -> %>
-  <%= text_input f, :q, class: "", placeholder: "Search events" %>
+<%= form_for @conn, Routes.event_path(@conn, :index), [method: "get"], fn f -> %>
+  <%= text_input f, :subject, placeholder: "Subject" %>
+  <%= text_input f, :recipient, placeholder: "Recipient" %>
+  <%= text_input f, :from, placeholder: "From" %>
+
+  <%= checkbox f, :delivered %>
+  <%= label f, :delivered %>
+  <%= error_tag f, :delivered %>
+
+  <%= checkbox f, :accepted %>
+  <%= label f, :accepted %>
+  <%= error_tag f, :accepted %>
+
+  <%= checkbox f, :opened %>
+  <%= label f, :opened %>
+  <%= error_tag f, :opened %>
+
   <%= submit "Search" %>
 <% end %>
 
 <br />
 
-<table cellspacing="0">
+<table cellspacing="0" class="table">
   <thead>
     <tr>
       <th>event</th>

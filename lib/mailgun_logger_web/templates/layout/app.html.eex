@@ -8,9 +8,9 @@
       </div>
       <ul>
         <%= if assigns[:current_user] do %>
-          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: "is-active" %></li>
-          <li><%= link "Events", to: Routes.event_path(@conn, :index) %></li>
-          <li><%= link "Accounts", to: Routes.account_path(@conn, :index) %></li>
+          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
+          <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController, :index) %></li>
+          <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
           <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
         <% else %>
           <li style="margin-left: 20px"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>

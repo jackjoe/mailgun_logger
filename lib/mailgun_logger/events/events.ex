@@ -19,33 +19,55 @@ defmodule MailgunLogger.Events do
     |> Pager.paginate(Event, params)
   end
 
-  def search_events(q) do
+  def search_events(params) do
+    params = parse_search_params(params)
+
     Event
     |> select([n], n)
     |> join(:inner, [n], a in assoc(n, :account))
-    |> build_search_query(q)
+    |> build_search_query(params)
     |> order_by([n], desc: n.id)
     |> preload([_, a], account: a)
     |> limit(200)
     |> Repo.all()
   end
 
-  defp build_search_query(queryable, ""), do: queryable
-  defp build_search_query(queryable, nil), do: queryable
+  defp build_search_query(queryable, params) do
+    queryable
+    |> search(:subject, params.subject)
+    |> search(:recipient, params.recipient)
+    |> search(:from, params.from)
+    |> filter(:event, params.event)
+  end
 
-  defp build_search_query(queryable, q) do
-    q = "%#{q}%"
+  defp search(q, _, ""), do: q
+  defp search(q, _, nil), do: q
+  defp search(q, :subject, s), do: where(q, [n], like(n.message_subject, ^"%#{s}%"))
+  defp search(q, :from, f), do: where(q, [n], like(n.message_from, ^"%#{f}%"))
+  defp search(q, :recipient, r), do: where(q, [n], like(n.recipient, ^"%#{r}%"))
 
-    search = false
+  defp filter(q, :event, []), do: q
+  defp filter(q, :event, types), do: where(q, [n], n.event in ^types)
 
-    search = dynamic([n], ^search or like(n.event, ^q))
-    search = dynamic([n], ^search or like(n.recipient, ^q))
-    search = dynamic([n], ^search or like(n.message_id, ^q))
-    search = dynamic([n], ^search or like(n.message_subject, ^q))
-    search = dynamic([n], ^search or like(n.message_from, ^q))
-    search = dynamic([n], ^search or like(n.message_to, ^q))
+  defp parse_search_params(params) do
+    subject = Map.get(params, "subject", nil)
+    recipient = Map.get(params, "recipient", nil)
+    from = Map.get(params, "from", nil)
 
-    where(queryable, ^search)
+    accepted = checkbox_string_prop(params, "accepted")
+    delivered = checkbox_string_prop(params, "delivered")
+    opened = checkbox_string_prop(params, "opened")
+    event = [accepted, delivered, opened] |> Enum.reject(&is_nil(&1))
+
+    %{subject: subject, event: event, recipient: recipient, from: from}
+  end
+
+  defp checkbox_string_prop(params, prop) do
+    if Map.get(params, prop, nil) == "true" do
+      prop
+    else
+      nil
+    end
   end
 
   @spec get_event(number) :: Event.t()

@@ -3,8 +3,8 @@ defmodule MailgunLoggerWeb.EventController do
 
   alias MailgunLogger.Events
 
-  def index(conn, %{"q" => q} = _params) do
-    events = Events.search_events(q)
+  def index(conn, params) do
+    events = Events.search_events(params)
 
     render(conn, :index,
       page: %Pager.Page{

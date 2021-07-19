@@ -1,6 +1,6 @@
 <h1>Accounts</h1>
 
-<table cellspacing="0">
+<table cellspacing="0" class="table">
   <thead>
     <tr>
       <th>Domain</th>

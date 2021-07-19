@@ -42,6 +42,7 @@ defmodule MailgunLoggerWeb do
       import MailgunLoggerWeb.ErrorHelpers
       import MailgunLoggerWeb.Gettext
       import MailgunLoggerWeb.PagingHelpers
+      import MailgunLoggerWeb.ViewHelpers
       alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
       def render_partial(template, assigns \\ []) do

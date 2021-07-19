@@ -28,8 +28,6 @@ body {
 main {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
-  background: white;
   border-radius: 8px;
   margin-top: 50px;
 }
@@ -133,26 +131,6 @@ main {
   right: 20px;
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td,
-th {
-  border-bottom: 1px solid #ccc;
-  padding: 8px 3px;
-}
-
-thead th {
-  background: navy;
-  color: #fff;
-  text-align: left;
-}
-
-tbody tr:hover td {
-  background-color: LemonChiffon;
-}
 
 pre,
 code {
@@ -268,4 +246,44 @@ footer {
 .info {
   padding: 10px;
   background: palegreen;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  padding: 4px 5px;
+}
+
+.table {
+  padding: 20px;
+  background: white;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border-bottom: 1px solid #ccc;
+  padding: 8px 3px;
+}
+
+thead th {
+  background: var(--c-blue-dark);
+  color: #fff;
+  text-align: left;
+}
+
+tbody tr:hover td {
+  background-color: #efefef;
+}
+
+.btn {
+  border: 1px solid transparent; 
+}
+
+.btn-primary {
+  background-color: var(--c-blue-bright);
+  border-color: var(--c-blue-bright);
+  color: white;
+  padding: 6px 8px;
 }
