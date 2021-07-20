@@ -1,7 +1,3 @@
-<%= link "< back", to: Routes.event_path(@conn, :index) %>
-<hr>
-<h1>[<%= String.upcase(@event.log_level) %>] Event detail</h1>
-
 <dl>
   <dt>Recipient</dt>
   <dd><%= @event.recipient %></dd>
@@ -10,7 +6,7 @@
   <dt>Account</dt>
   <dd><%= @event.account.domain %></dd>
   <dt>Event</dt>
-  <dd><%= event_type(@event.event) %></dd>
+  <dd><%= event_name(@event.event) %></dd>
   <dt>Method</dt>
   <dd><%= @event.method %></dd>
   <dt>Timestamp</dt>

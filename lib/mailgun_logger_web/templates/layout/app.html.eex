@@ -1,22 +1,30 @@
 <%= render_partial("head.html", assigns) %>
   <header id="app-header">
-    <nav id="main-nav">
-      <div id="app-logo">
-        <a href="<%= Routes.page_path(@conn, :index) %>">
-          <img src="<%= Routes.static_path(@conn, "/images/favicon.png") %>" alt="" id="logo" />
-        </a>
-      </div>
+    <div class="top">
+      <nav id="main-nav">
+        <div id="app-logo">
+          <a href="<%= Routes.page_path(@conn, :index) %>">
+            <img src="<%= Routes.static_path(@conn, "/images/favicon.png") %>" alt="" id="logo" />
+          </a>
+        </div>
+        <ul>
+          <%= if assigns[:current_user] do %>
+            <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
+            <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
+            <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
+            <li style="float: right;"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
+          <% else %>
+            <li style="float: right;"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
+          <% end %>
+        </ul>
+      </nav>
+    </div>
+    <div class="subnav">
       <ul>
-        <%= if assigns[:current_user] do %>
-          <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
-          <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController, :index) %></li>
-          <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
-          <li style="margin-left: 20px"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
-        <% else %>
-          <li style="margin-left: 20px"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
-        <% end %>
+        <li><%= link "Events", to: Routes.event_path(@conn, :index)  %></li>
+        <li>&raquo; Event detail</li>
       </ul>
-    </nav>
+    </div>
   </header>
   <main>
     <%= @inner_content %>

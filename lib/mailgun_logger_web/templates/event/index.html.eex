@@ -23,15 +23,25 @@
 <br />
 
 <table cellspacing="0" class="table">
+  <colgroup>
+    <col width="100" />
+    <col width="90" />
+    <col width="200"/>
+    <col width="200"/>
+    <col/>
+    <col/>
+    <col width="200" />
+    <col/>
+  </colgroup>
   <thead>
     <tr>
       <th>event</th>
       <th>level</th>
-      <th>recipient</th>
-      <th>timestamp</th>
       <th>from</th>
+      <th>recipient</th>
       <th>subject</th>
       <th>account</th>
+      <th>timestamp</th>
       <th></th>
     </tr>
   </thead>
@@ -40,11 +50,11 @@
     <tr>
       <td><%= event_name(event.event) %></td>
       <td width="100"><%= event_type(event.log_level) %></td>
-      <td><%= event.recipient %></td>
-      <td><%= event.timestamp %></td>
-      <td><%= event.message_from %></td>
-      <td title="<%= event.message_subject %>"><%= subject(event) %></td>
+      <td><div class="td-truncate"><%= event.message_from %></div></td>
+      <td><div class="td-truncate" title="<%= event.recipient %>"><%= event.recipient %></div></td>
+      <td title="<%= event.message_subject %>"><%= event.message_subject %></td>
       <td><%= event.account.domain %></td>
+      <td><%= event.timestamp %></td>
       <td>
         <%= link "detail", to: Routes.event_path(@conn, :show, event) %>
       </td>

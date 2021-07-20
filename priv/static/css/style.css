@@ -20,27 +20,28 @@ body {
 body {
   height: 100vh;
   background: var(--c-gray-light);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif; 
 }
 
 main {
   max-width: 1400px;
   margin: 0 auto;
   border-radius: 8px;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 #app-header {
-  background-color: var(--c-blue-bright);
   padding: 0;
   margin: 0;
 }
 
+#app-header .top {
+  background-color: var(--c-blue-bright);
+}
+
 #main-nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
@@ -52,7 +53,8 @@ main {
 }
 
 #main-nav ul {
-  display: inline-block;
+  display: block;
+  width: 100%;
   padding: 0;
   margin: 0;
 }
@@ -79,15 +81,35 @@ main {
   color: white;
 }
 
-#main-nav a.is-active:after {
-  /* position: absolute;
-  display: block;
-  content: "";
-  height: 2px;
-  background-color: yellow;
-  width: 100%;
-  bottom: 0;
-  left: 0; */
+.subnav {
+  background-color: var(--c-blue-dark);
+}
+
+.subnav ul {
+  margin: 0 auto;
+  max-width: 1400px;
+  list-style: none;
+  color: var(--c-blue-light);
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.subnav a {
+  padding: 10px 8px;
+  color: var(--c-blue-light);
+  display: inline-block;
+  text-decoration: underline;
+  position: relative;
+}
+
+.subnav a:hover {
+  color: white;
+}
+
+.subnav a.is-active {
+  background-color: var(--c-blue-dark);
+  color: white;
 }
 
 .modal-open {
@@ -286,4 +308,11 @@ tbody tr:hover td {
   border-color: var(--c-blue-bright);
   color: white;
   padding: 6px 8px;
+}
+
+.td-truncate {
+  width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
