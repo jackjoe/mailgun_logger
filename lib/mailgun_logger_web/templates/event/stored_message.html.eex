@@ -1,1 +1,1 @@
-<%= raw(@event.stored_message["body-html"]) %>
+<%= raw(@html) %>

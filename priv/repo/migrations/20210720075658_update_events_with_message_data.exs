@@ -3,7 +3,7 @@ defmodule MailgunLogger.Repo.Migrations.UpdateEventsWithMessageData do
 
   def change do
     alter table(:events) do
-      add(:stored_message, :map, default: %{})
+      add(:stored_message, :map)
     end
   end
 end
