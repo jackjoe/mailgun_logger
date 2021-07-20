@@ -1,5 +1,4 @@
 defmodule MailgunLoggerWeb.Plugs.SetupCheck do
-  import Plug.Conn
   import Phoenix.Controller
 
   alias MailgunLoggerWeb.Router.Helpers, as: Routes
