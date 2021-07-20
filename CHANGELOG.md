@@ -1,6 +1,14 @@
 ## Unreleased
 
 - TBD
+## 0.3.0 (2021-07-20)
+
+- Tweak styling
+- Store actual sent messages and provide preview in the UI
+
+## 0.2.0 (2021-05-15)
+
+- Password reset flow
 
 ## 0.1.2 (2021-04-14)
 

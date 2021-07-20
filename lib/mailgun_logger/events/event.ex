@@ -61,6 +61,7 @@ defmodule MailgunLogger.Event do
           message_subject: String.t(),
           message_id: String.t(),
           message_to: String.t(),
+          stored_message: map(),
           delivery_attempt: integer,
           raw: map(),
           linked_events: [Event.t()],
@@ -80,6 +81,7 @@ defmodule MailgunLogger.Event do
     field(:message_subject, :string)
     field(:message_id, :string)
     field(:message_to, :string)
+    field(:stored_message, :map)
     field(:delivery_attempt, :integer)
     field(:raw, :map, default: %{})
 
@@ -90,12 +92,16 @@ defmodule MailgunLogger.Event do
     timestamps()
   end
 
-  def changeset(%Event{} = event, attrs \\ %{}) do
+  def changeset(%__MODULE__{} = event, attrs \\ %{}) do
     event
     |> cast(
       attrs,
       ~w(account_id api_id event log_level method recipient message_from message_subject message_id message_to timestamp delivery_attempt raw)a
     )
     |> unique_constraint(:api_id)
+  end
+
+  def changeset_stored_message(%__MODULE__{} = event, stored_message) do
+    change(event, %{stored_message: stored_message})
   end
 end

@@ -72,12 +72,13 @@ defmodule MailgunLogger.Events do
 
   @spec get_event(number) :: Event.t()
   def get_event(id) do
-    Repo.get(Event, id)
-    |> case do
-      nil -> nil
-      event -> Map.put(event, :linked_events, get_linked_events(event))
-    end
+    Event
+    |> Repo.get(id)
+    |> put_linked_events()
   end
+
+  defp put_linked_events(nil), do: nil
+  defp put_linked_events(event), do: Map.put(event, :linked_events, get_linked_events(event))
 
   @spec get_linked_events(Event.t()) :: [Event.t()]
   def get_linked_events(event) do
@@ -138,5 +139,12 @@ defmodule MailgunLogger.Events do
 
   def get_total_events() do
     Repo.aggregate(from(p in Event), :count, :id)
+  end
+
+  @spec save_stored_message(Event.t(), map()) :: Event.t()
+  def save_stored_message(event, stored_message) do
+    event
+    |> Event.changeset_stored_message(stored_message)
+    |> Repo.update()
   end
 end

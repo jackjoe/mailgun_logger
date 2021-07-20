@@ -13,6 +13,10 @@
   <dd><%= @event.timestamp %></dd>
   <dt>From</dt>
   <dd><%= @event.message_from %></dd>
+  <%= if @event.event in ["delivered", "accepted"] do %>
+  <dt>Actual sent email</dt>
+  <dd><a href="<%= Routes.event_path(@conn, :stored_message, @event) %>" target="blank">view 🔗</a></dd>
+  <% end %>
   <dt>Linked events</dt>
   <dd>
   <ul>

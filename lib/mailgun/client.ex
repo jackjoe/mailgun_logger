@@ -33,14 +33,16 @@ defmodule Mailgun.Client do
     # Logger.info "Mailgun client :: get_page :: #{url}"
     Logger.debug(Atom.to_string(:get) <> " - " <> url)
 
-    HTTPoison.request!(:get, url, "", [], request_opts(client))
+    :get
+    |> HTTPoison.request!(url, "", [], request_opts(client))
     |> handle_response(client, acc)
   end
 
   defp _request(method, client, url, body \\ "") do
     Logger.debug(Atom.to_string(method) <> " - " <> url)
 
-    HTTPoison.request!(method, url, body, [], request_opts(client))
+    method
+    |> HTTPoison.request!(url, body, [], request_opts(client))
     |> handle_response(client)
   end
 
@@ -83,7 +85,8 @@ defmodule Mailgun.Client do
   end
 
   def handle_response({:ok, %{"paging" => %{"next" => next}, "items" => items}}, client, acc) do
-    get_page(client, next)
+    client
+    |> get_page(next)
     |> handle_response(client, items ++ acc)
   end
 
@@ -102,7 +105,9 @@ defmodule Mailgun.Client do
   end
 
   def handle_paging(%{"items" => items}, _client, acc), do: acc ++ items
+  def handle_paging(r, _, _), do: r
 
+  def url(_, "http" <> _ = url), do: url
   def url(%Client{is_eu: true} = client, path), do: _url(@base_eu_url, client, path)
   def url(%Client{is_eu: false} = client, path), do: _url(@base_url, client, path)
 

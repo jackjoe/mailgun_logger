@@ -3,6 +3,7 @@ defmodule MailgunLogger do
 
   alias MailgunLogger.Account
   alias MailgunLogger.Accounts
+  alias Mailgun.Events
 
   @ttl 180_000
 
@@ -41,9 +42,12 @@ defmodule MailgunLogger do
   """
   @spec process_account(Account.t()) :: {:ok, [Event.t()]} | {:error, Ecto.Changeset.t()}
   def process_account(%Account{} = account) do
-    Mailgun.Client.new(account)
+    client = Mailgun.Client.new(account)
+
+    client
     |> Mailgun.Events.get_events(gen_range())
     |> MailgunLogger.Events.save_events(account)
+    |> get_stored_messages(client)
   end
 
   @doc """
@@ -57,4 +61,7 @@ defmodule MailgunLogger do
   end
 
   defp seconds_in_day(), do: 60 * 60 * 24
+
+  defp get_stored_messages({:ok, events}, client), do: Events.get_stored_messages(client, events)
+  defp get_stored_messages(x, _), do: x
 end

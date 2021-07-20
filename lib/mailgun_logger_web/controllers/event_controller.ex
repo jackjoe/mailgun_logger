@@ -19,4 +19,12 @@ defmodule MailgunLoggerWeb.EventController do
     event = Events.get_event(event_id) |> Events.preload(:account)
     render(conn, :show, event: event)
   end
+
+  def stored_message(conn, %{"id" => event_id}) do
+    event = Events.get_event(event_id)
+
+    conn
+    |> put_layout(false)
+    |> render(:stored_message, event: event)
+  end
 end
