@@ -1,22 +1,23 @@
-<%= form_for @changeset, Routes.setup_path(@conn, :create_root), fn f -> %>
-  <h1><%= gettext("Welcome newbie!") %></h1>
-  <hr />
-  <p>Looks like this is the first time you are accessing Mailgun Logger.</p>
-  <p>Create the admin account below:</p>
+<main>
+  <%= form_for @changeset, Routes.setup_path(@conn, :create_root), fn f -> %>
+    <h1><%= gettext("Welcome newbie!") %></h1>
+    <p>Looks like this is the first time you are accessing Mailgun Logger.</p>
+    <p>Create the admin account below:</p>
 
-  <div class="form-group">
-    <%= label f, :email, class: "control-label" %>
-    <%= text_input f, :email, class: "form-control" %>
-    <%= error_tag f, :email %>
-  </div>
+    <div class="form-group">
+      <%= label f, :email, class: "control-label" %>
+      <%= text_input f, :email, class: "form-control" %>
+      <%= error_tag f, :email %>
+    </div>
 
-  <div class="form-group">
-    <%= label f, :password, class: "control-label" %>
-    <%= password_input f, :password, class: "form-control" %>
-    <%= error_tag f, :password %>
-  </div>
+    <div class="form-group">
+      <%= label f, :password, class: "control-label" %>
+      <%= password_input f, :password, class: "form-control" %>
+      <%= error_tag f, :password %>
+    </div>
 
-  <div class="form-group mt-5">
-    <%= submit "submit" %>
-  </div>
-<% end %>
+    <div class="form-group mt-5">
+      <%= submit "submit" %>
+    </div>
+  <% end %>
+</main>
