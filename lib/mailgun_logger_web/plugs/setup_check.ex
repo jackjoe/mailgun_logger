@@ -1,6 +1,5 @@
 defmodule MailgunLoggerWeb.Plugs.SetupCheck do
   import Phoenix.Controller
-  import Plug.Conn
 
   alias MailgunLoggerWeb.Router.Helpers, as: Routes
   alias MailgunLogger.Users
