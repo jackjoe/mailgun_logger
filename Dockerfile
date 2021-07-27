@@ -38,7 +38,7 @@ EXPOSE $PORT
 COPY --from=builder $HOME/_build/$MIX_ENV/rel/production $HOME
 COPY --from=builder $HOME/script/wait-for $HOME
 
-ADD rel/start.sh .
+COPY rel/start.sh .
 RUN chmod +x $HOME/start.sh
 RUN chmod +x $HOME/wait-for
 
