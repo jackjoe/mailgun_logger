@@ -1,6 +1,7 @@
 ## Unreleased
 
-- TBD
+- Improve detail page styling
+
 ## 0.3.0 (2021-07-20)
 
 - Tweak styling
@@ -25,7 +26,7 @@
 
 We had to alter the unique index (stupid mistake... more tests, anyone ;) ?). We do have a migration but it could be possible you have to alter that index yourself. It should be fairly easy, just add a unique constraint on the `accounts` table for columsn `api_key` and `domain`.
 
-- fixed unique constraint for API key and domain on accounts. ([#7] [i7])
+- fixed unique constraint for API key and domain on accounts. ([#7][i7])
 
 ## 0.0.5 (2020-10-14)
 

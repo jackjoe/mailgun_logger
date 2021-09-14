@@ -12,9 +12,15 @@ defmodule MailgunLoggerWeb.EventView do
     end
   end
 
-  def event_name(event_name) when event_name in ~w(delivered) do
+  def event_name("delivered") do
     ~E"""
-    <span style="background-color: lime; padding: 3px 5px; color: green;"><%= event_name %></span>
+    <span style="background-color: lime; padding: 3px 5px; color: green;">delivered</span>
+    """
+  end
+
+  def event_name("failed") do
+    ~E"""
+    <span style="background-color: red; padding: 3px 5px; color: white;">failed</span>
     """
   end
 
