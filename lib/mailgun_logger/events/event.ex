@@ -61,7 +61,7 @@ defmodule MailgunLogger.Event do
           message_subject: String.t(),
           message_id: String.t(),
           message_to: String.t(),
-          stored_message: map(),
+          stored_message: map() | nil,
           delivery_attempt: integer,
           raw: map(),
           linked_events: [Event.t()],

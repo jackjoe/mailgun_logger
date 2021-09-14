@@ -4,19 +4,14 @@ defmodule MailgunLoggerWeb.EventController do
   alias MailgunLogger.Events
 
   def index(conn, params) do
-    events = Events.search_events(params)
+    IO.inspect(params, label: "INDEX")
+    page = Events.search_events(params)
 
-    render(conn, :index,
-      page: %Pager.Page{
-        entries: events,
-        next: nil,
-        previous: nil
-      }
-    )
+    render(conn, :index, page: page)
   end
 
   def show(conn, %{"id" => event_id}) do
-    event = Events.get_event(event_id) |> Events.preload(:account)
+    event = event_id |> Events.get_event() |> Events.preload(:account)
     render(conn, :show, event: event)
   end
 

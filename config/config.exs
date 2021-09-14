@@ -23,6 +23,11 @@ config :mailgun_logger,
 config :phoenix, :format_encoders, json: Jason
 config :phoenix, :json_library, Jason
 
+config :scrivener_html,
+  routes_helper: MailgunLoggerWeb.Router.Helpers,
+  # If you use a single view style everywhere, you can configure it here. See View Styles below for more info.
+  view_style: :bootstrap
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

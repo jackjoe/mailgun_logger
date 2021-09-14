@@ -3,13 +3,16 @@ defmodule MailgunLogger.Events do
 
   import Ecto.Query, warn: false
 
-  alias MailgunLogger.Event
   alias MailgunLogger.Account
+  alias MailgunLogger.Event
   alias MailgunLogger.Repo
+  alias MailgunLoggerWeb.PagingHelpers
 
   @spec list_events_paged(map()) :: any
   def list_events_paged(params) do
-    params = MailgunLoggerWeb.PagingHelpers.format_pager_params(params)
+    params = PagingHelpers.scrivener_format_params(params)
+
+    IO.inspect(params, label: "index params")
 
     Event
     |> select([n], n)
@@ -20,7 +23,13 @@ defmodule MailgunLogger.Events do
   end
 
   def search_events(params) do
-    params = parse_search_params(params)
+    params =
+      params
+      |> parse_search_params()
+      |> Map.put("page_size", 25)
+      |> PagingHelpers.scrivener_format_params()
+
+    IO.inspect(params, label: "search params")
 
     Event
     |> select([n], n)
@@ -28,16 +37,15 @@ defmodule MailgunLogger.Events do
     |> build_search_query(params)
     |> order_by([n], desc: n.id)
     |> preload([_, a], account: a)
-    |> limit(200)
-    |> Repo.all()
+    |> Repo.paginate(params)
   end
 
   defp build_search_query(queryable, params) do
     queryable
-    |> search(:subject, params.subject)
-    |> search(:recipient, params.recipient)
-    |> search(:from, params.from)
-    |> filter(:event, params.event)
+    |> search(:subject, params["subject"])
+    |> search(:recipient, params["recipient"])
+    |> search(:from, params["from"])
+    |> filter(:event, params["event"])
   end
 
   defp search(q, _, ""), do: q
@@ -59,7 +67,12 @@ defmodule MailgunLogger.Events do
     opened = checkbox_string_prop(params, "opened")
     event = [accepted, delivered, opened] |> Enum.reject(&is_nil(&1))
 
-    %{subject: subject, event: event, recipient: recipient, from: from}
+    Map.merge(params, %{
+      "subject" => subject,
+      "event" => event,
+      "recipient" => recipient,
+      "from" => from
+    })
   end
 
   defp checkbox_string_prop(params, prop) do

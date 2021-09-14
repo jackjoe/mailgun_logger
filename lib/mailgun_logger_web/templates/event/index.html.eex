@@ -64,9 +64,6 @@
   </tbody>
 </table>
 
-<%= if !is_nil(@page.previous) && @page.previous != 0 do %>
-  <%= link "prev", to: Routes.event_path(@conn, :index, page: @page.previous) %>&nbsp;
-<% end %>
-<%= if !is_nil(@page.next) && @page.next != 0 do %>
-  <%= link "next", to: Routes.event_path(@conn, :index, page: @page.next) %>
-<% end %>
+<div class="flex justify-center my-4">
+  <%= MailgunLoggerWeb.PagingHelpers.paging_links(@conn, @page) %>
+</div>
