@@ -4,9 +4,8 @@ defmodule MailgunLoggerWeb.EventController do
   alias MailgunLogger.Events
 
   def index(conn, params) do
-    IO.inspect(params, label: "INDEX")
+    # IO.inspect(params, label: "INDEX")
     page = Events.search_events(params)
-
     render(conn, :index, page: page)
   end
 

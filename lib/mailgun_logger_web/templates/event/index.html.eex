@@ -53,7 +53,7 @@
       <td><div class="td-truncate"><%= event.message_from %></div></td>
       <td><div class="td-truncate" title="<%= event.recipient %>"><%= event.recipient %></div></td>
       <td title="<%= event.message_subject %>"><%= event.message_subject %></td>
-      <td><%= event.account.domain %></td>
+      <td><%= event.account_domain %></td>
       <td><%= event.timestamp %></td>
       <td>
         <a href="<%= Routes.event_path(@conn, :stored_message, event) %>" target="blank" style="margin-right: 10px;">view email</a>

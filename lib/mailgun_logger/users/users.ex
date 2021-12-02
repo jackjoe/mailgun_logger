@@ -78,11 +78,11 @@ defmodule MailgunLogger.Users do
         {:error, :unknown_user}
 
       user ->
-        IO.puts("PRE ARGON")
-        IO.inspect(user)
-        IO.inspect(password)
+        # IO.puts("PRE ARGON")
+        # IO.inspect(user)
+        # IO.inspect(password)
         r = Argon2.check_pass(user, password)
-        IO.puts("POST ARGON")
+        # IO.puts("POST ARGON")
 
         r
     end

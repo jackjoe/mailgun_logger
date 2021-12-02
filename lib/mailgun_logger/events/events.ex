@@ -16,9 +16,10 @@ defmodule MailgunLogger.Events do
 
     Event
     |> select([n], n)
+    |> select_merge([_, a], %{account_domain: a.domain})
     |> join(:inner, [n], a in assoc(n, :account))
     |> order_by([n], desc: n.id)
-    |> preload([_, a], account: a)
+    # |> preload([_, a], account: a)
     |> Pager.paginate(Event, params)
   end
 
@@ -33,10 +34,11 @@ defmodule MailgunLogger.Events do
 
     Event
     |> select([n], n)
+    |> select_merge([_, a], %{account_domain: a.domain})
     |> join(:inner, [n], a in assoc(n, :account))
     |> build_search_query(params)
     |> order_by([n], desc: n.id)
-    |> preload([_, a], account: a)
+    # |> preload([_, a], account: a)
     |> Repo.paginate(params)
   end
 

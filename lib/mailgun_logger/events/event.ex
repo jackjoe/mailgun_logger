@@ -86,6 +86,7 @@ defmodule MailgunLogger.Event do
     field(:raw, :map, default: %{})
 
     field(:linked_events, {:array, :map}, virtual: true)
+    field(:account_domain, :string, virtual: true)
 
     belongs_to(:account, Account)
 
