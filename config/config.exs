@@ -48,6 +48,11 @@ config :mailgun_logger, MailgunLogger.Repo,
   password: System.get_env("ML_DB_PASSWORD"),
   database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
   hostname: System.get_env("ML_DB_HOST") || "localhost",
-  pool_size: 10
+  pool_size: 10,
+  timeout: 30_000,
+  # default 50ms
+  queue_target: 100,
+  # default 1000ms
+  queue_interval: 2_000
 
 import_config "#{Mix.env()}.exs"

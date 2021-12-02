@@ -27,10 +27,6 @@ defmodule MailgunLogger do
       |> Enum.map(&Task.async(fn -> process_account(&1) end))
       |> Enum.map(&Task.await(&1, @ttl))
       |> List.flatten()
-
-    Slacker.new()
-    |> Slacker.message("MailgunLogger logged events for #{length(events)} accounts")
-    |> Slacker.send_async()
   end
 
   @doc """

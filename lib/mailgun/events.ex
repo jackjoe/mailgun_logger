@@ -15,9 +15,8 @@ defmodule Mailgun.Events do
   Get events.
   [api docs](https://documentation.mailgun.com/en/latest/api-events.html#events)
   """
-  def get_events(%Client{} = client, opts \\ %{}) do
-    Client.get(client, "/DOMAIN/events?" <> URI.encode_query(opts))
-  end
+  def get_events(%Client{} = client, opts \\ %{}),
+    do: Client.get(client, "/DOMAIN/events?" <> URI.encode_query(opts))
 
   @doc "Retrieve the actual sent messages"
   def get_stored_messages(%Client{} = client, events) do

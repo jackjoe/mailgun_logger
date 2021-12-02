@@ -9,9 +9,6 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   root: ".",
   version: Application.spec(:mailgun_logger, :vsn)
 
-config :mailgun_logger,
-  slack_hook: System.get_env("SLACK_HOOK")
-
 config :phoenix, :serve_endpoints, true
 
 config :logger, level: String.to_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info

@@ -76,11 +76,9 @@ defmodule MailgunLogger.Events do
   end
 
   defp checkbox_string_prop(params, prop) do
-    if Map.get(params, prop, nil) == "true" do
-      prop
-    else
-      nil
-    end
+    if Map.get(params, prop, nil) == "true",
+      do: prop,
+      else: nil
   end
 
   @spec get_event(number) :: Event.t()
@@ -150,9 +148,7 @@ defmodule MailgunLogger.Events do
     |> DateTime.from_unix!()
   end
 
-  def get_total_events() do
-    Repo.aggregate(from(p in Event), :count, :id)
-  end
+  def get_total_events(), do: Repo.aggregate(from(p in Event), :count, :id)
 
   @spec save_stored_message(Event.t(), map()) :: Event.t()
   def save_stored_message(event, stored_message) do
