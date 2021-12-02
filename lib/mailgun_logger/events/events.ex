@@ -12,7 +12,7 @@ defmodule MailgunLogger.Events do
   def list_events_paged(params) do
     params = PagingHelpers.scrivener_format_params(params)
 
-    IO.inspect(params, label: "index params")
+    # IO.inspect(params, label: "index params")
 
     Event
     |> select([n], n)
@@ -26,10 +26,10 @@ defmodule MailgunLogger.Events do
     params =
       params
       |> parse_search_params()
-      |> Map.put("page_size", 25)
+      |> Map.put("page_size", 50)
       |> PagingHelpers.scrivener_format_params()
 
-    IO.inspect(params, label: "search params")
+    # IO.inspect(params, label: "search params")
 
     Event
     |> select([n], n)
@@ -48,8 +48,7 @@ defmodule MailgunLogger.Events do
     |> filter(:event, params["event"])
   end
 
-  defp search(q, _, ""), do: q
-  defp search(q, _, nil), do: q
+  defp search(q, _, s) when s in ["", nil], do: q
   defp search(q, :subject, s), do: where(q, [n], like(n.message_subject, ^"%#{s}%"))
   defp search(q, :from, f), do: where(q, [n], like(n.message_from, ^"%#{f}%"))
   defp search(q, :recipient, r), do: where(q, [n], like(n.recipient, ^"%#{r}%"))

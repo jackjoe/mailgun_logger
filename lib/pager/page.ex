@@ -28,9 +28,7 @@ defmodule Pager.Page do
 
     @spec reduce(Pager.Page.t(), Enumerable.acc(), Enumerable.reducer()) ::
             Enumerable.result()
-    def reduce(%Pager.Page{entries: entries}, acc, fun) do
-      Enumerable.reduce(entries, acc, fun)
-    end
+    def reduce(%Pager.Page{entries: entries}, acc, fun), do: Enumerable.reduce(entries, acc, fun)
 
     @spec slice(Pager.Page.t()) :: {:error, Enumerable.Pager.Page}
     def slice(_page), do: {:error, __MODULE__}
