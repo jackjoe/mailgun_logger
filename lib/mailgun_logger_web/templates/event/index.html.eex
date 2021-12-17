@@ -56,8 +56,8 @@
       <td><%= event.account_domain %></td>
       <td><%= event.timestamp %></td>
       <td>
-        <a href="<%= Routes.event_path(@conn, :stored_message, event) %>" target="blank" style="margin-right: 10px;">view email</a>
-        <%= link "detail", to: Routes.event_path(@conn, :show, event) %>
+        <a href="<%= Routes.event_path(@conn, :stored_message, event.id) %>" target="blank" style="margin-right: 10px;">view email</a>
+        <%= link "detail", to: Routes.event_path(@conn, :show, event.id) %>
       </td>
     </tr>
     <% end %>

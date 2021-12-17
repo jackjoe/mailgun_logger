@@ -1,6 +1,7 @@
-## Unreleased
+## 2021.9.3
 
 - Improve detail page styling
+- Optimize events query
 
 ## 0.3.0 (2021-07-20)
 
