@@ -66,7 +66,8 @@ defmodule MailgunLogger.Events do
     accepted = checkbox_string_prop(params, "accepted")
     delivered = checkbox_string_prop(params, "delivered")
     opened = checkbox_string_prop(params, "opened")
-    event = [accepted, delivered, opened] |> Enum.reject(&is_nil(&1))
+    failed = checkbox_string_prop(params, "failed")
+    event = [accepted, delivered, opened, failed] |> Enum.reject(&is_nil(&1))
 
     Map.merge(params, %{
       "subject" => subject,

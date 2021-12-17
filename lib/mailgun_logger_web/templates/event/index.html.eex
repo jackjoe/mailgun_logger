@@ -17,6 +17,10 @@
   <%= label f, :opened %>
   <%= error_tag f, :opened %>
 
+  <%= checkbox f, :failed %>
+  <%= label f, :failed %>
+  <%= error_tag f, :failed %>
+
   <%= submit "Search" %>
 <% end %>
 
