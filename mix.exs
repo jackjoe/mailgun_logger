@@ -4,8 +4,8 @@ defmodule MailgunLogger.Mixfile do
   def project do
     [
       app: :mailgun_logger,
-      version: "2021.9.3",
-      elixir: "~> 1.14",
+      version: "2021.9.4",
+      elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       aliases: aliases(),
