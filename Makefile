@@ -9,8 +9,6 @@ APP_NAME 								?=`grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app
 APP_VSN 								?=`grep 'version:' mix.exs | cut -d '"' -f2`
 BUILD 									?=`git rev-parse --short HEAD`
 DOCKER_IMAGE           	="jackjoe/mailgun_logger"
-IP                      =178.62.185.177
-APP_DIR 								=/app/mailgun-logger.jackjoe.be
 
 .SILENT: ;               		# no need for @
 .ONESHELL: ;             		# recipes execute in same shell

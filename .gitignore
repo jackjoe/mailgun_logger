@@ -32,3 +32,4 @@ Dockerfile-jackjoe
 .env
 .env.*
 docker-compose.yml
+node_modules

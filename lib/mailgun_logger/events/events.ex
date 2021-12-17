@@ -8,19 +8,20 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Repo
   alias MailgunLoggerWeb.PagingHelpers
 
-  @spec list_events_paged(map()) :: any
-  def list_events_paged(params) do
-    params = PagingHelpers.scrivener_format_params(params)
-
-    # IO.inspect(params, label: "index params")
-
+  defp list_events_query() do
     Event
-    |> select([n], n)
-    |> select_merge([_, a], %{account_domain: a.domain})
+    |> select([n, a], %{
+      id: n.id,
+      event: n.event,
+      log_level: n.log_level,
+      message_from: n.message_from,
+      message_subject: n.message_subject,
+      recipient: n.recipient,
+      timestamp: n.timestamp,
+      account_domain: a.domain
+    })
     |> join(:inner, [n], a in assoc(n, :account))
-    |> order_by([n], desc: n.id)
-    # |> preload([_, a], account: a)
-    |> Pager.paginate(Event, params)
+    |> order_by([n], desc: n.timestamp)
   end
 
   def search_events(params) do
@@ -32,13 +33,8 @@ defmodule MailgunLogger.Events do
 
     # IO.inspect(params, label: "search params")
 
-    Event
-    |> select([n], n)
-    |> select_merge([_, a], %{account_domain: a.domain})
-    |> join(:inner, [n], a in assoc(n, :account))
+    list_events_query()
     |> build_search_query(params)
-    |> order_by([n], desc: n.id)
-    # |> preload([_, a], account: a)
     |> Repo.paginate(params)
   end
 

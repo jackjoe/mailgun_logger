@@ -3,7 +3,7 @@
 #
 # This configuration file is loaded before any dependency and
 # is restricted to this project.
-use Mix.Config
+import Config
 
 config :mailgun_logger,
   ecto_repos: [MailgunLogger.Repo],
@@ -14,8 +14,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: System.get_env("HOST")],
   secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
-  pubsub_server: MailgunLogger.PubSub,
-  instrumenters: []
+  pubsub_server: MailgunLogger.PubSub
 
 config :mailgun_logger,
   ml_pagesize: System.get_env("ML_PAGESIZE") || "100"

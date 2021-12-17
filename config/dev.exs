@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   debug_errors: true,
