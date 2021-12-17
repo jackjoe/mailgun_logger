@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   http: [port: System.fetch_env!("PORT"), compress: true],

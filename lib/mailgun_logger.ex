@@ -22,11 +22,10 @@ defmodule MailgunLogger do
   - for each account, get and store the events.
   """
   def run() do
-    events =
-      Accounts.list_active_accounts()
-      |> Enum.map(&Task.async(fn -> process_account(&1) end))
-      |> Enum.map(&Task.await(&1, @ttl))
-      |> List.flatten()
+    Accounts.list_active_accounts()
+    |> Enum.map(&Task.async(fn -> process_account(&1) end))
+    |> Enum.map(&Task.await(&1, @ttl))
+    |> List.flatten()
   end
 
   @doc """
