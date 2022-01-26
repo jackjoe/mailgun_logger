@@ -1,5 +1,9 @@
 # Mailgun Logger
 
+<div align="center" width="100%">
+  <img src="./public/logo.svg" width="128" alt="" />
+</div>
+
 [![Build Status](https://travis-ci.com/jackjoe/mailgun_logger.svg?branch=master)](https://travis-ci.com/jackjoe/mailgun_logger)
 
 Simple Mailgun persistence in Phoenix/Elixir.

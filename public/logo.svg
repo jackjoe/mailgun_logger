@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="25px" viewBox="0 0 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>c1b0e29f-6de0-4cc6-836d-a75906383e08</title>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="100%" y2="0%" id="linearGradient-1">
+            <stop stop-color="#177775" offset="0%"></stop>
+            <stop stop-color="#28D2BF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="default" fill="url(#linearGradient-1)" fill-rule="nonzero">
+            <g id="c1b0e29f-6de0-4cc6-836d-a75906383e08">
+                <path d="M25,0 L0,0 L0,25 L25,25 L25,0 Z M18.2210938,16.2515625 L16.2523438,18.2203125 L12.5,21.9726562 L10.53125,20.0039062 L14.2828125,16.2523438 L12.5,14.46875 L8.7484375,18.2203125 L6.7796875,16.2515625 L10.53125,12.5 L8.7484375,10.7171875 L4.99609375,14.46875 L3.02734375,12.5 L6.77890625,8.7484375 L8.74765625,6.7796875 L12.5,3.02734375 L14.46875,4.99609375 L10.7171875,8.74765625 L12.5,10.53125 L16.2515625,6.7796875 L18.2203125,8.7484375 L14.46875,12.5 L16.2515625,14.2828125 L20.003125,10.53125 L21.971875,12.5 L18.2210938,16.2515625 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>
