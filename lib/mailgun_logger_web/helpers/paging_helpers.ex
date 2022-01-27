@@ -63,9 +63,8 @@ defmodule MailgunLoggerWeb.PagingHelpers do
 
     page_size = params["page_size"] || (defaults["page_size"] || 100)
 
-    params =
-      params
-      |> Map.merge(%{"page_size" => page_size, "order" => order})
-      |> Map.merge(defaults)
+    params
+    |> Map.merge(%{"page_size" => page_size, "order" => order})
+    |> Map.merge(defaults)
   end
 end

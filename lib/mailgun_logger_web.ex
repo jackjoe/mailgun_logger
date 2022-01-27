@@ -37,6 +37,7 @@ defmodule MailgunLoggerWeb do
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+      use Phoenix.LiveView
 
       import MailgunLoggerWeb.Router.Helpers
       import MailgunLoggerWeb.ErrorHelpers

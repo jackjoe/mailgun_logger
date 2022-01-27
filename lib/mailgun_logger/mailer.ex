@@ -5,6 +5,6 @@ defmodule MailgunLogger.Mailer do
   def deliver_it_later(nil), do: :noop
 
   def deliver_it_later(%Bamboo.Email{} = email) do
-    deliver_later(email)
+    deliver_later!(email)
   end
 end

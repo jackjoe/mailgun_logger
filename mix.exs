@@ -4,10 +4,10 @@ defmodule MailgunLogger.Mixfile do
   def project do
     [
       app: :mailgun_logger,
-      version: "2021.9.4",
+      version: "2022.1.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:gettext] ++ Mix.compilers(),
       aliases: aliases(),
       deps: deps(),
       start_permanent: Mix.env() == :prod,
@@ -54,8 +54,9 @@ defmodule MailgunLogger.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:argon2_elixir, "~> 2.0"},
-      {:bamboo, "~> 1.5.0"},
+      {:argon2_elixir, "~> 3.0"},
+      {:bamboo, "~> 2.0"},
+      {:bamboo_phoenix, "~> 1.0"},
       {:decimal, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
@@ -64,20 +65,22 @@ defmodule MailgunLogger.Mixfile do
       {:gettext, "~> 0.16"},
       {:hackney, "~> 1.12"},
       {:httpoison, "~> 1.4"},
-      {:jason, "~> 1.2"},
+      {:jason, "~> 1.3"},
       {:scrivener_ecto, "~> 2.0", override: true},
       # WAITING FOR PR {:scrivener_html, "~> 1.8"},
       {:scrivener_html,
        git: "https://github.com/jaimeiniesta/scrivener_html.git", branch: "relax_phoenix_dep"},
-      {:phoenix, "~> 1.5.0"},
+      {:phoenix, "~> 1.6.6"},
       {:phoenix_pubsub, "~> 2.0"},
       {:plug_cowboy, "~> 2.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:phoenix_html, "~> 2.11"},
+      {:phoenix_html, "~> 3.2"},
+      {:phoenix_live_view, "~> 0.17.6"},
+      {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:plug, "~> 1.7"},
       {:myxql, "~> 0.3"},
-      {:quantum, "~> 2.3"},
+      {:quantum, "~> 3.4"},
       {:sweet_xml, "~> 0.6"}
     ]
   end
