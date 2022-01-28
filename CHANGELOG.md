@@ -1,3 +1,7 @@
+## 2022.2.0
+
+- Add account filter to the search
+
 ## 2021.9.3
 
 - Improve detail page styling
