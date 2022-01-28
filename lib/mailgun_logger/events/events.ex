@@ -31,8 +31,6 @@ defmodule MailgunLogger.Events do
       |> Map.put("page_size", 50)
       |> PagingHelpers.scrivener_format_params()
 
-    # IO.inspect(params, label: "search params")
-
     list_events_query()
     |> build_search_query(params)
     |> Repo.paginate(params)
@@ -43,6 +41,7 @@ defmodule MailgunLogger.Events do
     |> search(:subject, params["subject"])
     |> search(:recipient, params["recipient"])
     |> search(:from, params["from"])
+    |> search(:account, params["account"])
     |> filter(:event, params["event"])
   end
 
@@ -50,14 +49,16 @@ defmodule MailgunLogger.Events do
   defp search(q, :subject, s), do: where(q, [n], like(n.message_subject, ^"%#{s}%"))
   defp search(q, :from, f), do: where(q, [n], like(n.message_from, ^"%#{f}%"))
   defp search(q, :recipient, r), do: where(q, [n], like(n.recipient, ^"%#{r}%"))
+  defp search(q, :account, a), do: where(q, [n], n.account_id == ^a)
 
   defp filter(q, :event, []), do: q
   defp filter(q, :event, types), do: where(q, [n], n.event in ^types)
 
   defp parse_search_params(params) do
-    subject = Map.get(params, "subject", nil)
-    recipient = Map.get(params, "recipient", nil)
-    from = Map.get(params, "from", nil)
+    subject = Map.get(params, "subject")
+    recipient = Map.get(params, "recipient")
+    from = Map.get(params, "from")
+    account = Map.get(params, "account")
 
     accepted = checkbox_string_prop(params, "accepted")
     delivered = checkbox_string_prop(params, "delivered")
@@ -69,7 +70,8 @@ defmodule MailgunLogger.Events do
       "subject" => subject,
       "event" => event,
       "recipient" => recipient,
-      "from" => from
+      "from" => from,
+      "account" => account
     })
   end
 

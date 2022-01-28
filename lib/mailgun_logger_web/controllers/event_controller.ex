@@ -2,11 +2,12 @@ defmodule MailgunLoggerWeb.EventController do
   use MailgunLoggerWeb, :controller
 
   alias MailgunLogger.Events
+  alias MailgunLogger.Accounts
 
   def index(conn, params) do
-    # IO.inspect(params, label: "INDEX")
+    accounts = Accounts.list_accounts() |> Enum.map(&{&1.domain, &1.id})
     page = Events.search_events(params)
-    render(conn, :index, page: page)
+    render(conn, :index, page: page, accounts: accounts)
   end
 
   def show(conn, %{"id" => event_id}) do

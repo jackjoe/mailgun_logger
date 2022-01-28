@@ -21,6 +21,8 @@
   <%= label f, :failed %>
   <%= error_tag f, :failed %>
 
+  <%= select(f, :account, @accounts) %>
+
   <%= submit "Search" %>
 <% end %>
 
