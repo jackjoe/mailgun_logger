@@ -74,7 +74,7 @@ defmodule MailgunLoggerWeb.Router do
     get("/logout", AuthController, :logout)
 
     resources("/events", EventController, only: [:index, :show])
-    get("/events/:id/stored_Message", EventController, :stored_message)
+    get("/events/:id/stored_message", EventController, :stored_message)
     resources("/accounts", AccountController, except: [:show])
 
     get("/", PageController, :index)

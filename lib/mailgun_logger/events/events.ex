@@ -18,6 +18,7 @@ defmodule MailgunLogger.Events do
       message_subject: n.message_subject,
       recipient: n.recipient,
       timestamp: n.timestamp,
+      has_stored_message: fragment("IF(? IS NOT NULL, TRUE, FALSE)", n.stored_message),
       account_domain: a.domain
     })
     |> join(:inner, [n], a in assoc(n, :account))
