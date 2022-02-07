@@ -24,7 +24,7 @@ install:
 	./script/setup
 
 run:
-	./script/run
+	. ./.env && ./script/run
 
 test: test_coverage
 
