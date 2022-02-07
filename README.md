@@ -23,6 +23,36 @@ _This is NOT meant as a replacement for the excellent online tooling provided by
 
 _Jack + Joe is not responsible for your use of this tool, neither for any persistence guarantees. Free comes at a price :)_
 
+## Versioning
+
+We use a simplified version numbering in the format of:
+
+```
+YYMM.MAJOR.MINOR
+```
+
+Where minor version bumps are consider to be hotfixes or small patches, major are bigger changes. For example:
+
+```
+2202.3.1 -> 2022, Februari, third major release, hotfix number 1.
+```
+
+Every month the major and minor versions are reset to zero, but start with one:
+
+```
+2202.4.0
+2202.4.1 
+2202.5.0
+2203.1.0
+2203.2.0
+2203.3.0
+2203.3.1
+2203.3.2
+2203.4.0
+2204.1.0
+...
+```
+
 ## Installation
 
 MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/r/jackjoe/mailgun_logger).
