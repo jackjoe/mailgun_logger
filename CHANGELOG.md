@@ -1,3 +1,8 @@
+## 2202.3.0
+
+- Fix version numbering
+- Fix old layout code in the setup template
+
 ## 2022.2.0
 
 - Add account filter to the search
