@@ -61,8 +61,8 @@
       <td title="<%= event.message_subject %>"><%= event.message_subject %></td>
       <td><%= event.account_domain %></td>
       <td><%= event.timestamp %></td>
-      <td>
-        <%= if event.has_stored_message == 1 do %>
+      <td style="white-space: nowrap">
+        <%= if event.event in ~w(delivered accepted failed) do %>
         <a href="<%= Routes.event_path(@conn, :stored_message, event.id) %>" target="blank" style="margin-right: 10px;">view email</a>
         <% end %>
         <%= link "detail", to: Routes.event_path(@conn, :show, event.id) %>
