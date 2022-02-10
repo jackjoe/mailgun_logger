@@ -1,4 +1,8 @@
-## 2202.3.0
+## 2202.4.1
+
+- Fix stored message slow query
+
+## 2202.4.0
 
 - Fix version numbering
 - Fix old layout code in the setup template
