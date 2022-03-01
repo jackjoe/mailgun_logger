@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.com/jackjoe/mailgun_logger.svg?branch=master)](https://travis-ci.com/jackjoe/mailgun_logger)
 
-Simple Mailgun persistence in Phoenix/Elixir.
+Simple Mailgun log persistence in Phoenix/Elixir.
 
 MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a MySQL database.
 For efficiency and less complexity, it retrieves events for the last two days (free accounts offer up to three days of persistence) and then inserts everything. Only new events will pass the unique constraint on the db.
