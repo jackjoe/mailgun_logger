@@ -1,4 +1,5 @@
 <%= render_partial("head.html", assigns) %>
+
   <header id="app-header">
     <div class="top">
       <nav id="main-nav">
@@ -29,4 +30,5 @@
   <main>
     <%= @inner_content %>
   </main>
+
 <%= render_partial("foot.html", assigns) %>

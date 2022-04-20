@@ -20,7 +20,8 @@ body {
 body {
   height: 100vh;
   background: var(--c-gray-light);
-  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif; 
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
+    helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
 }
 
 main {
@@ -153,7 +154,6 @@ main {
   right: 20px;
 }
 
-
 pre,
 code {
   font-family: Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
@@ -256,8 +256,7 @@ label + input {
 footer {
   font-size: 12px;
   max-width: 1400px;
-  margin: 0 auto;
-  margin-top: 20px;
+  margin: 20px auto;
 }
 
 .warn {
@@ -300,7 +299,7 @@ tbody tr:hover td {
 }
 
 .btn {
-  border: 1px solid transparent; 
+  border: 1px solid transparent;
 }
 
 .btn-primary {

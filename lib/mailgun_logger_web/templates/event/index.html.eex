@@ -21,6 +21,10 @@
   <%= label f, :failed %>
   <%= error_tag f, :failed %>
 
+  <%= checkbox f, :stored %>
+  <%= label f, :stored %>
+  <%= error_tag f, :stored %>
+
   <%= select(f, :account, @accounts) %>
 
   <%= submit "Search" %>
@@ -36,7 +40,7 @@
     <col width="200"/>
     <col/>
     <col/>
-    <col width="200" />
+    <col width="170" />
     <col/>
   </colgroup>
   <thead>
@@ -60,8 +64,8 @@
       <td><div class="td-truncate" title="<%= event.recipient %>"><%= event.recipient %></div></td>
       <td title="<%= event.message_subject %>"><%= event.message_subject %></td>
       <td><%= event.account_domain %></td>
-      <td><%= event.timestamp %></td>
-      <td style="white-space: nowrap">
+      <td style="font-variant-numeric: tabular-nums;"><%= event.timestamp %></td>
+      <td style="white-space: nowrap;">
         <%= if event.event in ~w(delivered accepted failed) do %>
         <a href="<%= Routes.event_path(@conn, :stored_message, event.id) %>" target="blank" style="margin-right: 10px;">view email</a>
         <% end %>
@@ -72,6 +76,6 @@
   </tbody>
 </table>
 
-<div class="flex justify-center my-4">
+<div>
   <%= MailgunLoggerWeb.PagingHelpers.paging_links(@conn, @page) %>
 </div>

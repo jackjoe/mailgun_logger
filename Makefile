@@ -29,12 +29,12 @@ run:
 test: test_coverage
 
 test_elixir:
-	echo "export ML_DB_USER=user && MIX_ENV=test mix test"
-	export ML_DB_USER=user && MIX_ENV=test mix test
+	echo "export ML_DB_HOST=127.0.0.1 ML_DB_PASSWORD=user ML_DB_USER=user && MIX_ENV=test mix test"
+	export ML_DB_HOST=127.0.0.1 ML_DB_PASSWORD=user ML_DB_USER=user && MIX_ENV=test mix test
 
 test_coverage:
-	echo "export ML_DB_USER=user && MIX_ENV=test mix coveralls"
-	export ML_DB_USER=user && MIX_ENV=test mix coveralls
+	echo "export ML_DB_HOST=127.0.0.1 ML_DB_PASSWORD=user ML_DB_USER=user && MIX_ENV=test mix coveralls"
+	export ML_DB_HOST=127.0.0.1 ML_DB_PASSWORD=user ML_DB_USER=user && MIX_ENV=test mix coveralls
 
 #######################################
 # Docker
