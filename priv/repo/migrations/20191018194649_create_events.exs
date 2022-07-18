@@ -12,10 +12,10 @@ defmodule MailgunLogger.Repo.Migrations.CreateEvents do
       add(:message_from, :string)
       add(:message_subject, :string)
       add(:message_id, :string, size: 100)
-      add(:message_to, :string)
+      add(:message_to, :string, size: 1_000)
       add(:delivery_attempt, :integer)
       add(:raw, :json)
-      add(:account_id, references("accounts"))
+      add(:account_id, references("accounts"), on_delete: :delete_all)
       timestamps()
     end
 

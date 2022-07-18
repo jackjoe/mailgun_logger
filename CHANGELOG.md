@@ -1,3 +1,7 @@
+## 2202.4.2 (2022-07-18)
+
+- Increase `message_to` field size
+
 ## 2202.4.1
 
 - Fix stored message slow query
