@@ -39,10 +39,15 @@ defmodule MailgunLogger do
   def process_account(%Account{} = account) do
     client = Mailgun.Client.new(account)
 
-    client
-    |> Mailgun.Events.get_events(gen_range())
-    |> MailgunLogger.Events.save_events(account)
-    |> get_stored_messages(client)
+    case Mailgun.Events.get_events(client, gen_range()) do
+      {:error, status, msg} ->
+        {:error, status, msg}
+
+      events ->
+        events
+        |> MailgunLogger.Events.save_events(account)
+        |> get_stored_messages(client)
+    end
   end
 
   @doc """
