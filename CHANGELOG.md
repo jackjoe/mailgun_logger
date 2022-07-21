@@ -1,3 +1,9 @@
+## 2202.4.4 (2022-07-21)
+
+- Fix index length on events
+- Fix unhandled error when using an invalid api key
+- Release new version on our national holiday! 🇧🇪
+
 ## 2202.4.2 (2022-07-18)
 
 - Increase `message_to` field size
