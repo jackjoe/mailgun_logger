@@ -1,3 +1,7 @@
+## 2202.9.0 (2022-09-07)
+
+- Load internal Mailgun API key from runtime config
+
 ## 2202.4.4 (2022-07-21)
 
 - Fix index length on events
