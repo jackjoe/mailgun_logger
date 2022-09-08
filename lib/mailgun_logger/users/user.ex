@@ -81,8 +81,7 @@ defmodule MailgunLogger.User do
   @doc false
   @spec password_forgot_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def password_forgot_changeset(%User{} = user, params \\ %{}) do
-    user
-    |> cast(params, [:reset_token])
+    cast(user, params, [:reset_token])
   end
 
   @doc false

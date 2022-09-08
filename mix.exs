@@ -7,7 +7,7 @@ defmodule MailgunLogger.Mixfile do
       version: "2202.9.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:gettext] ++ Mix.compilers(),
+      compilers: [] ++ Mix.compilers(),
       aliases: aliases(),
       deps: deps(),
       start_permanent: Mix.env() == :prod,

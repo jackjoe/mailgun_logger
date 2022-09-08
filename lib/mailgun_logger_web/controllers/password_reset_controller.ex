@@ -3,6 +3,8 @@ defmodule MailgunLoggerWeb.PasswordResetController do
 
   alias MailgunLogger.User
   alias MailgunLogger.Users
+  alias MailgunLogger.Emails
+  alias MailgunLogger.Mailer
 
   def request_new(conn, _params) do
     render(conn, :request_new)
@@ -11,9 +13,9 @@ defmodule MailgunLoggerWeb.PasswordResetController do
   def request_create(conn, %{"password_reset" => %{"email" => email}}) do
     case Users.gen_password_reset_token(email) do
       {:ok, user} ->
-        user
-        |> MailgunLogger.Emails.reset_password()
-        |> MailgunLogger.Mailer.deliver_it_later()
+          user
+          |> Emails.reset_password()
+          |> Mailer.deliver_it_later()
 
       {_, _} ->
         {:error}
@@ -43,8 +45,7 @@ defmodule MailgunLoggerWeb.PasswordResetController do
       user ->
         case Users.reset_password(user, user_params) do
           {:ok, _user} ->
-            conn
-            |> redirect(to: Routes.password_reset_path(conn, :reset_done))
+            redirect(conn, to: Routes.password_reset_path(conn, :reset_done))
 
           {:error, changeset} ->
             conn

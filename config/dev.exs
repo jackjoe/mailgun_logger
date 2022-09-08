@@ -28,7 +28,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   ]
 
 config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
-config :mailgun_logger, MailgunLogger.Mailer, adapter: Bamboo.LocalAdapter
+# config :mailgun_logger, MailgunLogger.Mailer, adapter: Bamboo.LocalAdapter
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
