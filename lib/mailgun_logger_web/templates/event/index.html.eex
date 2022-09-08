@@ -35,6 +35,7 @@
 <table cellspacing="0" class="table">
   <colgroup>
     <col width="100" />
+    <col width="60" />
     <col width="90" />
     <col width="200"/>
     <col width="200"/>
@@ -47,6 +48,7 @@
     <tr>
       <th>event</th>
       <th>level</th>
+      <th>send/recv</th>
       <th>from</th>
       <th>recipient</th>
       <th>subject</th>
@@ -59,7 +61,8 @@
     <%= for event <- @page do %>
     <tr>
       <td><%= event_name(event.event) %></td>
-      <td width="100"><%= event_type(event.log_level) %></td>
+      <td width="60"><%= event_type(event.log_level) %></td>
+      <td width="90" style="font-family: monospace;"><%= send_recv(event.method) %></td>
       <td><div class="td-truncate"><%= event.message_from %></div></td>
       <td><div class="td-truncate" title="<%= event.recipient %>"><%= event.recipient %></div></td>
       <td title="<%= event.message_subject %>"><%= event.message_subject %></td>

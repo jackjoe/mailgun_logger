@@ -13,6 +13,7 @@ defmodule MailgunLogger.Events do
     |> select([n, a], %{
       id: n.id,
       event: n.event,
+      method: n.method,
       log_level: n.log_level,
       message_from: n.message_from,
       message_subject: n.message_subject,

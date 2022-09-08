@@ -1,3 +1,9 @@
+## 2202.9.1 (2022-09-08)
+
+- Fix password reset flow
+- Update readme with Mailgun API key info
+- Add send/recv output column to indicate if a message was received via an inbound route or a regular outgoing send
+
 ## 2202.9.0 (2022-09-07)
 
 - Load internal Mailgun API key from runtime config

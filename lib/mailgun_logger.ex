@@ -44,9 +44,20 @@ defmodule MailgunLogger do
         {:error, status, msg}
 
       events ->
-        events
-        |> MailgunLogger.Events.save_events(account)
-        |> get_stored_messages(client)
+        if events != [] do
+          [event | _] = events
+          IO.inspect(event, label: "RAW MAILGUN EVENT")
+        end
+
+        Enum.each(events, fn event -> 
+          if event["recipient"] in ~w(collections@m.docdropper.be files@m.docdropper.be) do
+            IO.inspect(event, label: "INCOMING EMAIL")
+          end
+        end)
+
+        # events
+        # |> MailgunLogger.Events.save_events(account)
+        # |> get_stored_messages(client)
     end
   end
 

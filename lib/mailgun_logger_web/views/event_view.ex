@@ -47,4 +47,7 @@ defmodule MailgunLoggerWeb.EventView do
   end
 
   def event_type(event_type), do: event_type
+
+  def send_recv("SMTP"), do: "recv"
+  def send_recv(_), do: "send"
 end
