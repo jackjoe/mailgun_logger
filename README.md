@@ -41,7 +41,7 @@ Every month the major and minor versions are reset to zero, but start with one:
 
 ```
 2202.4.0
-2202.4.1 
+2202.4.1
 2202.5.0
 2203.1.0
 2203.2.0
@@ -62,14 +62,20 @@ MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/
 Following variables are available:
 
 [Required]
+
 - **ML_DB_USER**: database user
 - **ML_DB_PASSWORD**: database password
 - **ML_DB_NAME**: database name
 - **ML_DB_HOST**: database host
 
 [Optional]
+
 - **ML_PAGESIZE**: events per page
 - **ML_LOG_LEVEL**: log level (info, debug, warn, ...)
+- **MAILGUN_API_KEY**: to send the password reset email
+- **MAILGUN_DOMAIN**: to send the password reset email
+- **MAILGUN_FROM**: to send the password reset email
+- **MAILGUN_REPLY_TO**: to send the password reset email
 
 ### Docker
 
@@ -157,6 +163,7 @@ $ make install
 which will install all dependencies and setup local dev https certificates using `phx.cert`.
 
 Then you can run the project:
+
 ```bash
 # runs `iex -S mix phx.server`
 $ make run
