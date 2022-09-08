@@ -1,0 +1,24 @@
+<h1>Users</h1>
+
+<table cellspacing="0" class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Roles</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for user <- @users do %>
+    <tr>
+      <td><%= user.firstname <> " " <> user.lastname %></td>
+      <td><%= user.email %></td>
+      <td><%= Enum.map(user.roles, & &1.name) %></td>
+      <td><%= link "edit", to: Routes.user_path(@conn, :edit, user) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<br />
+<%= link "add user", to: Routes.user_path(@conn, :new) %>

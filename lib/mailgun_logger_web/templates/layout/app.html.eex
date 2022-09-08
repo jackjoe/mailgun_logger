@@ -13,6 +13,7 @@
             <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
             <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
             <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
+            <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
             <li style="float: right;"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
           <% else %>
             <li style="float: right;"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>

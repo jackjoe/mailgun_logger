@@ -1,3 +1,7 @@
+## 2209.3.0 (2022-09-08)
+
+- Basic user management
+
 ## 2209.2.1 (2022-09-08)
 
 - HOTFIX: uncomment important code (from testing)

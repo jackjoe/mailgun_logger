@@ -5,7 +5,15 @@ defmodule MailgunLogger.Users do
   alias MailgunLogger.User
   alias MailgunLogger.Roles
 
-  @spec assign_role(User.t(), String.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()} | nil
+  @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @type maybe_user() :: User.t() | nil
+
+  @spec list_users() :: [User.t()]
+  def list_users() do
+    Repo.all(User) |> Repo.preload(:roles)
+  end
+
+  @spec assign_role(User.t(), String.t()) :: ecto_user() | nil
   def assign_role(user, role_name) do
     case Roles.get_role_by_name(role_name) do
       nil ->
@@ -20,7 +28,7 @@ defmodule MailgunLogger.Users do
     end
   end
 
-  @spec get_user!(integer | String.t()) :: User.t() | no_return()
+  @spec get_user!(integer | String.t()) :: User.t()
   def get_user!(id) do
     from(
       u in User,
@@ -31,7 +39,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one!()
   end
 
-  @spec get_user(integer | String.t()) :: User.t() | nil
+  @spec get_user(integer | String.t()) :: maybe_user()
   def get_user(id) do
     from(
       u in User,
@@ -42,7 +50,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec get_user_by_token!(String.t()) :: User.t() | no_return()
+  @spec get_user_by_token!(String.t()) :: User.t()
   def get_user_by_token!(token) do
     from(
       u in User,
@@ -53,7 +61,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one!()
   end
 
-  @spec get_user_by_token(String.t()) :: User.t() | nil
+  @spec get_user_by_token(String.t()) :: maybe_user()
   def get_user_by_token(token) do
     from(
       u in User,
@@ -64,7 +72,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec authenticate(String.t(), String.t()) :: any
+  @spec authenticate(String.t(), String.t()) :: {:error, :unknown_user} | {:error, any()} | {:ok, User.t()}
   def authenticate(email, password) do
     from(
       u in User,
@@ -78,17 +86,11 @@ defmodule MailgunLogger.Users do
         {:error, :unknown_user}
 
       user ->
-        # IO.puts("PRE ARGON")
-        # IO.inspect(user)
-        # IO.inspect(password)
-        r = Argon2.check_pass(user, password)
-        # IO.puts("POST ARGON")
-
-        r
+        Argon2.check_pass(user, password)
     end
   end
 
-  @spec get_user_by_email(String.t()) :: User.t() | nil
+  @spec get_user_by_email(String.t()) :: maybe_user()
   def get_user_by_email(email) do
     from(
       u in User,
@@ -97,7 +99,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec get_user_by_reset_token(String.t()) :: User.t() | nil
+  @spec get_user_by_reset_token(String.t()) :: maybe_user()
   def get_user_by_reset_token(reset_token) do
     from(
       u in User,
@@ -108,7 +110,7 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec gen_password_reset_token(String.t()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @spec gen_password_reset_token(String.t()) :: ecto_user()
   def gen_password_reset_token(email) do
     from(
       u in User,
@@ -135,7 +137,7 @@ defmodule MailgunLogger.Users do
     |> binary_part(0, length)
   end
 
-  @spec reset_password(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @spec reset_password(User.t(), map()) :: ecto_user()
   def reset_password(%User{} = user, attrs \\ %{}) do
     user
     |> User.password_reset_changeset(attrs)
@@ -143,20 +145,32 @@ defmodule MailgunLogger.Users do
     |> Repo.update()
   end
 
-  @spec update_user(User.t(), map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
+  @spec any_users?() :: boolean
+  def any_users?(), do: length(Repo.all(User)) > 0
+
+  @spec create_admin(map()) :: ecto_user()
+  def create_admin(attrs) do
+    %User{}
+    |> User.admin_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @spec create_user(map) :: ecto_user()
+  def create_user(params) do
+    %User{}
+    |> User.changeset(params)
+    |> Repo.insert()
+  end
+
+  @spec update_user(User.t(), map) :: ecto_user()
   def update_user(user, params) do
     user
     |> User.update_changeset(params)
     |> Repo.update()
   end
 
-  @spec any_users?() :: boolean
-  def any_users?(), do: length(Repo.all(User)) > 0
-
-  @spec create_admin(map()) :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
-  def create_admin(attrs) do
-    %User{}
-    |> User.admin_changeset(attrs)
-    |> Repo.insert()
+  @spec delete_user(User.t()) :: ecto_user()
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
   end
 end

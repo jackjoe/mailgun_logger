@@ -32,7 +32,7 @@ defmodule MailgunLoggerWeb.AccountController do
 
     case Accounts.update_account(account, params) do
       {:ok, _} -> redirect(conn, to: Routes.account_path(conn, :index))
-      {:error, changeset} -> render(conn, :update, changeset: changeset)
+      {:error, changeset} -> render(conn, :edit, changeset: changeset)
     end
   end
 

@@ -43,7 +43,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:firstname, :lastname, :email, :password])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -57,7 +57,7 @@ defmodule MailgunLogger.User do
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:email])
+    |> cast(attrs, [:firstname, :lastname, :email])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)

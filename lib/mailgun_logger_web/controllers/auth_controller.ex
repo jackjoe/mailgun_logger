@@ -10,9 +10,7 @@ defmodule MailgunLoggerWeb.AuthController do
   end
 
   def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
-    auth = Users.authenticate(email, password)
-
-    case auth do
+    case Users.authenticate(email, password) do
       {:ok, user} ->
         conn
         |> Auth.sign_in(user)
