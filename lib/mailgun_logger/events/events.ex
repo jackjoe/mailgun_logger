@@ -152,10 +152,74 @@ defmodule MailgunLogger.Events do
 
   def get_total_events(), do: Repo.aggregate(from(p in Event), :count, :id)
 
+  def get_event_counts_by_type() do
+    from(p in Event,
+      group_by: p.event,
+      select: {p.event, count(p.id)}
+    )
+    |> Repo.all()
+    |> Enum.into(%{})
+  end
+
   @spec save_stored_message(Event.t(), map()) :: Event.t()
   def save_stored_message(event, stored_message) do
     event
     |> Event.changeset_stored_message(stored_message)
     |> Repo.update()
+  end
+
+  def get_stats(n_hours) do
+    stats =
+      from(e in Event,
+        group_by: [
+          e.event,
+          fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.updated_at, ":00")
+        ],
+        select: %{
+          count: count(e.id),
+          event: e.event,
+          date: fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.updated_at, ":00")
+        }
+      )
+      |> Repo.all()
+
+    now =
+      DateTime.utc_now()
+      |> Map.put(:minute, 0)
+      |> Map.put(:second, 0)
+      |> DateTime.truncate(:second)
+
+    last_n_hours = Enum.map(0..n_hours, &DateTime.add(now, &1 * -1 * 3600)) |> Enum.reverse()
+
+    {failed, accepted, delivered, clicked, opened, stored} =
+      Enum.reduce(last_n_hours, {[], [], [], [], [], []}, fn date, {failed, accepted, delivered, clicked, opened, stored} ->
+        failed = failed ++ [get_items(stats, "failed", date)]
+        accepted = accepted ++ [get_items(stats, "accepted", date)]
+        delivered = delivered ++ [get_items(stats, "delivered", date)]
+        clicked = clicked ++ [get_items(stats, "clicked", date)]
+        opened = opened ++ [get_items(stats, "opened", date)]
+        stored = stored ++ [get_items(stats, "stored", date)]
+
+        {failed, accepted, delivered, clicked, opened, stored}
+      end)
+
+    %{
+      failed: failed,
+      accepted: accepted,
+      delivered: delivered,
+      clicked: clicked,
+      opened: opened,
+      stored: stored,
+      last_n_hours: last_n_hours
+    }
+  end
+
+  defp get_items(stats, event, date) do
+    date = Calendar.strftime(date, "%Y-%m-%d %H:%M")
+
+    case Enum.find(stats, &(&1.event == event && &1.date == date)) do
+      nil -> 0
+      %{count: count} -> count
+    end
   end
 end

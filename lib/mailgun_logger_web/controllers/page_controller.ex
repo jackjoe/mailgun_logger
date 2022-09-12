@@ -5,9 +5,16 @@ defmodule MailgunLoggerWeb.PageController do
   alias MailgunLogger.Accounts
 
   def index(conn, _) do
-    total_events = Events.get_total_events()
     total_accounts = Accounts.list_accounts() |> length()
-    render(conn, :index, total_events: total_events, total_accounts: total_accounts)
+    stats = Events.get_stats(24)
+    IO.inspect(stats)
+
+    event_counts = %{
+      total: Events.get_total_events(),
+      by_type: Events.get_event_counts_by_type()
+    }
+
+    render(conn, :index, total_accounts: total_accounts, event_counts: event_counts, stats: stats)
   end
 
   def non_affiliation(conn, _) do

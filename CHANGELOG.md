@@ -1,3 +1,8 @@
+## 2209.4.0 (2022-09-12)
+
+- Update event detail page to extract possible error message better
+- Add stats and graphs to the dashboard
+
 ## 2209.3.0 (2022-09-08)
 
 - Basic user management

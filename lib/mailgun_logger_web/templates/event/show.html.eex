@@ -1,3 +1,9 @@
+<%= if @event.event == "failed" do %>
+  <dl style="border: 2px solid crimson; background: rgba(255, 0, 0, .7);color: white; ">
+    <dt>Error detail</dt>
+    <dd><%= error_msg(@event) %></dd>
+  </dl>
+<% end %>
 <dl>
   <dt>Recipient</dt>
   <dd><%= @event.recipient %></dd>
@@ -27,8 +33,12 @@
   </dd>
   <dt>Raw</dt>
   <dd>
-    <code>
-      <%= raw Jason.Formatter.pretty_print(Jason.encode!(@event.raw), line_separator: "<br>", indent: "&nbsp;&nbsp;") %>
-    </code>
+    <summary>
+      <details>
+        <code>
+          <%= raw Jason.Formatter.pretty_print(Jason.encode!(@event.raw), line_separator: "<br>", indent: "&nbsp;&nbsp;") %>
+        </code>
+      </details>
+    </summary>
   </dd>
 </dl>

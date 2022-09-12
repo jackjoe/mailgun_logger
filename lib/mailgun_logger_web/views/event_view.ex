@@ -50,4 +50,7 @@ defmodule MailgunLoggerWeb.EventView do
 
   def send_recv("SMTP"), do: "recv"
   def send_recv(_), do: "send"
+
+  def error_msg(%{raw: %{"delivery-status" => %{"message" => msg}}}), do: msg
+  def error_msg(_), do: "-"
 end

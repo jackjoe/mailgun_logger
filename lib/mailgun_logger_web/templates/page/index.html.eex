@@ -14,8 +14,99 @@
     </div>
   <% end %>
   <h2>Some stats</h2>
+  <h3>System</h3>
   <dl>
     <dt>Total events in db:</dt>
-    <dd><%= @total_events %> | <%= link "trigger new run", to: Routes.page_path(@conn, :trigger_run), method: "POST" %></dd>
+    <dd><%= @event_counts.total %> | <%= link "trigger new run", to: Routes.page_path(@conn, :trigger_run), method: "POST" %></dd>
+
+
+    <dt>Sent in the last 24h</dt>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <div class="container">
+      <style>
+        #myChartContainer {
+          width: 800px;
+          height: 500px;
+        }
+      </style>
+
+      <div id="myChartContainer">
+        <canvas id="myChart"></canvas>
+      </div>
+
+      <script>
+        const labels =  <%= raw(print_date_labels(@stats.last_n_hours)) %>
+        const data = {
+          labels: labels,
+          datasets: [{
+            label: 'Failed',
+            backgroundColor: 'rgba(245, 73, 39, 0.8)',
+            borderColor: 'rgb(245, 73, 39)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.failed)) %>
+          },
+                            {
+            label: 'Accepted',
+            backgroundColor: 'rgba(39, 245, 95, 0.8)',
+            borderColor: 'rgb(39, 245, 95)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.accepted)) %>
+          },
+          {
+            label: 'Delivered',
+            backgroundColor: 'rgba(193, 251, 164, 0.8)',
+            borderColor: 'rgb(193, 251, 164)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.delivered)) %>
+          },
+          {
+            label: 'Clicked',
+            backgroundColor: 'rgba(38, 73, 228, 0.8)',
+            borderColor: 'rgb(38, 73, 228)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.clicked)) %>
+          },
+          {
+            label: 'Opened',
+            backgroundColor: 'rgba(71, 59, 240, 0.8)',
+            borderColor: 'rgb(71, 59, 240)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.opened)) %>
+          },
+          {
+            label: 'Stored',
+            backgroundColor: 'rgba(172, 173, 188, 0.8)',
+            borderColor: 'rgb(172, 173, 188)',
+            barThickness: 5,
+            data: <%= raw(Jason.encode!(@stats.stored)) %>
+          }]
+        }
+
+        const config = {
+          type: 'bar',
+          data: data,
+          options: {}
+        }
+
+        const myChart = new Chart(document.getElementById('myChart'), config)
+      </script>
+    </div>
+  </dl>
+
+  <h3>Event counts by type (all time)</h3>
+  <dl>
+    <dt>Failed:</dt>
+    <dd><%= @event_counts.by_type["failed"] %></dd>
+    <dt>Accepted:</dt>
+    <dd><%= @event_counts.by_type["accepted"] %></dd>
+    <dt>Delivered:</dt>
+    <dd><%= @event_counts.by_type["delivered"] %></dd>
+    <dt>Clicked:</dt>
+    <dd><%= @event_counts.by_type["clicked"] %></dd>
+    <dt>Opened:</dt>
+    <dd><%= @event_counts.by_type["opened"] %></dd>
+    <dt>Stored:</dt>
+    <dd><%= @event_counts.by_type["stored"] %></dd>
   </dl>
 </div>
