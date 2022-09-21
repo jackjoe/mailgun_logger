@@ -7,7 +7,6 @@ defmodule MailgunLoggerWeb.PageController do
   def index(conn, _) do
     total_accounts = Accounts.list_accounts() |> length()
     stats = Events.get_stats(24)
-    IO.inspect(stats)
 
     event_counts = %{
       total: Events.get_total_events(),
