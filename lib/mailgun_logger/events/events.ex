@@ -173,12 +173,12 @@ defmodule MailgunLogger.Events do
       from(e in Event,
         group_by: [
           e.event,
-          fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.updated_at, ":00")
+          fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.timestamp, ":00")
         ],
         select: %{
           count: count(e.id),
           event: e.event,
-          date: fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.updated_at, ":00")
+          date: fragment("CONCAT(DATE_FORMAT(?, '%Y-%m-%d %H'), ?)", e.timestamp, ":00")
         }
       )
       |> Repo.all()
