@@ -1,6 +1,6 @@
 dist: xenial
 language: elixir
-cache: apt
+#cache: apt
 # services:
 #   - mysql
 before_script:
