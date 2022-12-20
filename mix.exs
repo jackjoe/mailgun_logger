@@ -58,7 +58,7 @@ defmodule MailgunLogger.Mixfile do
       {:bamboo, "~> 2.0"},
       {:bamboo_phoenix, "~> 1.0"},
       {:decimal, "~> 2.0"},
-      {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.9.0"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
@@ -79,7 +79,7 @@ defmodule MailgunLogger.Mixfile do
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:plug, "~> 1.7"},
-      {:myxql, "~> 0.3"},
+      {:myxql, "~> 0.6.1"},
       {:quantum, "~> 3.4"},
       {:sweet_xml, "~> 0.6"}
     ]
