@@ -15,6 +15,9 @@
   <% end %>
   <h2>Some stats</h2>
   <h3>Event counts by type (all time)</h3>
+  <div>
+    <%= link "trigger new run", to: Routes.page_path(@conn, :trigger_run), method: "POST" %>
+  </div>
   <dl>
     <dt>Failed:</dt>
     <dd><%= @event_counts.by_type["failed"] %></dd>
