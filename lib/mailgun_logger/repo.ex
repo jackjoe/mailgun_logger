@@ -4,5 +4,5 @@ defmodule MailgunLogger.Repo do
     otp_app: :mailgun_logger,
     adapter: Ecto.Adapters.MyXQL
 
-  use Scrivener
+  # use Scrivener
 end

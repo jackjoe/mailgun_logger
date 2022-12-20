@@ -43,28 +43,28 @@ defmodule MailgunLoggerWeb.PagingHelpers do
   #   |> Map.merge(defaults)
   # end
 
-  def paging_links(conn, page) do
-    queries =
-      (current_uri(conn).query || "")
-      |> URI.decode_query()
-      |> Map.delete("page")
-      |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
+  # def paging_links(conn, page) do
+  #   queries =
+  #     (current_uri(conn).query || "")
+  #     |> URI.decode_query()
+  #     |> Map.delete("page")
+  #     |> Enum.map(fn {key, value} -> {:"#{key}", value} end)
 
-    Scrivener.HTML.pagination_links(page, queries)
-  end
+  #   Scrivener.HTML.pagination_links(page, queries)
+  # end
 
-  def scrivener_format_params(params, defaults \\ %{}) do
-    order =
-      try do
-        (params["order"] || (defaults["order"] || "asc")) |> String.to_existing_atom()
-      rescue
-        ArgumentError -> "asc"
-      end
+  # def scrivener_format_params(params, defaults \\ %{}) do
+  #   order =
+  #     try do
+  #       (params["order"] || (defaults["order"] || "asc")) |> String.to_existing_atom()
+  #     rescue
+  #       ArgumentError -> "asc"
+  #     end
 
-    page_size = params["page_size"] || (defaults["page_size"] || 100)
+  #   page_size = params["page_size"] || (defaults["page_size"] || 100)
 
-    params
-    |> Map.merge(%{"page_size" => page_size, "order" => order})
-    |> Map.merge(defaults)
-  end
+  #   params
+  #   |> Map.merge(%{"page_size" => page_size, "order" => order})
+  #   |> Map.merge(defaults)
+  # end
 end
