@@ -3,7 +3,6 @@ cache: apt
 # services:
 #   - mysql
 before_script:
-before_script:
   - wget https://repo.mysql.com//mysql-apt-config_0.8.10-1_all.deb
   - sudo dpkg -i mysql-apt-config_0.8.10-1_all.deb
   - sudo apt-get update -q
