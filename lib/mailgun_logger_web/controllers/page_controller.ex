@@ -6,14 +6,18 @@ defmodule MailgunLoggerWeb.PageController do
 
   def index(conn, _) do
     total_accounts = Accounts.list_accounts() |> length()
-    stats = Events.get_stats(24)
 
     event_counts = %{
       total: Events.get_total_events(),
       by_type: Events.get_event_counts_by_type()
     }
 
-    render(conn, :index, total_accounts: total_accounts, event_counts: event_counts, stats: stats)
+    render(conn, :index, total_accounts: total_accounts, event_counts: event_counts)
+  end
+
+  def graphs(conn, _) do
+    stats = Events.get_stats(24)
+    render(conn, :graphs, stats: stats)
   end
 
   def non_affiliation(conn, _) do

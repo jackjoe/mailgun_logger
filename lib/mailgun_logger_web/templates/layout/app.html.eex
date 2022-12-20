@@ -11,6 +11,7 @@
         <ul>
           <%= if assigns[:current_user] do %>
             <li><%= link "Dashboard", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
+            <li><%= link "Graphs", to: Routes.page_path(@conn, :graphs), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :graphs) %></li>
             <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
             <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
             <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>

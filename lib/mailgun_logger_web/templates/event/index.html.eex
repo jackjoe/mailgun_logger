@@ -32,6 +32,13 @@
 
 <br />
 
+<%= if Enum.count(@page) >= 1_000 do %>
+<div style="font-family: monospace;padding: 5px; background: #ffff22;line-height: 20px;height: 20px; display: flex;align-items: center;justify-content: center;" >
+  Note: listing the first 1 000 results. Want to see more? Refine your search.
+  Paging with Scrivener was too slow, using offset. Want paging? PR's are welcome :)
+</div>
+<% end %>
+
 <table cellspacing="0" class="table">
   <colgroup>
     <col width="100" />
@@ -78,7 +85,3 @@
     <% end %>
   </tbody>
 </table>
-
-<div>
-  <%= MailgunLoggerWeb.PagingHelpers.paging_links(@conn, @page) %>
-</div>

@@ -79,6 +79,7 @@ defmodule MailgunLoggerWeb.Router do
     resources("/users", UserController, except: [:show])
 
     get("/", PageController, :index)
+    get("/graphs", PageController, :graphs)
     get("/non-affiliation", PageController, :non_affiliation)
     post("/trigger_run", PageController, :trigger_run)
   end

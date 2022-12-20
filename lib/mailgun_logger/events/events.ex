@@ -29,12 +29,14 @@ defmodule MailgunLogger.Events do
     params =
       params
       |> parse_search_params()
-      |> Map.put("page_size", 50)
-      |> PagingHelpers.scrivener_format_params()
+
+    # |> Map.put("page_size", 50)
+    # |> PagingHelpers.scrivener_format_params()
 
     list_events_query()
     |> build_search_query(params)
-    |> Repo.paginate(params)
+    |> limit(1_000)
+    |> Repo.all()
   end
 
   defp build_search_query(queryable, params) do
@@ -192,7 +194,9 @@ defmodule MailgunLogger.Events do
     last_n_hours = Enum.map(0..n_hours, &DateTime.add(now, &1 * -1 * 3600)) |> Enum.reverse()
 
     {failed, accepted, delivered, clicked, opened, stored} =
-      Enum.reduce(last_n_hours, {[], [], [], [], [], []}, fn date, {failed, accepted, delivered, clicked, opened, stored} ->
+      Enum.reduce(last_n_hours, {[], [], [], [], [], []}, fn date,
+                                                             {failed, accepted, delivered,
+                                                              clicked, opened, stored} ->
         failed = failed ++ [get_items(stats, "failed", date)]
         accepted = accepted ++ [get_items(stats, "accepted", date)]
         delivered = delivered ++ [get_items(stats, "delivered", date)]
