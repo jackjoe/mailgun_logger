@@ -59,3 +59,25 @@ docker_run_local:
 		-p 5050:5050 \
 		--rm \
 		-it $(DOCKER_IMAGE):latest
+
+# Postgres
+
+mysqldb2pg:
+	sudo docker run \
+		--rm \
+		--name pgloader \
+		\
+		--env USER="$(USER)" \
+		--env MYSQL_PWD="$(MYSQL_PWD)" \
+		--env MYSQL_HOST="$(MYSQL_HOST)" \
+		--env MYSQL_DB="$(MYSQL_DB)" \
+		\
+		--env PG_USER="$(PG_USER)" \
+		--env PG_PASSWORD="$(PG_PASSWORD)" \
+		--env PG_HOST="$(PG_HOST)" \
+		--env PG_PORT="$(PG_PORT)" \
+		--env PG_DB="$(PG_DB)" \
+		\
+		-v $(BASE_DIR)/pg/loads:/data \
+		dimitri/pgloader:latest \
+		pgloader /data/db.load
