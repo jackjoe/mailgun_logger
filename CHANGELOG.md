@@ -1,3 +1,7 @@
+## 2302.1.0 (2023-02-17)
+
+- Migrate from MySQL to PostgreSQL
+
 ## 2209.4.0 (2022-09-12)
 
 - Update event detail page to extract possible error message better

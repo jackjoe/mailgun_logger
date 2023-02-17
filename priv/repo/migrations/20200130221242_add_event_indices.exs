@@ -6,6 +6,6 @@ defmodule MailgunLogger.Repo.Migrations.AddEventIndices do
     create(index(:events, [:event]))
     create(index(:events, [:message_subject]))
     create(index(:events, [:message_from]))
-    create(index(:events, ["message_to(50)"]))
+    create(index(:events, [:message_to]))
   end
 end
