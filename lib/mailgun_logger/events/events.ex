@@ -6,7 +6,6 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Account
   alias MailgunLogger.Event
   alias MailgunLogger.Repo
-  alias MailgunLoggerWeb.PagingHelpers
 
   defp list_events_query() do
     Event
