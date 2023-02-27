@@ -1,3 +1,7 @@
+## 2302.1.1 (2023-02-27)
+
+- Port `DATE_FORMAT` to PostgreSQL
+
 ## 2302.1.0 (2023-02-17)
 
 - Migrate from MySQL to PostgreSQL
