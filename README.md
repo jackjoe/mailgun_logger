@@ -1,5 +1,9 @@
 # Mailgun Logger
 
+**Note**
+
+Since version 2302.1.0 (Feb 2023) the database has switched from MySQL to PostgreSQL.
+
 <div align="center" width="100%">
   <img src="./public/logo.svg" width="128" alt="" />
 </div>
@@ -8,7 +12,7 @@
 
 Simple Mailgun log persistence in Phoenix/Elixir.
 
-MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a MySQL database.
+MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a PostgreSQL database.
 For efficiency and less complexity, it retrieves events for the last two days (free accounts offer up to three days of persistence) and then inserts everything. Only new events will pass the unique constraint on the db.
 
 This is done because, as stated in the Mailgun docs, it is not guaranteed that for a given time period, all actual events will be ready, since some take time to get into the system although they already happened.
@@ -97,14 +101,13 @@ version: "3"
 
 services:
   db:
-    image: mysql
+    image: postgresql
     networks:
       - webnet
     environment:
-      - MYSQL_PASSWORD=logger
-      - MYSQL_USER=logger
-      - MYSQL_DATABASE=mailgun_logger
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - POSTGRESS_PASSWORD=logger
+      - POSTGRESS_USER=logger
+      - POSTGRESS_DATABASE=mailgun_logger
     volumes:
       - db_data:/var/lib/mysql
 
@@ -142,7 +145,7 @@ Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 ## Contributing
 
 To run on your local machine, you need to setup shop first.
-Mailgun Logger requires a MySQL database using the following environment variables along with their defaults:
+Mailgun Logger requires a PostgreSQL database using the following environment variables along with their defaults:
 
 ```elixir
 # config/config.ex
