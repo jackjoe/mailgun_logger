@@ -53,4 +53,18 @@ defmodule MailgunLoggerWeb.EventView do
 
   def error_msg(%{raw: %{"delivery-status" => %{"message" => msg}}}), do: msg
   def error_msg(_), do: "-"
+
+  def stored_message_url(message_id) do
+    config = ExAws.Config.new(:s3)
+    bucket = Application.get_env(:ex_aws, :bucket)
+    base_dir = Application.get_env(:ex_aws, :raw_path)
+    file_name = "#{message_id}.json"
+    file_path = Path.join(base_dir, file_name)
+    opts = []
+
+    case ExAws.S3.presigned_url(config, :get, bucket, file_path, opts) do
+      {:ok, url} -> url
+      _ -> ""
+    end
+  end
 end

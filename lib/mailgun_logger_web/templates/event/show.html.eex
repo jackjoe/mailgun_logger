@@ -19,10 +19,6 @@
   <dd><%= @event.timestamp %></dd>
   <dt>From</dt>
   <dd><%= @event.message_from %></dd>
-  <%= if @event.event in ["delivered", "accepted"] do %>
-  <dt>Actual sent email</dt>
-  <dd><a href="<%= Routes.event_path(@conn, :stored_message, @event) %>" target="blank">view 🔗</a></dd>
-  <% end %>
   <dt>Linked events</dt>
   <dd>
   <ul>
@@ -31,14 +27,10 @@
     <% end %>
   </ul>
   </dd>
-  <dt>Raw</dt>
-  <dd>
-    <summary>
-      <details>
-        <code>
-          <%= raw Jason.Formatter.pretty_print(Jason.encode!(@event.raw), line_separator: "<br>", indent: "&nbsp;&nbsp;") %>
-        </code>
-      </details>
-    </summary>
-  </dd>
+  <%= if Application.get_env(:mailgun_logger, :store_messages) and @event.has_stored_message do %>
+  <dt>Raw Stored Message data</dt>
+  <dd><a href="<%= stored_message_url(@event.api_id) %>">view json file on S3</a></dd>
+  <dt>Actual sent email</dt>
+  <dd><a href="<%= Routes.event_path(@conn, :stored_message, @event) %>" target="blank">view 🔗</a></dd>
+  <% end %>
 </dl>

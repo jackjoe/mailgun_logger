@@ -10,8 +10,8 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   version: Application.spec(:mailgun_logger, :vsn)
 
 config :phoenix, :serve_endpoints, true
-
 config :logger, level: String.to_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info
+config :ex_aws, debug_requests: false
 
 # Quantum cron schedule
 config :mailgun_logger, MailgunLogger.Scheduler,

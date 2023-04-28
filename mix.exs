@@ -41,7 +41,8 @@ defmodule MailgunLogger.Mixfile do
       mod: {MailgunLogger.Application, []},
       extra_applications: [
         :logger,
-        :runtime_tools
+        :runtime_tools,
+        :ex_aws
       ]
     ]
   end
@@ -66,6 +67,8 @@ defmodule MailgunLogger.Mixfile do
       {:hackney, "~> 1.12"},
       {:httpoison, "~> 1.4"},
       {:jason, "~> 1.3"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
       # {:scrivener_ecto, "~> 2.0", override: true},
       # WAITING FOR PR {:scrivener_html, "~> 1.8"},
       # {:scrivener_html,

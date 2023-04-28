@@ -111,8 +111,10 @@ defmodule MailgunLogger.Events do
   @spec save_events(map(), Account.t()) :: {:ok, [Event.t()]} | {:error, Ecto.Changeset.t()}
   def save_events(raw_events, %Account{id: account_id}) do
     raw_events
-    |> Enum.map(&prepare_raw(&1, account_id))
-    |> Enum.map(&Event.changeset(%Event{}, &1))
+    |> Enum.map(fn raw ->
+      event_params = prepare_raw(raw, account_id)
+      Event.changeset(%Event{}, event_params)
+    end)
     |> Enum.with_index()
     |> Enum.reduce(Ecto.Multi.new(), fn {changeset, index}, multi ->
       Ecto.Multi.insert(multi, Integer.to_string(index), changeset, on_conflict: :nothing)
@@ -162,10 +164,10 @@ defmodule MailgunLogger.Events do
     |> Enum.into(%{})
   end
 
-  @spec save_stored_message(Event.t(), map()) :: Event.t()
-  def save_stored_message(event, stored_message) do
+  @spec has_stored_message(Event.t()) :: Event.t()
+  def has_stored_message(event) do
     event
-    |> Event.changeset_stored_message(stored_message)
+    |> Event.changeset_has_stored_message()
     |> Repo.update()
   end
 
@@ -225,4 +227,6 @@ defmodule MailgunLogger.Events do
       %{count: count} -> count
     end
   end
+
+  def bucket(), do: Application.get_env(:ex_aws, :bucket)
 end
