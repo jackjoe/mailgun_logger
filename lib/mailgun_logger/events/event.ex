@@ -83,6 +83,7 @@ defmodule MailgunLogger.Event do
     field(:message_to, :string)
     field(:delivery_attempt, :integer)
     field(:has_stored_message, :boolean, default: false)
+    field(:stored_message, :map)
     field(:raw, :map, default: %{})
 
     field(:linked_events, {:array, :map}, virtual: true)

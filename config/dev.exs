@@ -27,6 +27,9 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
     ]
   ]
 
+config :ex_aws,
+  raw_path: "_dev_mailgun_logger/messages"
+
 config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
 # config :mailgun_logger, MailgunLogger.Mailer, adapter: Bamboo.LocalAdapter
 

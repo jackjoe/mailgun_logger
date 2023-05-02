@@ -3,7 +3,10 @@ defmodule MailgunLogger do
 
   alias MailgunLogger.Account
   alias MailgunLogger.Accounts
+  alias MailgunLogger.Event
   alias Mailgun.Events
+
+  import Ecto.Query, warn: false
 
   @ttl 180_000
 
@@ -99,4 +102,27 @@ defmodule MailgunLogger do
 
   defp get_stored_messages({:ok, events}, client), do: Events.get_stored_messages(client, events)
   defp get_stored_messages(x, _), do: x
+
+  # TMP
+
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  def migrate_existing_stored_messages_to_s3() do
+    from(e in Event, where: not is_nil(e.stored_message), limit: 1000)
+    |> MailgunLogger.Repo.all()
+    |> Enum.each(fn e ->
+      bucket()
+      |> ExAws.S3.put_object(file_path(e.api_id), Jason.encode!(e.stored_message))
+      |> ExAws.request!()
+
+      change(e, %{stored_message: nil, has_stored_message: true}) |> MailgunLogger.Repo.update()
+    end)
+  end
+
+  def file_path(%{api_id: api_id}), do: file_path(api_id)
+  def file_path(api_id), do: Path.join(base_dir(), file_name(api_id))
+  def file_name(api_id), do: "#{api_id}.json"
+  def base_dir(), do: Application.get_env(:ex_aws, :raw_path)
+  def bucket(), do: Application.get_env(:ex_aws, :bucket)
 end

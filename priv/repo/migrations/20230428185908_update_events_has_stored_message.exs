@@ -1,9 +1,8 @@
-defmodule MailgunLogger.Repo.Migrations.RemoveRawColumnFromEvents do
+defmodule MailgunLogger.Repo.Migrations.UpdateEventsWithHasStoredMessage do
   use Ecto.Migration
 
   def change do
     alter table(:events) do
-      remove(:stored_message)
       add(:has_stored_message, :boolean, default: false)
     end
   end
