@@ -1,6 +1,6 @@
 # Mailgun Logger
 
-** BREAKING **
+**BREAKING**
 
 Since the 2305.1.0 release we are no longer saving the actual stored message (the raw data) as it has proven to be too much stress on the db without any added value. There is a config option `store_message` that, if set to `true` also requires an AWS config to be added. Then the raw messages will be stored in an S3 bucket.
 Also, the `stored_message` data column should be regarded as deprecated and will be removed via a migration in a future release.
