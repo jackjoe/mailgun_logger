@@ -7,7 +7,8 @@ import Config
 
 config :mailgun_logger,
   ecto_repos: [MailgunLogger.Repo],
-  env: Mix.env()
+  env: Mix.env(),
+  store_messages: true
 
 # Configures the endpoint
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
@@ -35,6 +36,24 @@ config :logger, :console,
 config :logger,
   backends: [:console],
   level: String.to_atom(System.get_env("ML_LOG_LEVEL", "debug")) || :debug
+
+config :ex_aws,
+  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
+  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
+  region: System.get_env("AWS_REGION"),
+  bucket: System.get_env("AWS_BUCKET"),
+  raw_path: System.get_env("RAW_PATH"),
+  s3: [
+    scheme: System.get_env("AWS_SCHEME"),
+    port: System.get_env("AWS_PORT"),
+    region: System.get_env("AWS_REGION"),
+    host: System.get_env("AWS_HOST")
+  ],
+  debug_requests: true,
+  json_codec: Jason,
+  hackney_opts: [
+    recv_timeout: 60_000
+  ]
 
 config :mailgun_logger, MailgunLogger.Mailer,
   adapter: Bamboo.MailgunAdapter,

@@ -61,11 +61,11 @@ defmodule MailgunLogger.Event do
           message_subject: String.t(),
           message_id: String.t(),
           message_to: String.t(),
-          stored_message: map() | nil,
           delivery_attempt: integer,
           raw: map(),
           linked_events: [Event.t()],
           account: Ecto.Association.NotLoaded.t() | Account.t(),
+          has_stored_message: boolean(),
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
         }
@@ -81,8 +81,9 @@ defmodule MailgunLogger.Event do
     field(:message_subject, :string)
     field(:message_id, :string)
     field(:message_to, :string)
-    field(:stored_message, :map)
     field(:delivery_attempt, :integer)
+    field(:has_stored_message, :boolean, default: false)
+    field(:stored_message, :map)
     field(:raw, :map, default: %{})
 
     field(:linked_events, {:array, :map}, virtual: true)
@@ -102,7 +103,7 @@ defmodule MailgunLogger.Event do
     |> unique_constraint(:api_id)
   end
 
-  def changeset_stored_message(%__MODULE__{} = event, stored_message) do
-    change(event, %{stored_message: stored_message})
+  def changeset_has_stored_message(%__MODULE__{} = event) do
+    change(event, %{has_stored_message: true})
   end
 end

@@ -6,6 +6,8 @@ defmodule MailgunLogger.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
+    check_store_raw()
+
     children = [
       {Phoenix.PubSub, name: MailgunLogger.PubSub},
       {MailgunLogger.Repo, []},
@@ -23,6 +25,13 @@ defmodule MailgunLogger.Application do
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: MailgunLogger.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp check_store_raw() do
+    if Application.get_env(:mailgun_logger, :store_messages) and
+         is_nil(Application.get_env(:ex_aws, :access_key_id)) do
+      raise "If `store_messages` is on, you need to configure ex_aws"
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration

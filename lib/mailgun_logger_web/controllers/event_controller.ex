@@ -18,14 +18,14 @@ defmodule MailgunLoggerWeb.EventController do
   def stored_message(conn, %{"id" => event_id}) do
     event = Events.get_event(event_id)
 
-    case event.stored_message do
-      nil ->
-        redirect(conn, to: Routes.event_path(conn, :index))
+    if event.has_stored_message do
+      html = Mailgun.Events.get_stored_message_html(event)
 
-      %{"body-html" => html} ->
-        conn
-        |> put_layout(false)
-        |> render(:stored_message, html: html)
+      conn
+      |> put_layout(false)
+      |> render(:stored_message, html: html)
+    else
+      redirect(conn, to: Routes.event_path(conn, :index))
     end
   end
 end
