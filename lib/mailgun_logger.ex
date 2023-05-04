@@ -108,8 +108,8 @@ defmodule MailgunLogger do
   use Ecto.Schema
   import Ecto.Changeset
 
-  def migrate_existing_stored_messages_to_s3() do
-    from(e in Event, where: not is_nil(e.stored_message), limit: 1000)
+  def migrate_existing_stored_messages_to_s3(limit \\ 1_000) do
+    from(e in Event, where: not is_nil(e.stored_message), limit: ^limit)
     |> MailgunLogger.Repo.all()
     |> Enum.each(fn e ->
       bucket()
