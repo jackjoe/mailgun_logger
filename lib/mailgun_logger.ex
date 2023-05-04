@@ -117,6 +117,8 @@ defmodule MailgunLogger do
       |> ExAws.request!()
 
       change(e, %{stored_message: nil, has_stored_message: true}) |> MailgunLogger.Repo.update()
+
+      Process.sleep(50)
     end)
   end
 
