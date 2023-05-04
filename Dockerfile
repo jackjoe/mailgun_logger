@@ -1,4 +1,4 @@
-FROM jackjoe/elixir-phx AS builder
+FROM registry.gitlab.com/jack-joe-open-source/docker-images/elixir-phx AS builder
 
 ARG MIX_ENV=prod
 ENV PORT ${PORT:-5050}
