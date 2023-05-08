@@ -8,9 +8,9 @@
     <%= link "create an account", to: Routes.account_path(@conn, :new) %> to start receiving logs.
   </div>
   <% end %>
-  <%= if get_flash(@conn, :info) do %>
+  <%= if Phoenix.Flash.get(@flash, :info) do %>
     <div class="info" role="info">
-      <%= get_flash(@conn, :info) %>
+      <%= Phoenix.Flash.get(@flash, :info) %>
     </div>
   <% end %>
   <h2>Some stats</h2>

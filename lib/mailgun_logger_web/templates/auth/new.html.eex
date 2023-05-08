@@ -2,15 +2,15 @@
   <div class="w-1/3 lg:w-1/3 mx-auto bg-gray-200 p-5">
     <h2><%= gettext("Inloggen") %></h2>
 
-    <%= if get_flash(@conn, :info) do %>
+    <%= if Phoenix.Flash.get(@flash, :info) do %>
       <div class="alert alert-info" role="alert">
-        <%= get_flash(@conn, :info) %>
+        <%= Phoenix.Flash.get(@flash, :info) %>
       </div>
     <% end %>
 
-    <%= if get_flash(@conn, :error) do %>
+    <%= if Phoenix.Flash.get(@flash, :error) do %>
       <div class="validation-error" role="alert">
-        <%= get_flash(@conn, :error) %>
+        <%= Phoenix.Flash.get(@flash, :error) %>
       </div>
     <% end %>
 
