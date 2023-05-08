@@ -109,18 +109,23 @@ defmodule MailgunLogger do
   import Ecto.Changeset
 
   def migrate_existing_stored_messages_to_s3(limit \\ 1_000) do
-    from(e in Event, where: not is_nil(e.stored_message), limit: ^limit)
-    |> MailgunLogger.Repo.all()
-    |> Enum.reduce(1, fn e, acc ->
-      bucket()
-      |> ExAws.S3.put_object(file_path(e.api_id), Jason.encode!(e.stored_message))
-      |> ExAws.request!()
+    Enum.chunk_every(0..limit, 500)
+    |> Enum.each(fn chunk ->
+      inner_limit = chunk |> Enum.reverse() |> Enum.at(0, 0)
 
-      change(e, %{stored_message: nil, has_stored_message: true}) |> MailgunLogger.Repo.update()
+      from(e in Event, where: not is_nil(e.stored_message), limit: ^inner_limit)
+      |> MailgunLogger.Repo.all()
+      |> Enum.reduce(1, fn e, acc ->
+        bucket()
+        |> ExAws.S3.put_object(file_path(e.api_id), Jason.encode!(e.stored_message))
+        |> ExAws.request!()
 
-      Process.sleep(100)
-      Logger.info("Processing item #{acc}/#{limit}")
-      acc + 1
+        change(e, %{stored_message: nil, has_stored_message: true}) |> MailgunLogger.Repo.update()
+
+        Process.sleep(100)
+        Logger.info("Processing item #{acc}/#{inner_limit}/#{limit}")
+        acc + 1
+      end)
     end)
 
     {:ok, :done}
