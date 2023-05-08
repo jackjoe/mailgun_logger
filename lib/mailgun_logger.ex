@@ -122,7 +122,7 @@ defmodule MailgunLogger do
 
         change(e, %{stored_message: nil, has_stored_message: true}) |> MailgunLogger.Repo.update()
 
-        Process.sleep(100)
+        Process.sleep(50)
         Logger.info("Processing item #{acc}/#{inner_limit}/#{limit}")
         acc + 1
       end)
