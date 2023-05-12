@@ -50,6 +50,13 @@ defmodule MailgunLogger.Event do
   alias MailgunLogger.Event
   alias MailgunLogger.Account
 
+  @derive {
+    Flop.Schema,
+    filterable: [:event, :recipient, :message_from, :message_to, :message_subject],
+    sortable: [:inserted_at],
+    pagination_types: [:first, :last]
+  }
+
   @type t :: %__MODULE__{
           api_id: String.t(),
           event: String.t(),

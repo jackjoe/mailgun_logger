@@ -1,19 +1,15 @@
 import Config
 
-config :mailgun_logger, MailgunLoggerWeb.Endpoint,
-  debug_errors: true,
-  code_reloader: true,
-  check_origin: false,
-  watchers: []
+port = System.get_env("PORT") || "7000"
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [
     host: System.get_env("HOST", "0.0.0.0"),
     scheme: "https",
-    port: System.get_env("PORT") || "7000"
+    port: port
   ],
   https: [
-    port: System.get_env("PORT") || "7000",
+    port: port,
     cipher_suite: :strong,
     keyfile: "priv/cert/selfsigned_key.pem",
     certfile: "priv/cert/selfsigned.pem"
@@ -25,7 +21,11 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
       ~r{lib/mailgun_logger_web/views/.*(ex)$},
       ~r{lib/mailgun_logger_web/templates/.*(eex)$}
     ]
-  ]
+  ],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  watchers: []
 
 config :ex_aws,
   raw_path: "_dev_mailgun_logger/messages"
@@ -36,3 +36,4 @@ config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
+config :logger, compile_time_purge_matching: [[application: :remote_ip]]

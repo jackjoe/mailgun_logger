@@ -1,4 +1,4 @@
 <h1>Edit account</h1>
-<%= render "form.html", action: Routes.account_path(@conn, :update, @account), changeset: @changeset, conn: @conn %>
+<%= render "form.html", action: Routes.account_path(@conn, :update, @account), changeset: @changeset, flash: @flash %>
 <br />
 <%= link "delete", to: Routes.account_path(@conn, :delete, @account), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %>

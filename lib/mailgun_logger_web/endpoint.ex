@@ -1,6 +1,7 @@
 defmodule MailgunLoggerWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :mailgun_logger
   @moduledoc false
+
+  use Phoenix.Endpoint, otp_app: :mailgun_logger
 
   socket("/socket", MailgunLoggerWeb.UserSocket)
 
@@ -13,7 +14,7 @@ defmodule MailgunLoggerWeb.Endpoint do
     at: "/",
     from: :mailgun_logger,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: MailgunLoggerWeb.static_paths()
   )
 
   # Code reloading can be explicitly enabled under the

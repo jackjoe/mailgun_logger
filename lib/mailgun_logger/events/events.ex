@@ -34,8 +34,9 @@ defmodule MailgunLogger.Events do
 
     list_events_query()
     |> build_search_query(params)
-    |> limit(1_000)
-    |> Repo.all()
+    # |> limit(1_000)
+    # |> Repo.all()
+    |> Flop.validate_and_run(params, for: Event)
   end
 
   defp build_search_query(queryable, params) do

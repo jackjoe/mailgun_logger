@@ -1,5 +1,11 @@
 <h1>Events</h1>
 
+<hr>
+
+      <.filter_form meta={@meta} />
+<hr>
+
+
 <%= form_for @conn, Routes.event_path(@conn, :index), [method: "get"], fn f -> %>
   <%= text_input f, :subject, placeholder: "Subject" %>
   <%= text_input f, :recipient, placeholder: "Recipient" %>
@@ -25,14 +31,14 @@
   <%= label f, :stored %>
   <%= error_tag f, :stored %>
 
-  <%= select(f, :account, @accounts) %>
+  <%= select(f, :account, cbo_accounts(@accounts)) %>
 
   <%= submit "Search" %>
 <% end %>
 
 <br />
 
-<%= if Enum.count(@page) >= 1_000 do %>
+<%= if Enum.count(@events) >= 1_000 do %>
 <div style="font-family: monospace;padding: 5px; background: #ffff22;line-height: 20px;height: 20px; display: flex;align-items: center;justify-content: center;" >
   Note: listing the first 1 000 results. Want to see more? Refine your search.
   Paging with Scrivener was too slow, using offset. Want paging? PR's are welcome :)
@@ -65,19 +71,19 @@
     </tr>
   </thead>
   <tbody>
-    <%= for event <- @page do %>
+    <%= for event <- @events do %>
     <tr>
       <td><%= event_name(event.event) %></td>
       <td width="60"><%= event_type(event.log_level) %></td>
       <td width="90" style="font-family: monospace;"><%= send_recv(event.method) %></td>
       <td><div class="td-truncate"><%= event.message_from %></div></td>
-      <td><div class="td-truncate" title="<%= event.recipient %>"><%= event.recipient %></div></td>
-      <td title="<%= event.message_subject %>"><%= event.message_subject %></td>
+      <td><div class="td-truncate" title={event.recipient}><%= event.recipient %></div></td>
+      <td title={event.message_subject}><%= event.message_subject %></td>
       <td><%= event.account_domain %></td>
       <td style="font-variant-numeric: tabular-nums;"><%= event.timestamp %></td>
       <td style="white-space: nowrap;">
         <%= if event.event in ~w(delivered accepted failed) do %>
-        <a href="<%= Routes.event_path(@conn, :stored_message, event.id) %>" target="blank" style="margin-right: 10px;">view email</a>
+        <a href={Routes.event_path(@conn, :stored_message, event.id)} target="blank" style="margin-right: 10px;">view email</a>
         <% end %>
         <%= link "detail", to: Routes.event_path(@conn, :show, event.id) %>
       </td>
@@ -85,3 +91,8 @@
     <% end %>
   </tbody>
 </table>
+
+<Flop.Phoenix.cursor_pagination
+  meta={@meta}
+  path={~p"/events"}
+/>

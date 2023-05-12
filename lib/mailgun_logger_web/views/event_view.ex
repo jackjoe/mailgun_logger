@@ -67,4 +67,6 @@ defmodule MailgunLoggerWeb.EventView do
       _ -> ""
     end
   end
+
+  def cbo_accounts(accounts), do: Enum.map(accounts, &{&1.domain, &1.id})
 end
