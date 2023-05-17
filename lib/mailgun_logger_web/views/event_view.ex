@@ -84,7 +84,6 @@ defmodule MailgunLoggerWeb.EventView do
   end
 
   def list_attachments(%{"message" => %{"attachments" => atts}}) when atts != [] do
-    IO.inspect(atts)
     atts = Enum.map(atts, &Map.get(&1, "filename", ""))
 
     assigns = %{attachments: atts}
@@ -100,4 +99,6 @@ defmodule MailgunLoggerWeb.EventView do
   end
 
   def list_attachments(_), do: "none"
+
+  def cbo_accounts(accounts), do: Enum.map(accounts, &{&1.domain, &1.id})
 end

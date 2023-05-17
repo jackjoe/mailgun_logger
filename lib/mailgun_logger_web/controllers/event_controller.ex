@@ -5,9 +5,18 @@ defmodule MailgunLoggerWeb.EventController do
   alias MailgunLogger.Accounts
 
   def index(conn, params) do
-    accounts = Accounts.list_accounts() |> Enum.map(&{&1.domain, &1.id})
-    page = Events.search_events(params)
-    render(conn, :index, page: page, accounts: accounts)
+    accounts = Accounts.list_accounts()
+
+    case Events.search_events(params) do
+      {:ok, {events, meta}} ->
+        render(conn, :index, meta: meta, events: events, accounts: accounts)
+
+      {:error, %Flop.Meta{} = meta} ->
+        conn
+        |> put_flash(:error, "Something went wrong")
+        |> put_status(500)
+        |> render(:index, meta: meta, events: [], accounts: accounts)
+    end
   end
 
   def show(conn, %{"id" => event_id}) do

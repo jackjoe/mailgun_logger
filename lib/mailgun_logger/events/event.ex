@@ -50,6 +50,28 @@ defmodule MailgunLogger.Event do
   alias MailgunLogger.Event
   alias MailgunLogger.Account
 
+  @derive {
+    Flop.Schema,
+    filterable: [
+      :event,
+      :recipient,
+      :message_from,
+      :message_to,
+      :message_subject,
+      :account_domain
+    ],
+    join_fields: [
+      account_domain: [binding: :account, field: :id]
+    ],
+    sortable: [:inserted_at, :id],
+    default_order: %{
+      order_by: [:inserted_at, :id],
+      order_directions: [:desc, :asc]
+    },
+    default_pagination_type: :first,
+    pagination_types: [:first, :last]
+  }
+
   @type t :: %__MODULE__{
           api_id: String.t(),
           event: String.t(),

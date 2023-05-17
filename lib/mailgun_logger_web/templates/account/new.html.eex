@@ -1,2 +1,2 @@
 <h1>New account</h1>
-<%= render "form.html", action: account_path(@conn, :create), changeset: @changeset, conn: @conn %>
+<%= render "form.html", action: ~p"/accounts", changeset: @changeset, flash: @flash %>
