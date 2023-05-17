@@ -37,9 +37,9 @@ defmodule MailgunLoggerWeb.Components.Flop do
         form={@form}
         fields={ 
         [
-          message_from: [op: :like, placeholder: "From"],
-          recipient: [op: :like, placeholder: "Recipient"],
-          message_subject: [op: :like, placeholder: "subject"],
+          message_from: [op: :ilike, placeholder: "From"],
+          recipient: [op: :ilike, placeholder: "Recipient"],
+          message_subject: [op: :ilike, placeholder: "subject"],
           account_domain: [type: "select", options: @accounts]
         ]}
       >
@@ -52,44 +52,6 @@ defmodule MailgunLoggerWeb.Components.Flop do
         />
       </.filter_fields>
       <CoreComponents.button>Search</CoreComponents.button>
-    </.form>
-    """
-  end
-
-  def filter_form_actions(%{meta: meta} = assigns) do
-    assigns = assign(assigns, :form, Phoenix.Component.to_form(meta))
-
-    # The 'searchable' field in this form maps on the compound Flop field defined in lib/justified/partners/repos/partner.ex
-    # The compound field contains the name of the partner and the name of the partner's users.
-    ~H"""
-    <.form for={@form} class="searchbox pr-1" method="get">
-      <input name="type" type="hidden" value={@type} />
-
-      <.filter_fields
-        :let={i}
-        form={@form}
-        fields={[
-          searchable: [
-            class: "border-0",
-            label: "searchable",
-            op: :like,
-            placeholder: "Zoekterm...",
-            autofocus: true,
-            autocomplete: "off",
-            tabindex: 0
-          ]
-        ]}
-      >
-        <br />
-        <input type="search" name={i.field.name} id={i.field.id} value={i.field.value} {i.rest} />
-      </.filter_fields>
-
-      <label class="searchbox-icon" for="search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 451 451">
-          <path d="M447.05 428l-109.6-109.6c29.4-33.8 47.2-77.9 47.2-126.1C384.65 86.2 298.35 0 192.35 0 86.25 0 .05 86.3.05 192.3s86.3 192.3 192.3 192.3c48.2 0 92.3-17.8 126.1-47.2L428.05 447c2.6 2.6 6.1 4 9.5 4s6.9-1.3 9.5-4c5.2-5.2 5.2-13.8 0-19zM26.95 192.3c0-91.2 74.2-165.3 165.3-165.3 91.2 0 165.3 74.2 165.3 165.3s-74.1 165.4-165.3 165.4c-91.1 0-165.3-74.2-165.3-165.4z">
-          </path>
-        </svg>
-      </label>
     </.form>
     """
   end

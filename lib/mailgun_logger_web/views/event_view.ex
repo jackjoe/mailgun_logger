@@ -99,4 +99,6 @@ defmodule MailgunLoggerWeb.EventView do
   end
 
   def list_attachments(_), do: "none"
+
+  def cbo_accounts(accounts), do: Enum.map(accounts, &{&1.domain, &1.id})
 end

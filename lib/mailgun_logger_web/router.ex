@@ -23,7 +23,7 @@ defmodule MailgunLoggerWeb.Router do
   end
 
   # Always except in prod
-  if Application.get_env(:mailgun_logger, :env) == :dev do
+  if Application.compile_env(:mailgun_logger, :env) == :dev do
     forward("/sent_emails", Bamboo.SentEmailViewerPlug)
   end
 

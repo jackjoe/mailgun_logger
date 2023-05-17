@@ -63,7 +63,11 @@ defmodule MailgunLogger.Event do
     join_fields: [
       account_domain: [binding: :account, field: :id]
     ],
-    sortable: [:inserted_at],
+    sortable: [:inserted_at, :id],
+    default_order: %{
+      order_by: [:inserted_at, :id],
+      order_directions: [:desc, :asc]
+    },
     default_pagination_type: :first,
     pagination_types: [:first, :last]
   }

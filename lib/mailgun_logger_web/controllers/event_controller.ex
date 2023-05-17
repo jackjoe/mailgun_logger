@@ -5,10 +5,17 @@ defmodule MailgunLoggerWeb.EventController do
   alias MailgunLogger.Accounts
 
   def index(conn, params) do
-    with {:ok, {events, meta}} <- Events.search_events(params) do
-      accounts = Accounts.list_accounts()
-      IO.inspect(meta, label: "Flop.Meta")
-      render(conn, :index, meta: meta, events: events, accounts: accounts)
+    accounts = Accounts.list_accounts()
+
+    case Events.search_events(params) do
+      {:ok, {events, meta}} ->
+        render(conn, :index, meta: meta, events: events, accounts: accounts)
+
+      {:error, %Flop.Meta{} = meta} ->
+        conn
+        |> put_flash(:error, "Something went wrong")
+        |> put_status(500)
+        |> render(:index, meta: meta, events: [], accounts: accounts)
     end
   end
 
