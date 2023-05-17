@@ -315,3 +315,11 @@ tbody tr:hover td {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#events-filter > div {
+  display: inline-block;
+}
+
+#events-filter label {
+  display: none;
+}

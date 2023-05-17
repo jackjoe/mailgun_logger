@@ -7,6 +7,7 @@ defmodule MailgunLoggerWeb.EventController do
   def index(conn, params) do
     with {:ok, {events, meta}} <- Events.search_events(params) do
       accounts = Accounts.list_accounts()
+      IO.inspect(meta, label: "Flop.Meta")
       render(conn, :index, meta: meta, events: events, accounts: accounts)
     end
   end

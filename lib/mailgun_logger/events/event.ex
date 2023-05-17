@@ -52,8 +52,19 @@ defmodule MailgunLogger.Event do
 
   @derive {
     Flop.Schema,
-    filterable: [:event, :recipient, :message_from, :message_to, :message_subject],
+    filterable: [
+      :event,
+      :recipient,
+      :message_from,
+      :message_to,
+      :message_subject,
+      :account_domain
+    ],
+    join_fields: [
+      account_domain: [binding: :account, field: :id]
+    ],
     sortable: [:inserted_at],
+    default_pagination_type: :first,
     pagination_types: [:first, :last]
   }
 

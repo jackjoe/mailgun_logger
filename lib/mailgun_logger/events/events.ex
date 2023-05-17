@@ -7,35 +7,22 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Event
   alias MailgunLogger.Repo
 
-  defp list_events_query() do
-    Event
-    |> select([n, a], %{
-      id: n.id,
-      event: n.event,
-      method: n.method,
-      log_level: n.log_level,
-      message_from: n.message_from,
-      message_subject: n.message_subject,
-      recipient: n.recipient,
-      timestamp: n.timestamp,
-      account_domain: a.domain
-    })
-    |> join(:inner, [n], a in assoc(n, :account))
-    |> order_by([n], desc: n.timestamp)
-  end
+  # defp list_events_query() do
+  #   Event
+  #   |> join(:inner, [n], a in assoc(n, :account), as: :account)
+  #   |> preload([n], [:account])
+  #   |> order_by([n], desc: n.timestamp)
+  # end
 
   def search_events(params) do
-    params =
-      params
-      |> parse_search_params()
+    params = parse_search_params(params)
 
-    # |> Map.put("page_size", 50)
-    # |> PagingHelpers.scrivener_format_params()
-
-    list_events_query()
-    |> build_search_query(params)
-    # |> limit(1_000)
-    # |> Repo.all()
+    # list_events_query()
+    # |> build_search_query(params)
+    Event
+    |> join(:inner, [n], a in assoc(n, :account), as: :account)
+    |> preload([n], [:account])
+    |> order_by([n], desc: n.timestamp)
     |> Flop.validate_and_run(params, for: Event)
   end
 

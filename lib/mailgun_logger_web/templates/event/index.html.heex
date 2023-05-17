@@ -1,11 +1,7 @@
 <h1>Events</h1>
+  <.events_filter_form meta={@meta} accounts={cbo_accounts(@accounts)} id="events-filter" />
 
-<hr>
-
-      <.filter_form meta={@meta} />
-<hr>
-
-
+  <!--
 <%= form_for @conn, Routes.event_path(@conn, :index), [method: "get"], fn f -> %>
   <%= text_input f, :subject, placeholder: "Subject" %>
   <%= text_input f, :recipient, placeholder: "Recipient" %>
@@ -35,6 +31,7 @@
 
   <%= submit "Search" %>
 <% end %>
+      -->
 
 <br />
 
@@ -79,7 +76,7 @@
       <td><div class="td-truncate"><%= event.message_from %></div></td>
       <td><div class="td-truncate" title={event.recipient}><%= event.recipient %></div></td>
       <td title={event.message_subject}><%= event.message_subject %></td>
-      <td><%= event.account_domain %></td>
+      <td><%= event.account.domain %></td>
       <td style="font-variant-numeric: tabular-nums;"><%= event.timestamp %></td>
       <td style="white-space: nowrap;">
         <%= if event.event in ~w(delivered accepted failed) do %>
@@ -92,7 +89,9 @@
   </tbody>
 </table>
 
+<div style="margin-top: 20px">
 <Flop.Phoenix.cursor_pagination
   meta={@meta}
   path={~p"/events"}
 />
+</div>

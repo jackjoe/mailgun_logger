@@ -27,36 +27,31 @@ defmodule MailgunLoggerWeb.Components.Flop do
     ]
   end
 
-  def filter_form(%{meta: meta} = assigns) do
+  def events_filter_form(%{meta: meta} = assigns) do
     assigns = assign(assigns, :form, Phoenix.Component.to_form(meta))
 
-    # The 'searchable' field in this form maps on the compound Flop field defined in lib/justified/partners/repos/partner.ex
-    # The compound field contains the name of the partner and the name of the partner's users.
     ~H"""
-    <.form for={@form} class="flex-1 py-2 pr-4 h-full">
-      frm
+    <.form for={@form} class="flex-1 py-2 pr-4 h-full" id={@id}>
       <.filter_fields
-        :let={f}
+        :let={i}
         form={@form}
-        fields={[
-          searchable: [
-            label: "searchable",
-            op: :like,
-            placeholder: assigns[:search_placeholder] || "Search",
-            autofocus: true
-          ]
+        fields={ 
+        [
+          message_from: [op: :like, placeholder: "From"],
+          recipient: [op: :like, placeholder: "Recipient"],
+          message_subject: [op: :like, placeholder: "subject"],
+          account_domain: [type: "select", options: @accounts]
         ]}
       >
-        filter
-        <br />
-        <input type="text" name={f.field.name} id={f.field.id} value={f.field.value} {f.rest} />
-
-        <CoreComponents.input field={@form[:subject]} label="Email"/>
-
-
-          <CoreComponents.button>Search</CoreComponents.button>
-
+        <CoreComponents.input 
+        field={i.field}
+        label={i.label}
+        type={i.type}
+        phx-debounce={120}
+        {i.rest}
+        />
       </.filter_fields>
+      <CoreComponents.button>Search</CoreComponents.button>
     </.form>
     """
   end
