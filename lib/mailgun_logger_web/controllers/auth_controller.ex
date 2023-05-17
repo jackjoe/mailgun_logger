@@ -14,7 +14,7 @@ defmodule MailgunLoggerWeb.AuthController do
       {:ok, user} ->
         conn
         |> Auth.sign_in(user)
-        |> redirect(to: Routes.page_path(conn, :index))
+        |> redirect(to: Routes.event_path(conn, :index))
 
       {:error, _reason} ->
         conn

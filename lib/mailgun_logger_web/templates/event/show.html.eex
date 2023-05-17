@@ -15,13 +15,15 @@
   <dd><%= event_name(@event.event) %></dd>
   <dt>Method</dt>
   <dd><%= @event.method %></dd>
+  <dt>Attachments</dt>
+  <dd><%= list_attachments(@event.raw) %></dd>
   <dt>Timestamp</dt>
   <dd><%= @event.timestamp %></dd>
   <dt>From</dt>
   <dd><%= @event.message_from %></dd>
   <dt>Linked events</dt>
   <dd>
-  <ul>
+  <ul style="padding:0;margin:0;">
     <%= for linked <- @event.linked_events do %>
       <li><a href="<%= Routes.event_path(@conn, :show, linked) %>"><%= linked.event %> (<%=linked.timestamp %>)</a></li>
     <% end %>
@@ -33,4 +35,6 @@
   <dt>Actual sent email</dt>
   <dd><a href="<%= Routes.event_path(@conn, :stored_message, @event) %>" target="blank">view 🔗</a></dd>
   <% end %>
+  <dt>Dev Stuff</dt>
+  <dd><%= pretty_raw(@event.raw) %></dd>
 </dl>

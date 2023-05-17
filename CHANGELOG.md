@@ -1,6 +1,10 @@
+## 2305.3.0 (2023-05-08)
+
+- Add attachment info on the event detail page
+
 ## 2305.2.0 (2023-05-08)
 
-- update packages
+- Update packages
 
 ## 2305.1.0 (2023-05-02)
 
