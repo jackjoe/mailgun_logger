@@ -67,4 +67,37 @@ defmodule MailgunLoggerWeb.EventView do
       _ -> ""
     end
   end
+
+  def pretty_raw(raw) do
+    html =
+      raw
+      |> Jason.encode_to_iodata!()
+      |> Jason.Formatter.pretty_print()
+
+    assigns = %{html: html}
+
+    ~H"""
+    <code style="white-space: break-spaces">
+    <%= @html %>
+    </code>
+    """
+  end
+
+  def list_attachments(%{"message" => %{"attachments" => atts}}) when atts != [] do
+    IO.inspect(atts)
+    atts = Enum.map(atts, &Map.get(&1, "filename", ""))
+
+    assigns = %{attachments: atts}
+
+    ~H"""
+      <div style="font-style: italic;color: #aaa;">Note: listing belows shows filenames only, no links to the files available.</div>
+      <ul style="padding:0;">
+        <%= for a <- @attachments do %>
+          <li><%= a %></li>
+        <% end %>
+      </ul>    
+    """
+  end
+
+  def list_attachments(_), do: "none"
 end
