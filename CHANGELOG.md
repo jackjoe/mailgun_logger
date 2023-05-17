@@ -1,3 +1,7 @@
+## 2305.4.0 (2023-05-08)
+
+- Cursor based pagination using Flop
+
 ## 2305.3.0 (2023-05-08)
 
 - Add attachment info on the event detail page
