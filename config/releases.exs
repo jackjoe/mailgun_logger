@@ -4,7 +4,8 @@ config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER"),
   password: System.get_env("ML_DB_PASSWORD"),
   database: System.get_env("ML_DB_NAME"),
-  hostname: System.get_env("ML_DB_HOST")
+  hostname: System.get_env("ML_DB_HOST"),
+  port: System.get_env("ML_DB_PORT") || 5432
 
 config :mailgun_logger, MailgunLogger.Mailer,
   adapter: Bamboo.MailgunAdapter,
