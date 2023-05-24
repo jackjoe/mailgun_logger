@@ -1,3 +1,7 @@
+## 2305.4.1 (2023-05-24)
+
+- Provide env config option for the db port
+
 ## 2305.4.0 (2023-05-08)
 
 - Cursor based pagination using Flop
