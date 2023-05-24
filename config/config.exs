@@ -73,6 +73,7 @@ config :mailgun_logger, MailgunLogger.Repo,
   password: System.get_env("ML_DB_PASSWORD"),
   database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
   hostname: System.get_env("ML_DB_HOST") || "localhost",
+  port: System.get_env("ML_DB_PORT") || 5432,
   pool_size: 10,
   timeout: 30_000,
   # default 50ms
