@@ -1,3 +1,7 @@
+## 2305.5.0 (2023-06-09)
+
+- Add logger to Papertrail
+
 ## 2305.4.1 (2023-05-24)
 
 - Provide env config option for the db port
