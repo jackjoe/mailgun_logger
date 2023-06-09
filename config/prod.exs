@@ -13,7 +13,7 @@ config :phoenix, :serve_endpoints, true
 
 config :logger,
   backends: [:console, LoggerPapertrailBackend.Logger],
-  level: String.to_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info,
+  level: String.to_existing_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info,
   compile_time_purge_matching: [[application: :remote_ip]]
 
 config :ex_aws, debug_requests: false

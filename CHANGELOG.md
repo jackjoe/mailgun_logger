@@ -1,3 +1,8 @@
+## 2305.6.0 (2023-06-09)
+
+- Improve redirects
+- Promote event listing to new home page (for faster loading)
+
 ## 2305.5.0 (2023-06-09)
 
 - Add logger to Papertrail

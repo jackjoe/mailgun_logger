@@ -1,4 +1,10 @@
-<h1>Events</h1>
+<div style="display: flex; align-items: center; justify-content: space-between">
+  <h1>Events
+(
+    <%= link "trigger new run", to: Routes.page_path(@conn, :trigger_run), method: "POST" %>
+)
+  </h1>
+</div>
   <.flash_group flash={@flash} />
 
   <.events_filter_form meta={@meta} accounts={cbo_accounts(@accounts)} id="events-filter" />
