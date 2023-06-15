@@ -29,6 +29,7 @@ defmodule MailgunLoggerWeb.EventController do
 
     if event.has_stored_message do
       html = Mailgun.Events.get_stored_message_html(event)
+      html = String.replace(html, "bgcolor", "_bgcolor")
 
       conn
       |> put_layout(false)
