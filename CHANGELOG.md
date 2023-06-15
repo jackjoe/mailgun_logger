@@ -1,3 +1,7 @@
+## 2305.6.1 (2023-06-15)
+
+- Ignore bgcolor attr in original event html
+
 ## 2305.6.0 (2023-06-09)
 
 - Improve redirects
