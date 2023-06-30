@@ -1,3 +1,7 @@
+## 2305.6.2 (2023-06-30)
+
+- Bump dependencies
+
 ## 2305.6.1 (2023-06-15)
 
 - Ignore bgcolor attr in original event html
