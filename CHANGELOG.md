@@ -1,3 +1,7 @@
+## 2305.7.0 (2023-06-30)
+
+- Drastically improve query speed by removing a join
+
 ## 2305.6.2 (2023-06-30)
 
 - Bump dependencies

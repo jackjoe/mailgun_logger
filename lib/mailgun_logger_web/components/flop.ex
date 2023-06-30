@@ -40,7 +40,7 @@ defmodule MailgunLoggerWeb.Components.Flop do
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
           message_subject: [op: :ilike, placeholder: "subject"],
-          account_domain: [type: "select", options: @accounts]
+          account_id: [type: "select", options: @accounts]
         ]}
       >
         <CoreComponents.input 

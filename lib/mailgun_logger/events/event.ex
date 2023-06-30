@@ -58,10 +58,7 @@ defmodule MailgunLogger.Event do
       :message_from,
       :message_to,
       :message_subject,
-      :account_domain
-    ],
-    join_fields: [
-      account_domain: [binding: :account, field: :id]
+      :account_id
     ],
     sortable: [:inserted_at, :id],
     default_order: %{
