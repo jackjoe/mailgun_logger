@@ -25,7 +25,9 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: []
+  watchers: [
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+  ]
 
 config :ex_aws,
   raw_path: "_dev_mailgun_logger/messages"

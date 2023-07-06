@@ -27,12 +27,4 @@ defmodule MailgunLoggerWeb.PageController do
   def non_affiliation(conn, _) do
     render(conn, :non_affiliation)
   end
-
-  def trigger_run(conn, _) do
-    Task.start(&MailgunLogger.run/0)
-
-    conn
-    |> put_flash(:info, "Run triggered successfully. Data should be coming in...")
-    |> redirect(to: Routes.event_path(conn, :index))
-  end
 end

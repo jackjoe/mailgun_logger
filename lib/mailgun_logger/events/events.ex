@@ -11,8 +11,6 @@ defmodule MailgunLogger.Events do
     params = parse_search_params(params)
 
     Event
-    # |> join(:inner, [n], a in assoc(n, :account), as: :account)
-    # |> preload([n], [:account])
     |> order_by([n], desc: n.timestamp)
     |> Flop.validate_and_run(params, for: Event)
   end

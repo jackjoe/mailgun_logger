@@ -4,7 +4,7 @@ defmodule MailgunLogger.Mixfile do
   def project do
     [
       app: :mailgun_logger,
-      version: "2305.6.2",
+      version: "2307.1.0",
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       aliases: aliases(),
@@ -66,8 +66,9 @@ defmodule MailgunLogger.Mixfile do
       {:hackney, "~> 1.12"},
       {:httpoison, "~> 2.1"},
       {:jason, "~> 1.3"},
-      {:flop, "~> 0.20.2"},
-      {:flop_phoenix, "~> 0.19.0"},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
+      {:flop, "~> 0.21.0"},
+      {:flop_phoenix, "~> 0.19.1"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:phoenix, "~> 1.7"},

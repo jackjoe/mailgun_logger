@@ -1,3 +1,7 @@
+## 2307.1.0 (2023-07-06)
+
+- Added LiveView component to trigger a new run
+
 ## 2305.7.0 (2023-06-30)
 
 - Drastically improve query speed by removing a join

@@ -5,7 +5,7 @@
       <nav id="main-nav">
         <div id="app-logo">
           <a href="<%= Routes.event_path(@conn, :index) %>">
-            <img src="<%= Routes.static_path(@conn, "/images/favicon.png") %>" alt="" id="logo" />
+            <img src="<%= Routes.static_path(@conn, "/assets/images/favicon.png") %>" alt="" id="logo" />
           </a>
         </div>
         <ul>

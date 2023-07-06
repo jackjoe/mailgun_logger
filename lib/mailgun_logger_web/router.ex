@@ -6,7 +6,7 @@ defmodule MailgunLoggerWeb.Router do
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
-    plug(:fetch_flash)
+    plug(:fetch_live_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Plug.Logger)
@@ -82,6 +82,5 @@ defmodule MailgunLoggerWeb.Router do
     get("/stats", PageController, :stats)
     get("/graphs", PageController, :graphs)
     get("/non-affiliation", PageController, :non_affiliation)
-    post("/trigger_run", PageController, :trigger_run)
   end
 end

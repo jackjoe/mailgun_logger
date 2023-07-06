@@ -16,7 +16,18 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: System.get_env("HOST")],
   secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
+  live_view: [signing_salt: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d"],
   pubsub_server: MailgunLogger.PubSub
+
+# Configure esbuild (the version is required)
+config :esbuild,
+  version: "0.17.11",
+  default: [
+    args:
+      ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/*),
+    cd: Path.expand("../assets", __DIR__),
+    env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
+  ]
 
 config :phoenix, :format_encoders, json: Jason
 config :phoenix, :json_library, Jason

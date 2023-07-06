@@ -2,30 +2,7 @@
       <%= link "Mailgun", to: Routes.page_path(@conn, :non_affiliation) %> Logger v<%= Application.spec(:mailgun_logger, :vsn) %>
       | created by Jack + Joe | <a href="https://raw.githubusercontent.com/jackjoe/mailgun_logger/master/LICENSE">MIT License</a>
     </footer>
-
-    <script charset="utf-8">
-      var modalButtons = document.querySelectorAll("[data-toggle='modal']")
-      Array.prototype.slice.call(modalButtons).forEach(el => {
-        var target = document.querySelector(el.dataset.target)
-        if (target) {
-          el.addEventListener('click', function(e) {
-            e.preventDefault()
-            target.classList.toggle('show')
-            target.querySelector('.close').focus()
-          })
-        }
-      })
-      var modals = document.querySelectorAll('.modal')
-      Array.prototype.slice.call(modals).forEach(function(modal) {
-        var id = modal.getAttribute('id')
-        modal
-          .querySelector("[data-dismiss='modal']")
-          .addEventListener('click', function() {
-            var modal = document.querySelector(`#${id}`)
-            modal.classList.toggle('show')
-          })
-      })
-    </script>
-    <script src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <script defer phx-track-static src="<%= Routes.static_path(@conn, "/assets/js/app.js") %>"></script>
+    <script src="<%= Routes.static_path(@conn, "/assets/js/util.js") %>"></script>
   </body>
 </html>
