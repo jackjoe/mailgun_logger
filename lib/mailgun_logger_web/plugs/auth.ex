@@ -27,6 +27,7 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
         |> assign(:current_user, nil)
         |> assign(:signed_in?, false)
         |> redirect(to: Routes.auth_path(conn, :new))
+        |> halt()
     end
   end
 

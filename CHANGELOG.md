@@ -1,3 +1,7 @@
+## 2307.1.1 (2023-07-06)
+
+- Fix annoying error with the conn not being halted correctly
+
 ## 2307.1.0 (2023-07-06)
 
 - Added LiveView component to trigger a new run
