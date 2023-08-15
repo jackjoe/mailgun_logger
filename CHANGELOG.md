@@ -1,3 +1,8 @@
+## 2308.1.0 (2023-08-15)
+
+- Add event type filter to search form
+- Bump packages
+
 ## 2307.1.1 (2023-07-06)
 
 - Fix annoying error with the conn not being halted correctly

@@ -37,6 +37,7 @@ defmodule MailgunLoggerWeb.Components.Flop do
         form={@form}
         fields={ 
         [
+          event: [type: "select", options: [nil] ++ ~w(delivered accepted opened failed stored)],
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
           message_subject: [op: :ilike, placeholder: "subject"],
