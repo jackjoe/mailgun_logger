@@ -1,3 +1,7 @@
+## 2308.1.1 (2023-08-15)
+
+- Add `check_origin` option
+
 ## 2308.1.0 (2023-08-15)
 
 - Add event type filter to search form

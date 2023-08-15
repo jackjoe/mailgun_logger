@@ -17,7 +17,8 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
   live_view: [signing_salt: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d"],
-  pubsub_server: MailgunLogger.PubSub
+  pubsub_server: MailgunLogger.PubSub,
+  check_origin: false
 
 # Configure esbuild (the version is required)
 config :esbuild,
