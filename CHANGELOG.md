@@ -1,3 +1,8 @@
+## 2309.1.0 (2023-09-26)
+
+- Update some dependencies
+- Update 'Readme'
+
 ## 2308.1.1 (2023-08-15)
 
 - Add `check_origin` option
