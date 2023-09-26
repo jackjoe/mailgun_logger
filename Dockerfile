@@ -20,7 +20,7 @@ RUN mix release production
 
 ##################################################
 
-FROM jackjoe/alpine
+FROM registry.gitlab.com/jack-joe-open-source/docker-images/alpine
 
 ARG APP_VSN
 ARG APP_NAME
