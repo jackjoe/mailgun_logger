@@ -1,3 +1,7 @@
+## 23012.2.0 (2023-12-07)
+
+- Changed the trigger button from LV to POST (@m1dnight)
+
 ## 23012.1.0 (2023-12-06)
 
 - Added index to inserted_at on events to speed things up (@m1dnight)
