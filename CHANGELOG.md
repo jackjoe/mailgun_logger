@@ -1,3 +1,7 @@
+## 23012.1.0 (2023-12-06)
+
+- Added index to inserted_at on events to speed things up (@m1dnight)
+
 ## 2309.1.0 (2023-09-26)
 
 - Update some dependencies
