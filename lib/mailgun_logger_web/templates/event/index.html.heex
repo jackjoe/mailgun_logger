@@ -1,6 +1,9 @@
 <div style="display: flex; align-items: center; justify-content: space-between">
   <h1>Events</h1>
-  <%= live_render(@conn, MailgunLogger.RunTriggererLive) %>
+  <%= # live_render(@conn, MailgunLogger.RunTriggererLive) %>
+  <%= form_for @conn, ~p"/trigger-run", fn f -> %>
+    <%= submit "Trigger Run" %>
+  <% end %>
 </div>
 
   <.flash_group flash={@flash} />

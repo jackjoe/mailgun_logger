@@ -17,11 +17,11 @@ defmodule MailgunLogger.RunTriggererLive do
     """
   end
 
-  def handle_event("trigger_run", _, socket) do
-    Task.start(&MailgunLogger.run/0)
-    Process.send_after(self(), :reset, 3000)
-    {:noreply, assign(socket, :triggered?, true)}
-  end
+  # def handle_event("trigger_run", _, socket) do
+  #   Task.start(&MailgunLogger.run/0)
+  #   Process.send_after(self(), :reset, 3000)
+  #   {:noreply, assign(socket, :triggered?, true)}
+  # end
 
   def handle_info(:reset, socket) do
     {:noreply, assign(socket, :triggered?, false)}
