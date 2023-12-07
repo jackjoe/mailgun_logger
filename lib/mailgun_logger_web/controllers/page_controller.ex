@@ -8,6 +8,20 @@ defmodule MailgunLoggerWeb.PageController do
     redirect(conn, to: Routes.event_path(conn, :index))
   end
 
+  def trigger_run(conn, _) do
+    # run the task to fetch new emails
+    MailgunLogger.run_async_if_not_running()
+
+    # redirect to the current page to preserve the search query parameters
+    case List.keyfind(conn.req_headers, "referer", 0) do
+      {"referer", path} ->
+        redirect(conn, external: path)
+
+      _ ->
+        redirect(conn, to: Routes.event_path(conn, :index))
+    end
+  end
+
   def stats(conn, _) do
     total_accounts = Accounts.list_accounts() |> length()
 
