@@ -186,6 +186,10 @@ tr {
   padding: 8px 12px;
 }
 
+.pagination-next {
+  margin-left: 10px;
+}
+
 dt {
   font-weight: bold;
 }
