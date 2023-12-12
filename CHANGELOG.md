@@ -1,3 +1,7 @@
+## 23012.3.0 (2023-12-12)
+
+- Handle plain text raw messages
+
 ## 23012.2.0 (2023-12-07)
 
 - Changed the trigger button from LV to POST (@m1dnight)
