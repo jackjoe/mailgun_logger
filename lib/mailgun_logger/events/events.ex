@@ -8,29 +8,47 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Repo
 
   def search_events(params) do
-    params = parse_search_params(params)
+    params = trim_flop_filters(params)
 
     Event
     |> order_by([n], desc: n.timestamp)
     |> Flop.validate_and_run(params, for: Event)
   end
 
-  defp parse_search_params(params) do
-    accepted = checkbox_string_prop(params, "accepted")
-    delivered = checkbox_string_prop(params, "delivered")
-    opened = checkbox_string_prop(params, "opened")
-    failed = checkbox_string_prop(params, "failed")
-    stored = checkbox_string_prop(params, "stored")
-    event = [accepted, delivered, opened, failed, stored] |> Enum.reject(&is_nil(&1))
+  #  Phoenix Flop filter_form does not trim whitespace from entries
+  # %{
+  #   "filters" => %{
+  #     "0" => %{"field" => "event", "value" => ""},
+  #     "1" => %{"field" => "message_from", "op" => "ilike", "value" => ""},
+  #     "2" => %{
+  #       "field" => "recipient",
+  #       "op" => "ilike",
+  #       "value" => "teamleader.eu "
+  #     },
+  #     "3" => %{"field" => "message_subject", "op" => "ilike", "value" => ""},
+  #     "4" => %{"field" => "account_id", "value" => "3"}
+  #   }
+  # }
+  #
+  def trim_flop_filters(%{"filters" => filters} = params) when not is_nil(filters) do
+    filters =
+      Enum.map(filters, fn {k, v} ->
+        v =
+          v
+          |> Enum.map(fn
+            {"value", v} when is_binary(v) -> {"value", String.trim(v)}
+            {k, v} -> {k, v}
+          end)
+          |> Enum.into(%{})
 
-    Map.merge(params, %{"event" => event})
+        {k, v}
+      end)
+      |> Enum.into(%{})
+
+    %{params | "filters" => filters}
   end
 
-  defp checkbox_string_prop(params, prop) do
-    if Map.get(params, prop, nil) == "true",
-      do: prop,
-      else: nil
-  end
+  def trim_flop_filters(params), do: params
 
   @spec get_event(number) :: Event.t()
   def get_event(id) do

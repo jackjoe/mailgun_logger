@@ -1,3 +1,7 @@
+## 23012.4.0 (2023-12-20)
+
+- Trim values for filters in search form
+
 ## 23012.3.0 (2023-12-12)
 
 - Handle plain text raw messages
