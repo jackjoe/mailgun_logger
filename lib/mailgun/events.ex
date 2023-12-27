@@ -69,8 +69,9 @@ defmodule Mailgun.Events do
 
   def get_stored_message_content(event) do
     msg = get_stored_message(event)
+    content_type = Map.get(msg, "Content-Type", "")
 
-    if String.contains?(msg["Content-Type"], "text/plain") do
+    if String.contains?(content_type, "text/plain") do
       Map.get(msg, "body-plain", "")
     else
       Map.get(msg, "body-html", "")
