@@ -117,7 +117,7 @@ version: "3"
 
 services:
   db:
-    image: postgresql
+    image: postgres
     networks:
       - webnet
     environment:
@@ -125,7 +125,7 @@ services:
       - POSTGRES_USER=logger
       - POSTGRES_DATABASE=mailgun_logger
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
   web:
     image: jackjoe/mailgun_logger
