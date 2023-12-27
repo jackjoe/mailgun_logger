@@ -1,3 +1,9 @@
+## 23012.5.0 (2023-12-27)
+
+- Bump packages
+- Fix unhandled nil value in message content type check (#33)
+- Enlarge `message_id` field (#32)
+
 ## 23012.4.0 (2023-12-20)
 
 - Trim values for filters in search form
