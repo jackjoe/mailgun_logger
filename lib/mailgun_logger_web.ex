@@ -69,7 +69,9 @@ defmodule MailgunLoggerWeb do
   defp html_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+      import Phoenix.HTML
+      import Phoenix.HTML.Form
+      use PhoenixHTMLHelpers
       use Phoenix.LiveView
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
