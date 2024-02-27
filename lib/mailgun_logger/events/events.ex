@@ -7,29 +7,22 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Event
   alias MailgunLogger.Repo
 
-  def search_events(params) do
+  def search_events(params, opts \\ []) do
     params = trim_flop_filters(params)
 
+    fields =
+      Keyword.get(
+        opts,
+        :fields,
+        ~w(id api_id event log_level method recipient timestamp message_from message_subject)a
+      )
+
     Event
-    |> order_by([n], desc: n.timestamp)
+    |> order_by([e], desc: e.timestamp)
+    |> select([e], ^fields)
     |> Flop.validate_and_run(params, for: Event)
   end
 
-  #  Phoenix Flop filter_form does not trim whitespace from entries
-  # %{
-  #   "filters" => %{
-  #     "0" => %{"field" => "event", "value" => ""},
-  #     "1" => %{"field" => "message_from", "op" => "ilike", "value" => ""},
-  #     "2" => %{
-  #       "field" => "recipient",
-  #       "op" => "ilike",
-  #       "value" => "teamleader.eu "
-  #     },
-  #     "3" => %{"field" => "message_subject", "op" => "ilike", "value" => ""},
-  #     "4" => %{"field" => "account_id", "value" => "3"}
-  #   }
-  # }
-  #
   def trim_flop_filters(%{"filters" => filters} = params) when not is_nil(filters) do
     filters =
       Enum.map(filters, fn {k, v} ->
