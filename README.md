@@ -169,6 +169,19 @@ $ docker-compose up
 
 Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 
+### Postgresql tip
+
+If you find yourself with many events in your database and a slow search, consider installing the [**pg_trm** extension](https://www.postgresql.org/docs/current/pgtrgm.html).
+Adding an index on these 3 fields will give you a huge speed gain:
+
+```mysql
+CREATE EXTENSION pg_trgm;
+
+CREATE INDEX events_recipient_gin_trgm_idx ON events USING gin (recipient gin_trgm_ops);
+CREATE INDEX events_message_from_gin_trgm_idx ON events USING gin (message_from gin_trgm_ops);
+CREATE INDEX events_message_subject_gin_trgm_idx ON events USING gin (message_subject gin_trgm_ops);
+```
+
 ## Contributing
 
 To run on your local machine, you need to setup shop first.
