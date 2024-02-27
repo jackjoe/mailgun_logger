@@ -8,7 +8,7 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Repo
 
   def search_events(params, opts \\ []) do
-    params = trim_flop_filters(params)
+    params = init_filters(params)
 
     fields =
       Keyword.get(
@@ -23,7 +23,7 @@ defmodule MailgunLogger.Events do
     |> Flop.validate_and_run(params, for: Event)
   end
 
-  def trim_flop_filters(%{"filters" => filters} = params) when not is_nil(filters) do
+  def init_filters(%{"filters" => filters} = params) do
     filters =
       Enum.map(filters, fn {k, v} ->
         v =
@@ -41,7 +41,9 @@ defmodule MailgunLogger.Events do
     %{params | "filters" => filters}
   end
 
-  def trim_flop_filters(params), do: params
+  def init_filters(params) do
+    Map.put(params, "filters", %{"0" => %{"field" => "event", "value" => "delivered"}})
+  end
 
   @spec get_event(number) :: Event.t()
   def get_event(id) do
