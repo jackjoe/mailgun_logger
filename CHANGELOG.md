@@ -1,3 +1,7 @@
+## 2302.2.0 (2024-02-27)
+
+- Default ':delivered' filter
+
 ## 2302.1.0 (2024-02-27)
 
 - Bump packages
