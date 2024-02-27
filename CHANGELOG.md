@@ -1,18 +1,23 @@
-## 23012.5.0 (2023-12-27)
+## 2302.1.0 (2024-02-27)
+
+- Bump packages
+- Fix `Endpoint.init/2` deprecation warning
+
+## 2312.5.0 (2023-12-27)
 
 - Bump packages
 - Fix unhandled nil value in message content type check (#33)
 - Enlarge `message_id` field (#32)
 
-## 23012.4.0 (2023-12-20)
+## 2312.4.0 (2023-12-20)
 
 - Trim values for filters in search form
 
-## 23012.3.0 (2023-12-12)
+## 2312.3.0 (2023-12-12)
 
 - Handle plain text raw messages
 
-## 23012.2.0 (2023-12-07)
+## 2312.2.0 (2023-12-07)
 
 - Changed the trigger button from LV to POST (@m1dnight)
 
