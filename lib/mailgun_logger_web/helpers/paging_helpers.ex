@@ -1,5 +1,7 @@
 defmodule MailgunLoggerWeb.PagingHelpers do
-  use Phoenix.HTML
+  import Phoenix.HTML
+  import Phoenix.HTML.Form
+  use PhoenixHTMLHelpers
 
   def sort_link(conn, _page, field, name, opts \\ []) do
     current_url = current_uri(conn)

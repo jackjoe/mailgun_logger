@@ -67,8 +67,15 @@ defmodule Mailgun.Events do
     |> Jason.decode!()
   end
 
-  def get_stored_message_html(event) do
-    event |> get_stored_message() |> Map.get("body-html", "")
+  def get_stored_message_content(event) do
+    msg = get_stored_message(event)
+    content_type = Map.get(msg, "Content-Type", "")
+
+    if String.contains?(content_type, "text/plain") do
+      Map.get(msg, "body-plain", "")
+    else
+      Map.get(msg, "body-html", "")
+    end
   end
 
   def file_path(%{api_id: api_id}), do: file_path(api_id)

@@ -1,9 +1,13 @@
 defmodule MailgunLoggerWeb.Endpoint do
   @moduledoc false
 
+  @session_options [store: :cookie, key: "_mailgun_logger_key", signing_salt: "xI0ktzaL"]
+
   use Phoenix.Endpoint, otp_app: :mailgun_logger
 
   socket("/socket", MailgunLoggerWeb.UserSocket)
+
+  socket("/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]])
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -11,8 +15,8 @@ defmodule MailgunLoggerWeb.Endpoint do
   # when deploying your static files in production.
   plug(
     Plug.Static,
-    at: "/",
     from: :mailgun_logger,
+    at: "/",
     gzip: false,
     only: MailgunLoggerWeb.static_paths()
   )
@@ -38,29 +42,8 @@ defmodule MailgunLoggerWeb.Endpoint do
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
-  plug(
-    Plug.Session,
-    store: :cookie,
-    key: "_mailgun_logger_key",
-    signing_salt: "xI0ktzaL"
-  )
-
+  plug(Plug.Session, @session_options)
   plug(MailgunLoggerWeb.Router)
-
-  @doc """
-  Callback invoked for dynamically configuring the endpoint.
-
-  It receives the endpoint configuration and checks if
-  configuration should be loaded from the system environment.
-  """
-  def init(_key, config) do
-    if config[:load_from_system_env] do
-      port = System.fetch_env!("PORT") || raise "expected the PORT environment variable to be set"
-      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
-    else
-      {:ok, config}
-    end
-  end
 
   def build_conn(), do: %Plug.Conn{private: %{phoenix_endpoint: MailgunLoggerWeb.Endpoint}}
 end

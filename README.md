@@ -22,6 +22,8 @@ For efficiency and less complexity, it retrieves events for the last two days (f
 
 This is done because, as stated in the Mailgun docs, it is not guaranteed that for a given time period, all actual events will be ready, since some take time to get into the system although they already happened.
 
+An AWS bucket can be configured to store the raw messages on S3.
+
 See the docs for implementation details.
 
 _**IMPORTANT**_
@@ -85,6 +87,15 @@ Following variables are available:
 - **MAILGUN_DOMAIN**: to send the password reset email
 - **MAILGUN_FROM**: to send the password reset email
 - **MAILGUN_REPLY_TO**: to send the password reset email
+- **AWS_ACCESS_KEY_ID**: AWS key
+- **AWS_SECRET_ACCESS_KEY**: AWS access key
+- **AWS_REGION**: AWS region (e.g.: `eu-central-1`)
+- **AWS_BUCKET**: AWS bucket
+- **AWS_PORT**: AWS port (e.g.: 443)
+- **AWS_SCHEME**: AWS scheme (e.g.: `https`)
+- **AWS_ASSET_HOST**: AWS asset host name (e.g.: `http://files.yourdomain.com.s3.amazonaws.com/`)
+- **AWS_HOST**: AWS host (e.g.: `s3.eu-central-1.amazonaws.com`)
+- **RAW_PATH**: path from bucket root to store the messages on AWS
 
 ### Docker
 
@@ -106,15 +117,15 @@ version: "3"
 
 services:
   db:
-    image: postgresql
+    image: postgres
     networks:
       - webnet
     environment:
-      - POSTGRESS_PASSWORD=logger
-      - POSTGRESS_USER=logger
-      - POSTGRESS_DATABASE=mailgun_logger
+      - POSTGRES_PASSWORD=logger
+      - POSTGRES_USER=logger
+      - POSTGRES_DATABASE=mailgun_logger
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
   web:
     image: jackjoe/mailgun_logger
@@ -126,10 +137,21 @@ services:
     networks:
       - webnet
     environment:
-      - ML_DB_USER=logger
-      - ML_DB_PASSWORD=logger
-      - ML_DB_NAME=mailgun_logger
-      - ML_DB_HOST=db
+      - "ML_DB_USER=logger"
+      - "ML_DB_PASSWORD=logger"
+      - "ML_DB_NAME=mailgun_logger"
+      - "ML_DB_HOST=db"
+      - "MAILGUN_API_KEY=*****"
+      - "MAILGUN_DOMAIN=m.mydomain.be"
+      - "AWS_ACCESS_KEY_ID=******"
+      - "AWS_SECRET_ACCESS_KEY=******"
+      - "AWS_REGION=eu-central-1"
+      - "AWS_BUCKET=*****"
+      - "AWS_PORT=443"
+      - "AWS_SCHEME=https://"
+      - "AWS_ASSET_HOST=*****"
+      - "AWS_HOST=s3.eu-central-1.amazonaws.com"
+      - "RAW_PATH=mailgun_logger/messages"
 
 networks:
   webnet:
@@ -146,6 +168,19 @@ $ docker-compose up
 ```
 
 Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
+
+### Postgresql tip
+
+If you find yourself with many events in your database and a slow search, consider installing the [**pg_trm** extension](https://www.postgresql.org/docs/current/pgtrgm.html).
+Adding an index on these 3 fields will give you a huge speed gain:
+
+```mysql
+CREATE EXTENSION pg_trgm;
+
+CREATE INDEX events_recipient_gin_trgm_idx ON events USING gin (recipient gin_trgm_ops);
+CREATE INDEX events_message_from_gin_trgm_idx ON events USING gin (message_from gin_trgm_ops);
+CREATE INDEX events_message_subject_gin_trgm_idx ON events USING gin (message_subject gin_trgm_ops);
+```
 
 ## Contributing
 

@@ -1,4 +1,11 @@
-<h1>Events</h1>
+<div style="display: flex; align-items: center; justify-content: space-between">
+  <h1>Events</h1>
+  <%= # live_render(@conn, MailgunLogger.RunTriggererLive) %>
+  <%= form_for @conn, ~p"/trigger-run", fn f -> %>
+    <%= submit "Trigger Run" %>
+  <% end %>
+</div>
+
   <.flash_group flash={@flash} />
 
   <.events_filter_form meta={@meta} accounts={cbo_accounts(@accounts)} id="events-filter" />
@@ -50,7 +57,6 @@
     <col width="200"/>
     <col width="200"/>
     <col/>
-    <col/>
     <col width="170" />
     <col/>
   </colgroup>
@@ -62,7 +68,6 @@
       <th>from</th>
       <th>recipient</th>
       <th>subject</th>
-      <th>account</th>
       <th>timestamp</th>
       <th></th>
     </tr>
@@ -76,7 +81,6 @@
       <td><div class="td-truncate"><%= event.message_from %></div></td>
       <td><div class="td-truncate" title={event.recipient}><%= event.recipient %></div></td>
       <td title={event.message_subject}><%= event.message_subject %></td>
-      <td><%= event.account.domain %></td>
       <td style="font-variant-numeric: tabular-nums;"><%= event.timestamp %></td>
       <td style="white-space: nowrap;">
         <%= if event.event in ~w(delivered accepted failed) do %>

@@ -3,7 +3,8 @@ defmodule MailgunLoggerWeb.ErrorHelpers do
   Conveniences for translating and building error messages.
   """
 
-  use Phoenix.HTML
+  import Phoenix.HTML
+  use PhoenixHTMLHelpers
 
   @doc """
   Generates tag for inlined form input errors.

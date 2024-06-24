@@ -7,31 +7,42 @@ defmodule MailgunLogger.Events do
   alias MailgunLogger.Event
   alias MailgunLogger.Repo
 
-  def search_events(params) do
-    params = parse_search_params(params)
+  def search_events(params, opts \\ []) do
+    params = init_filters(params)
+
+    fields =
+      Keyword.get(
+        opts,
+        :fields,
+        ~w(id api_id event log_level method recipient timestamp message_from message_subject)a
+      )
 
     Event
-    |> join(:inner, [n], a in assoc(n, :account), as: :account)
-    |> preload([n], [:account])
-    |> order_by([n], desc: n.timestamp)
+    |> order_by([e], desc: e.timestamp)
+    |> select([e], ^fields)
     |> Flop.validate_and_run(params, for: Event)
   end
 
-  defp parse_search_params(params) do
-    accepted = checkbox_string_prop(params, "accepted")
-    delivered = checkbox_string_prop(params, "delivered")
-    opened = checkbox_string_prop(params, "opened")
-    failed = checkbox_string_prop(params, "failed")
-    stored = checkbox_string_prop(params, "stored")
-    event = [accepted, delivered, opened, failed, stored] |> Enum.reject(&is_nil(&1))
+  def init_filters(%{"filters" => filters} = params) do
+    filters =
+      Enum.map(filters, fn {k, v} ->
+        v =
+          v
+          |> Enum.map(fn
+            {"value", v} when is_binary(v) -> {"value", String.trim(v)}
+            {k, v} -> {k, v}
+          end)
+          |> Enum.into(%{})
 
-    Map.merge(params, %{"event" => event})
+        {k, v}
+      end)
+      |> Enum.into(%{})
+
+    %{params | "filters" => filters}
   end
 
-  defp checkbox_string_prop(params, prop) do
-    if Map.get(params, prop, nil) == "true",
-      do: prop,
-      else: nil
+  def init_filters(params) do
+    Map.put(params, "filters", %{"0" => %{"field" => "event", "value" => "delivered"}})
   end
 
   @spec get_event(number) :: Event.t()

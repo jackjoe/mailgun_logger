@@ -13,6 +13,8 @@ config :mailgun_logger, MailgunLogger.Mailer,
   domain: System.get_env("MAILGUN_DOMAIN"),
   from: System.get_env("MAILGUN_FROM") || "no-reply@jackjoe.be"
 
+config :logger, logger_papertrail_backend: [host: System.get_env("PAPERTRAIL_HOST")]
+
 config :ex_aws,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
   secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),

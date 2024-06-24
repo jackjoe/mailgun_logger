@@ -20,7 +20,7 @@ defmodule MailgunLogger do
 
   ## Config
 
-  There is an option to store the raw messages received from the api. In the first version of the app everything was stored in the database but the seize of the table became huge in a very short time and the raw event data did not really offer added value. 
+  There is an option to store the raw messages received from the api. In the first version of the app everything was stored in the database but the seize of the table became huge in a very short time and the raw event data did not really offer added value.
   So we opted to store that data on S3 instead of in the database.
 
   ```
@@ -64,6 +64,16 @@ defmodule MailgunLogger do
     |> Enum.map(&Task.async(fn -> process_account(&1) end))
     |> Enum.map(&Task.await(&1, @ttl))
     |> List.flatten()
+  end
+
+  @doc """
+  Spawns a task to fetch new e-mails. If the task is already running, it will not be started again.
+  """
+  def run_async_if_not_running() do
+    if Process.whereis(:run_task) == nil do
+      {:ok, pid} = Task.start(&run/0)
+      Process.register(pid, :run_task)
+    end
   end
 
   @doc """

@@ -1,3 +1,77 @@
+## 2302.2.0 (2024-02-27)
+
+- Default ':delivered' filter
+
+## 2302.1.0 (2024-02-27)
+
+- Bump packages
+- Fix `Endpoint.init/2` deprecation warning
+
+## 2312.5.0 (2023-12-27)
+
+- Bump packages
+- Fix unhandled nil value in message content type check (#33)
+- Enlarge `message_id` field (#32)
+
+## 2312.4.0 (2023-12-20)
+
+- Trim values for filters in search form
+
+## 2312.3.0 (2023-12-12)
+
+- Handle plain text raw messages
+
+## 2312.2.0 (2023-12-07)
+
+- Changed the trigger button from LV to POST (@m1dnight)
+
+## 23012.1.0 (2023-12-06)
+
+- Added index to inserted_at on events to speed things up (@m1dnight)
+
+## 2309.1.0 (2023-09-26)
+
+- Update some dependencies
+- Update 'Readme'
+
+## 2308.1.1 (2023-08-15)
+
+- Add `check_origin` option
+
+## 2308.1.0 (2023-08-15)
+
+- Add event type filter to search form
+- Bump packages
+
+## 2307.1.1 (2023-07-06)
+
+- Fix annoying error with the conn not being halted correctly
+
+## 2307.1.0 (2023-07-06)
+
+- Added LiveView component to trigger a new run
+
+## 2305.7.0 (2023-06-30)
+
+- Drastically improve query speed by removing a join
+
+## 2305.6.2 (2023-06-30)
+
+- Bump dependencies
+
+## 2305.6.1 (2023-06-15)
+
+- Ignore bgcolor attr in original event html
+
+## 2305.6.0 (2023-06-09)
+
+- Improve redirects
+- Promote event listing to new home page (for faster loading)
+
+## 2305.5.0 (2023-06-09)
+
+- Add logger to Papertrail
+
 ## 2305.4.1 (2023-05-24)
 
 - Provide env config option for the db port

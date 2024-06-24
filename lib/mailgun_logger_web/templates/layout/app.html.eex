@@ -5,14 +5,13 @@
       <nav id="main-nav">
         <div id="app-logo">
           <a href="<%= Routes.event_path(@conn, :index) %>">
-            <img src="<%= Routes.static_path(@conn, "/images/favicon.png") %>" alt="" id="logo" />
+            <img src="<%= Routes.static_path(@conn, "/assets/images/favicon.png") %>" alt="" id="logo" />
           </a>
         </div>
         <ul>
           <%= if assigns[:current_user] do %>
             <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
-            <li><%= link "Stats", to: Routes.page_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
-            <li><%= link "Graphs", to: Routes.page_path(@conn, :graphs), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :graphs) %></li>
+            <li><%= link "Stats", to: Routes.page_path(@conn, :stats), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
             <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
             <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
             <li style="float: right;"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>

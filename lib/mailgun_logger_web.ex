@@ -17,7 +17,7 @@ defmodule MailgunLoggerWeb do
   and import those modules here.
   """
 
-  def static_paths(), do: ~w(css fonts images js favicon.ico robots.txt)
+  def static_paths(), do: ~w(assets css fonts images js favicon.ico robots.txt)
 
   def controller do
     quote do
@@ -69,7 +69,9 @@ defmodule MailgunLoggerWeb do
   defp html_helpers do
     quote do
       # Use all HTML functionality (forms, tags, etc)
-      use Phoenix.HTML
+      import Phoenix.HTML
+      import Phoenix.HTML.Form
+      use PhoenixHTMLHelpers
       use Phoenix.LiveView
 
       # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
@@ -111,7 +113,6 @@ defmodule MailgunLoggerWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView
       unquote(html_helpers())
     end
   end
