@@ -3,7 +3,7 @@ defmodule MailgunLogger.Repo.Migrations.CreateEvents do
 
   def change do
     create table(:events) do
-      add(:api_id, :string, size: 50)
+      add(:api_id, :string, size: 100)
       add(:event, :string)
       add(:log_level, :string, size: 50)
       add(:method, :string, size: 50)
@@ -11,7 +11,7 @@ defmodule MailgunLogger.Repo.Migrations.CreateEvents do
       add(:timestamp, :utc_datetime)
       add(:message_from, :string)
       add(:message_subject, :string)
-      add(:message_id, :string, size: 100)
+      add(:message_id, :string, size: 1_000)
       add(:message_to, :string, size: 1_000)
       add(:delivery_attempt, :integer)
       add(:raw, :json)
