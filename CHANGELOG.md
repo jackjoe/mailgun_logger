@@ -1,3 +1,9 @@
+## 2302.6.0 (2024-06-24)
+
+- Feat: `store_messages` config var can now be set with an env var
+- Fix: old mysql port is pg now
+- Fix: typo
+
 ## 2302.2.0 (2024-02-27)
 
 - Default ':delivered' filter
