@@ -131,7 +131,7 @@ services:
     image: jackjoe/mailgun_logger
     depends_on:
       - db
-    entrypoint: ["./wait-for", "db:3306", "--", "./start.sh"]
+    entrypoint: ["./wait-for", "db:5432", "--", "./start.sh"]
     ports:
       - "5050:5050"
     networks:
