@@ -81,6 +81,7 @@ Following variables are available:
 
 [Optional]
 
+- **ML_STORE_MESSAGES**: when true, persist messages to the S3 bucket described below, defaults to false
 - **ML_PAGESIZE**: events per page
 - **ML_LOG_LEVEL**: log level (info, debug, warn, ...)
 - **MAILGUN_API_KEY**: to send the password reset email

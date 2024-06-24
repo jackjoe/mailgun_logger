@@ -8,7 +8,7 @@ import Config
 config :mailgun_logger,
   ecto_repos: [MailgunLogger.Repo],
   env: Mix.env(),
-  store_messages: true,
+  store_messages: System.get_env("ML_STORE_MESSAGES") || false,
   ml_pagesize: System.get_env("ML_PAGESIZE") || "100"
 
 # Configures the endpoint
