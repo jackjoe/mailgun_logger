@@ -7,13 +7,11 @@ defmodule MailgunLoggerWeb.SetupController do
   alias MailgunLogger.Users
 
   def index(conn, _) do
-    case Users.any_users?() do
-      true ->
-        redirect(conn, to: Routes.page_path(conn, :index))
-
-      false ->
-        changeset = User.changeset(%User{})
-        render(conn, :index, changeset: changeset)
+    if Users.any_users?() do
+      redirect(conn, to: Routes.page_path(conn, :index))
+    else
+      changeset = User.changeset(%User{})
+      render(conn, :index, changeset: changeset)
     end
   end
 

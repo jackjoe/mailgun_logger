@@ -206,6 +206,13 @@ $ make install
 
 which will install all dependencies and setup local dev https certificates using `phx.cert`.
 
+Next you need to run the migrations and seeder:
+
+```bash
+$ source .env && mix ecto.migrate
+$ source .env && mix run priv/repo/seeds.exs
+```
+
 Then you can run the project:
 
 ```bash
@@ -220,7 +227,7 @@ All of the make targets are convenience wrappers around `mix`, feel free to run 
 $ . .env && make run
 ```
 
-Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
+Then head over to [https://0.0.0.0:7070](https://0.0.0.0:7070).
 
 ## TODO
 
