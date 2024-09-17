@@ -8,6 +8,8 @@ defmodule MailgunLogger.Application do
   def start(_type, _args) do
     check_store_raw()
 
+    Envy.auto_load
+    Envy.reload_config
     children = [
       {Phoenix.PubSub, name: MailgunLogger.PubSub},
       {MailgunLogger.Repo, []},
