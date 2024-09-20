@@ -7,12 +7,6 @@
 
   <p>These settings can be found on your Mailgun dashboard. An account covers a sending domain / API key combo. If you have multiple domains, add them on seperate accounts.</p>
 
-  <%= if Phoenix.Flash.get(@flash, :info) do %>
-    <div class="alert alert-info" role="info">
-      <%= Phoenix.Flash.get(@flash, :info) %>
-    </div>
-  <% end %>
-
   <div class="form-group">
     <label>Sending domain <a href="https://app.mailgun.com/app/sending/domains" target="blank">?</a></label>
     <%= text_input f, :domain, class: "form-control" %>

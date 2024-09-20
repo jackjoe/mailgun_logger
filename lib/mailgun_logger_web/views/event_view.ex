@@ -15,7 +15,7 @@ defmodule MailgunLoggerWeb.EventView do
   def event_name("delivered") do
     assigns = %{}
 
-    ~L"""
+    ~H"""
     <span style="background-color: lime; padding: 3px 5px; color: green;">delivered</span>
     """
   end
@@ -23,7 +23,7 @@ defmodule MailgunLoggerWeb.EventView do
   def event_name("failed") do
     assigns = %{}
 
-    ~L"""
+    ~H"""
     <span style="background-color: red; padding: 3px 5px; color: white;">failed</span>
     """
   end
@@ -33,7 +33,7 @@ defmodule MailgunLoggerWeb.EventView do
   def event_type(event_type) when event_type in ~w(warn) do
     assigns = %{event_type: event_type}
 
-    ~L"""
+    ~H"""
     <span style="background-color: orange; padding: 3px 5px; color: #fff;"><%= event_type %></span>
     """
   end
@@ -41,7 +41,7 @@ defmodule MailgunLoggerWeb.EventView do
   def event_type(event_type) when event_type in ~w(failed error) do
     assigns = %{event_type: event_type}
 
-    ~L"""
+    ~H"""
     <span style="background-color: red; padding: 3px 5px; color: #fff;"><%= event_type %></span>
     """
   end
@@ -94,7 +94,7 @@ defmodule MailgunLoggerWeb.EventView do
         <%= for a <- @attachments do %>
           <li><%= a %></li>
         <% end %>
-      </ul>    
+      </ul>
     """
   end
 

@@ -12,5 +12,6 @@
     <link rel="icon" type="image/png" href="<%= Routes.static_path(@conn, "/assets/images/favicon.png") %>" />
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/assets/css/style.css") %>">
     <meta name="csrf-token" content="<%= Plug.CSRFProtection.get_csrf_token() %>" />
+    <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/js/custom.js") %>"></script>
   </head>
   <body>

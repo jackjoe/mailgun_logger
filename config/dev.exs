@@ -8,11 +8,12 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
     scheme: "https",
     port: port
   ],
+  http: [port: 4000],
   https: [
-    port: port,
+    port: 4001,
     cipher_suite: :strong,
-    keyfile: "priv/cert/selfsigned_key.pem",
-    certfile: "priv/cert/selfsigned.pem"
+    certfile: "priv/cert/selfsigned.pem",
+    keyfile: "priv/cert/selfsigned_key.pem"
   ],
   live_reload: [
     patterns: [

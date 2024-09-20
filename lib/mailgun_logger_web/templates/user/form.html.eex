@@ -1,17 +1,13 @@
 <%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+
+  <%= if error = f.errors[:role] do %>
+    <% {message, _} = error %>
+    <div class="flash" id="flash_message">
+      <h2><%= message %></h2>
     </div>
   <% end %>
 
   <p>These settings can be found on your Mailgun dashboard. An account covers a sending domain / API key combo. If you have multiple domains, add them on seperate accounts.</p>
-
-  <%= if Phoenix.Flash.get(@flash, :info) do %>
-    <div class="alert alert-info" role="info">
-      <%= Phoenix.Flash.get(@flash, :info) %>
-    </div>
-  <% end %>
 
   <div class="form-group">
     <%= label f, :firstname, class: "control-label" %>
@@ -36,6 +32,14 @@
     <%= label f, :password, class: "control-label" %>
     <%= password_input f, :password, class: "form-control" %>
     <%= error_tag f, :password %>
+  </div>
+  <% end %>
+
+  <!-- Met deze codeblock geven we de optie om users een andere rol toe te kennen, op voorwaarde dat het geen nieuwe user is -->
+  <%= if !@new? do %>
+  <div class="form-group">
+    <%= label f, :role, class: "control-label" %>
+    <%= select f, :role, MailgunLogger.Roles.list_roles(), selected: @user_role_id, class: "form-control" %>
   </div>
   <% end %>
 

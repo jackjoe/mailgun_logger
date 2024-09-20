@@ -1,6 +1,4 @@
 defmodule MailgunLoggerWeb.PagingHelpers do
-  import Phoenix.HTML
-  import Phoenix.HTML.Form
   use PhoenixHTMLHelpers
 
   def sort_link(conn, _page, field, name, opts \\ []) do

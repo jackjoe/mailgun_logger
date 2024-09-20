@@ -3,7 +3,6 @@ defmodule MailgunLogger.Users do
 
   alias MailgunLogger.Repo
   alias MailgunLogger.User
-  alias MailgunLogger.Roles
 
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
@@ -11,21 +10,6 @@ defmodule MailgunLogger.Users do
   @spec list_users() :: [User.t()]
   def list_users() do
     Repo.all(User) |> Repo.preload(:roles)
-  end
-
-  @spec assign_role(User.t(), String.t()) :: ecto_user() | nil
-  def assign_role(user, role_name) do
-    case Roles.get_role_by_name(role_name) do
-      nil ->
-        nil
-
-      role ->
-        user
-        |> Repo.preload([:roles])
-        |> User.changeset()
-        |> Ecto.Changeset.put_assoc(:roles, [role])
-        |> Repo.update()
-    end
   end
 
   @spec get_user!(integer | String.t()) :: User.t()
@@ -165,6 +149,8 @@ defmodule MailgunLogger.Users do
   @spec update_user(User.t(), map) :: ecto_user()
   def update_user(user, params) do
     user
+    # Als we onze user correct willen updaten, moeten we de :user_roles preloaden zodat we die kunnen manipuleren in onze update functie
+    |> Repo.preload(:user_roles)
     |> User.update_changeset(params)
     |> Repo.update()
   end

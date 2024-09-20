@@ -11,10 +11,18 @@
         <ul>
           <%= if assigns[:current_user] do %>
             <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
-            <li><%= link "Stats", to: Routes.page_path(@conn, :stats), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
-            <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
-            <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
-            <li style="float: right;"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
+              <!-- Ik gebruik conditional rendering zodat members alleen de events optie hebben -->
+              <%= if get_current_user_role(@current_user) !== "member" do %>
+              <li><%= link "Stats", to: Routes.page_path(@conn, :stats), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :index) %></li>
+              <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
+              <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
+              <% end %>
+            <div style="float: right;">
+            <li class="email">
+              <%= @current_user.email %> (<%= get_current_user_role(@current_user) %>)
+            </li>
+            <li><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
+            </div>
           <% else %>
             <li style="float: right;"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
           <% end %>
@@ -27,6 +35,13 @@
         <li>&raquo; Event detail</li>
       </ul>
     </div>
+    <%= if Phoenix.Flash.get(@flash, :error) do %>
+      <div class="flash" id="flash_message">
+        <h2>
+          <%= Phoenix.Flash.get(@flash, :error) %>
+        </h2>
+      </div>
+    <% end %>
   </header>
   <main>
     <%= @inner_content %>

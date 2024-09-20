@@ -15,6 +15,7 @@ defmodule MailgunLoggerWeb.SetupController do
     end
   end
 
+  @spec create_root(any(), any()) :: none()
   def create_root(conn, %{"user" => params}) do
     case Users.create_admin(params) do
       {:ok, _} -> redirect(conn, to: Routes.page_path(conn, :index))
