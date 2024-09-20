@@ -3,7 +3,6 @@ defmodule MailgunLoggerWeb.ErrorHelpers do
   Conveniences for translating and building error messages.
   """
 
-  import Phoenix.HTML
   use PhoenixHTMLHelpers
 
   @doc """
