@@ -87,7 +87,9 @@ config :mailgun_logger, MailgunLogger.Repo,
   queue_target: 100,
   # default 1000ms
   queue_interval: 2_000
-
+IO.puts """
+IP ADRESS: #{System.get_env("ML_DB_HOST")}
+"""
 # Configures Elixir's Logger
 config :logger,
   backends: [:console],

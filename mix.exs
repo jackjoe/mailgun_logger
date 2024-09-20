@@ -59,6 +59,7 @@ defmodule MailgunLogger.Mixfile do
       {:bamboo_phoenix, "~> 1.0"},
       {:decimal, "~> 2.0"},
       {:ecto_sql, "~> 3.11"},
+      {:envy, "~> 1.1.1"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
       {:excoveralls, "~> 0.10", only: :test},
