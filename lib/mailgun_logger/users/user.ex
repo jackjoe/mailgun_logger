@@ -4,6 +4,7 @@ defmodule MailgunLogger.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias MailgunLoggerWeb.Plugs.Auth
   alias MailgunLogger.User
   alias MailgunLogger.Role
   alias MailgunLogger.Roles
@@ -35,6 +36,8 @@ defmodule MailgunLogger.User do
     field(:password, :string, virtual: true)
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
+    # Om zeker te zijn dat ons veranderen van user correct verloopt, zet ik er een extra atom bij die direct verwijst naar de UserRole
+    has_many(:user_roles, UserRole, on_replace: :delete)
 
     timestamps()
   end
@@ -51,16 +54,21 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> put_assoc( :roles, [Roles.get_role_by_name("member")])
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
+    # We vragen de id op uit de form die we gesubmitted hebben om de rol aan te passen
+    role_id = String.to_integer(attrs["role"])
     user
     |> cast(attrs, [:firstname, :lastname, :email])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    # Via de put_assoc kunnen we de rol van onze aangeduide user updaten
+    |> put_assoc( :user_roles, [%{role_id: role_id}])
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -68,11 +76,11 @@ defmodule MailgunLogger.User do
   def admin_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password])
+    |> unique_constraint(:email)
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> validate_length(:password, min: 8)
-    |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
     |> put_assoc(:roles, [Roles.get_role_by_name("admin")])

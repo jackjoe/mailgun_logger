@@ -1,6 +1,6 @@
 defmodule MailgunLoggerWeb.Router do
   use MailgunLoggerWeb, :router
-  use Plug.ErrorHandler
+  use Plug.ErrorHandler,
   @moduledoc false
 
   pipeline :browser do
@@ -20,6 +20,11 @@ defmodule MailgunLoggerWeb.Router do
   pipeline :auth do
     plug(MailgunLoggerWeb.Plugs.SetupCheck)
     plug(MailgunLoggerWeb.Plugs.Auth)
+  end
+
+  # Custom pipeline om ervoor te zorgen dat bepaalde routes afgeschermd zijn voor onbevoegden
+  pipeline :authorized do
+    plug MailgunLoggerWeb.Plugs.Authorize
   end
 
   # Always except in prod
@@ -63,25 +68,47 @@ defmodule MailgunLoggerWeb.Router do
   end
 
   scope "/setup", MailgunLoggerWeb do
-    pipe_through(:browser)
+    pipe_through([:browser])
     get("/", SetupController, :index)
     post("/", SetupController, :create_root)
   end
 
+
+
+  # Ik heb even wat routes gegroepeerd naarmate de toegankelijkheid voor members en roles met meer rechten
+  # Beschikbaar voor alle soorten rollen
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
 
     get("/logout", AuthController, :logout)
 
+    get("/", PageController, :index)
+
     resources("/events", EventController, only: [:index, :show])
     get("/events/:id/stored_message", EventController, :stored_message)
-    resources("/accounts", AccountController, except: [:show])
-    resources("/users", UserController, except: [:show])
+  end
+
+  # Beschikbaar voor superusers en admins
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :authorized])
+
+    get("/logout", AuthController, :logout)
 
     get("/", PageController, :index)
+
+    resources("/events", EventController, only: [:index, :show])
+    get("/events/:id/stored_message", EventController, :stored_message)
+
+    resources("/accounts", AccountController, except: [:show])
+
+    resources("/users", UserController, except: [:show])
+
     post("/trigger-run", PageController, :trigger_run)
+
     get("/stats", PageController, :stats)
+
     get("/graphs", PageController, :graphs)
+
     get("/non-affiliation", PageController, :non_affiliation)
   end
 end

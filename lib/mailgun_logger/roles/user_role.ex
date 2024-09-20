@@ -32,4 +32,16 @@ defmodule MailgunLogger.UserRole do
     |> cast(attrs, [:user_id, :role_id])
     |> validate_required([:user_id, :role_id])
   end
+
+  # Haalt de huidige rol op die een ingelogde user heeft
+  @spec get_current_user_role(map()) :: String.t()
+  def get_current_user_role(user) do
+    case user.roles do
+      # We nemen de waarde van role uit de lijst en gooien de rest weg.
+      # Vervolgens extraheren we er de naam uit
+      [role | _] -> role.name
+      [] -> "No role"
+    end
+  end
+
 end

@@ -37,7 +37,7 @@ main {
 }
 
 #app-header .top {
-  background-color: var(--c-blue-bright);
+  background-color: royalblue;
 }
 
 #main-nav {
@@ -326,4 +326,46 @@ tbody tr:hover td {
 
 #events-filter label {
   display: none;
+}
+
+
+/* Custom styling */
+
+.email {
+  font-weight: bold;
+  color: white;
+  margin-right: 1vw;
+}
+
+.flash {
+  opacity: 0;
+  visibility: hidden;
+  height: 5vh;
+  background-color: rgb(235, 74, 74);
+  position: fixed;
+  bottom: 3vh;
+  left: 2vw;
+  padding-inline: 20px;
+  max-width: 30vw;
+  transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 1s ease-out, visibility 1s ease-out;
+}
+
+.flash > h2 {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.section {
+  margin-bottom: 5vh;
+}
+
+.section > h1 {
+  font-size: 30px;
 }

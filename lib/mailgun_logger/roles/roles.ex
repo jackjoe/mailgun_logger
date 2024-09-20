@@ -22,12 +22,23 @@ defmodule MailgunLogger.Roles do
   @spec list_roles() :: [Role.t()]
   def list_roles() do
     Repo.all(Role)
+    # We moeten deze pipen zodat er reeds over geloopt wordt. anders krijgen we een array-object terug
+    |> Enum.map(&{&1.name, &1.id})
   end
+
+
 
   def get_roles_by_id(ids) do
     Role
     |> where([c], c.id in ^ids)
     |> Repo.all()
+  end
+
+  # Via deze functie verkrijgen we een specifieke rol op basis van de id
+  def get_role_by_id(id) do
+    Role
+    |> where([c], c.id in ^[id])
+    |> Repo.one()
   end
 
   def get_role_by_name(name) do

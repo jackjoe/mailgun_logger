@@ -8,6 +8,7 @@ defmodule MailgunLoggerWeb.PageController do
     redirect(conn, to: Routes.event_path(conn, :index))
   end
 
+  # @spec trigger_run(Plug.Conn.t(), any()) :: Plug.Conn.t()
   def trigger_run(conn, _) do
     # run the task to fetch new emails
     MailgunLogger.run_async_if_not_running()
