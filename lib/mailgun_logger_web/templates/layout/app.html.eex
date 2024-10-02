@@ -10,10 +10,18 @@
         </div>
         <ul>
           <%= if assigns[:current_user] do %>
-            <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
-            <li><%= link "Stats", to: Routes.page_path(@conn, :stats), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :stats) %></li>
-            <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
-            <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
+             <%= if MailgunLogger.Roles.can?(assigns[:current_user], :index, MailgunLogger.Event) do %>
+              <li><%= link "Events", to: Routes.event_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.EventController) %></li>
+            <% end %>
+            <%= if MailgunLogger.Roles.can?(assigns[:current_user], :view_stats) do %>
+              <li><%= link "Stats", to: Routes.page_path(@conn, :stats), class: active_link_class(@conn, MailgunLoggerWeb.PageController, :stats) %></li>
+            <% end %>
+            <%= if MailgunLogger.Roles.can?(assigns[:current_user], :index, MailgunLogger.Account) do %>
+              <li><%= link "Accounts", to: Routes.account_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.AccountController, :index) %></li>
+            <% end %>
+            <%= if MailgunLogger.Roles.can?(assigns[:current_user], :index, MailgunLogger.User) do %>
+              <li><%= link "Users", to: Routes.user_path(@conn, :index), class: active_link_class(@conn, MailgunLoggerWeb.UserController, :index) %></li>
+            <% end %>
             <li style="float: right;"><%= link "Logout", to: Routes.auth_path(@conn, :logout) %></li>
           <% else %>
             <li style="float: right;"><%= link "Login", to: Routes.auth_path(@conn, :new) %></li>
