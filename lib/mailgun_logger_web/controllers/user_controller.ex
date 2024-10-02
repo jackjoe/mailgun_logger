@@ -3,6 +3,20 @@ defmodule MailgunLoggerWeb.UserController do
 
   alias MailgunLogger.Users
   alias MailgunLogger.User
+  alias MailgunLogger.Roles
+
+  plug(:authorize)
+
+  defp authorize(conn, _options) do
+    action = Phoenix.Controller.action_name(conn)
+    current_user = conn.assigns.current_user
+
+    if Roles.can?(current_user, action, User) do
+      conn
+    else
+      conn |> resp(403, []) |> halt()
+    end
+  end
 
   def index(conn, _) do
     users = Users.list_users()
@@ -32,7 +46,7 @@ defmodule MailgunLoggerWeb.UserController do
 
     case Users.update_user(user, params) do
       {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
-      {:error, changeset} -> 
+      {:error, changeset} ->
         IO.inspect(changeset)
         render(conn, :edit, changeset: changeset, user: user)
     end

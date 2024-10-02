@@ -91,8 +91,13 @@ defmodule MailgunLogger.Mixfile do
 
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      "ecto.setup": [
+        "ecto.create",
+        "ecto.migrate",
+        "run priv/repo/seeds.exs",
+        "run priv/repo/seeds_dev.exs"
+      ],
+      "ecto.reset": ["ecto.drop --force-drop", "ecto.setup"],
       "ecto.reset_test": ["ecto.drop", "ecto.create", "ecto.migrate"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
