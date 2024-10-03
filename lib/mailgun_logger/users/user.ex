@@ -27,8 +27,8 @@ defmodule MailgunLogger.User do
 
   schema "users" do
     field(:email, :string)
-    field(:firstname, :string)
-    field(:lastname, :string)
+    field(:firstname, :string, default: "")
+    field(:lastname, :string, default: "")
     field(:token, :string)
     field(:encrypted_password, :string)
     field(:reset_token, :string, default: nil)
