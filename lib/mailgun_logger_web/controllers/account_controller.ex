@@ -3,6 +3,20 @@ defmodule MailgunLoggerWeb.AccountController do
 
   alias MailgunLogger.Accounts
   alias MailgunLogger.Account
+  alias MailgunLogger.Roles
+
+  plug(:authorize)
+
+  defp authorize(conn, _options) do
+    action = Phoenix.Controller.action_name(conn)
+    current_user = conn.assigns.current_user
+
+    if Roles.can?(current_user, action, Account) do
+      conn
+    else
+      conn |> resp(403, []) |> halt()
+    end
+  end
 
   def index(conn, _) do
     accounts = Accounts.list_accounts()

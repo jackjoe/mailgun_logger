@@ -172,7 +172,7 @@ Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 
 ### Postgresql tip
 
-If you find yourself with many events in your database and a slow search, consider installing the [**pg_trm** extension](https://www.postgresql.org/docs/current/pgtrgm.html).
+If you find yourself with many events in your database and a slow search, consider installing the [**pg_trgm** extension](https://www.postgresql.org/docs/current/pgtrgm.html).
 Adding an index on these 3 fields will give you a huge speed gain:
 
 ```mysql

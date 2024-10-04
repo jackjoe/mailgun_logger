@@ -3,6 +3,34 @@ defmodule MailgunLoggerWeb.PageController do
 
   alias MailgunLogger.Events
   alias MailgunLogger.Accounts
+  alias MailgunLogger.Roles
+
+  plug(:authorize)
+
+  defp authorize(conn, _options) do
+    action = Phoenix.Controller.action_name(conn)
+    current_user = conn.assigns.current_user
+
+    case action do
+      :index ->
+        conn
+
+      :trigger_run ->
+        if Roles.can?(current_user, :trigger_run), do: conn, else: conn |> resp(403, []) |> halt()
+
+      :stats ->
+        if Roles.can?(current_user, :view_stats), do: conn, else: conn |> resp(403, []) |> halt()
+
+      :graphs ->
+        if Roles.can?(current_user, :view_graphs), do: conn, else: conn |> resp(403, []) |> halt()
+
+      :non_affiliation ->
+        conn
+
+      _ ->
+        conn |> resp(403, []) |> halt()
+    end
+  end
 
   def index(conn, _) do
     redirect(conn, to: Routes.event_path(conn, :index))

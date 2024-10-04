@@ -3,6 +3,22 @@ defmodule MailgunLoggerWeb.EventController do
 
   alias MailgunLogger.Events
   alias MailgunLogger.Accounts
+  alias MailgunLogger.Event
+  alias MailgunLogger.Roles
+
+  plug(:authorize)
+
+  defp authorize(conn, _options) do
+    action = Phoenix.Controller.action_name(conn)
+    current_user = conn.assigns.current_user
+
+    if Roles.can?(current_user, action, Event) do
+      conn
+    else
+      # TODO: better handling of error pages
+      conn |> resp(403, []) |> halt()
+    end
+  end
 
   def index(conn, params) do
     accounts = Accounts.list_accounts()

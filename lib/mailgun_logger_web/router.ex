@@ -17,7 +17,7 @@ defmodule MailgunLoggerWeb.Router do
     plug(:put_secure_browser_headers)
   end
 
-  pipeline :auth do
+  pipeline :require_authenticated do
     plug(MailgunLoggerWeb.Plugs.SetupCheck)
     plug(MailgunLoggerWeb.Plugs.Auth)
   end
@@ -69,7 +69,7 @@ defmodule MailgunLoggerWeb.Router do
   end
 
   scope "/", MailgunLoggerWeb do
-    pipe_through([:browser, :auth])
+    pipe_through([:browser, :require_authenticated])
 
     get("/logout", AuthController, :logout)
 

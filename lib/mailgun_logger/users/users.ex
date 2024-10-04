@@ -158,8 +158,14 @@ defmodule MailgunLogger.Users do
   @spec create_user(map) :: ecto_user()
   def create_user(params) do
     %User{}
-    |> User.changeset(params)
+    |> User.create_changeset(params)
     |> Repo.insert()
+  end
+
+  @spec create_user!(map) :: User.t()
+  def create_user!(params) do
+    {:ok, user} = create_user(params)
+    user
   end
 
   @spec update_user(User.t(), map) :: ecto_user()

@@ -27,8 +27,8 @@ defmodule MailgunLogger.User do
 
   schema "users" do
     field(:email, :string)
-    field(:firstname, :string)
-    field(:lastname, :string)
+    field(:firstname, :string, default: "")
+    field(:lastname, :string, default: "")
     field(:token, :string)
     field(:encrypted_password, :string)
     field(:reset_token, :string, default: nil)
@@ -54,6 +54,24 @@ defmodule MailgunLogger.User do
   end
 
   @doc false
+  @spec create_changeset(User.t(), map()) :: Ecto.Changeset.t()
+  def create_changeset(%User{} = user, attrs \\ %{}) do
+    user
+    |> cast(attrs, [:firstname, :lastname, :email, :password])
+    |> validate_required([:email, :password])
+    |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, @email_format)
+    |> validate_length(:password, min: 8)
+    |> unique_constraint(:email)
+    |> hash_password()
+    |> generate_token()
+    # put_assoc/3 always replaces all associations (no inserts)
+    # Using put_assoc/2 because we already have the %Role{} struct from the database.
+    # cast_assoc/2 would be used when whe have a :map with form data.
+    |> put_assoc(:roles, attrs["roles"] || [])
+  end
+
+  @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
@@ -61,6 +79,10 @@ defmodule MailgunLogger.User do
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    # put_assoc/3 always replaces all associations (no inserts)
+    # Using put_assoc/2 because we already have the %Role{} struct from the database.
+    # cast_assoc/2 would be used when whe have a :map with form data.
+    |> put_assoc(:roles, attrs["roles"] || [])
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
