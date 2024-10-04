@@ -98,7 +98,13 @@ defmodule MailgunLogger.Mixfile do
         "run priv/repo/seeds_dev.exs"
       ],
       "ecto.reset": ["ecto.drop --force-drop", "ecto.setup"],
-      "ecto.reset_test": ["ecto.drop", "ecto.create", "ecto.migrate"],
+      "ecto.reset_test": [
+        "ecto.drop --force-drop",
+        "ecto.create",
+        "ecto.migrate",
+        # This seed script is necessary to insert the roles
+        "run priv/repo/seeds.exs"
+      ],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
