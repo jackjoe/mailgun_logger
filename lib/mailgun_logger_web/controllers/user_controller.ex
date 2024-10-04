@@ -24,12 +24,24 @@ defmodule MailgunLoggerWeb.UserController do
   end
 
   def new(conn, _) do
-    changeset = User.changeset(%User{})
-    render(conn, :new, changeset: changeset)
+    changeset =
+      User.changeset(%User{
+        roles: [
+          # Default role for new users
+          Roles.get_role_by_name("member")
+        ]
+      })
+
+    render(conn, :new,
+      changeset: changeset,
+      all_role_names: Roles.get_assignable_role_names()
+    )
   end
 
-  def create(conn, %{"user" => params}) do
-    case Users.create_user(params) do
+  def create(conn, %{"user" => _user_params} = params) do
+    user_params = Roles.add_form_roles_to_user_params(params)
+
+    case Users.create_user(user_params) do
       {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
       {:error, changeset} -> render(conn, :new, changeset: changeset)
     end
@@ -38,17 +50,26 @@ defmodule MailgunLoggerWeb.UserController do
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
     changeset = User.changeset(user)
-    render(conn, :edit, changeset: changeset, user: user)
+
+    render(conn, :edit,
+      changeset: changeset,
+      user: user,
+      all_role_names: Roles.get_assignable_role_names()
+    )
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
-    user = Users.get_user!(id)
+  def update(conn, %{"id" => id, "user" => _user_params} = params) do
+    existing_user = Users.get_user!(id)
 
-    case Users.update_user(user, params) do
-      {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
+    user_params = Roles.add_form_roles_to_user_params(params)
+
+    case Users.update_user(existing_user, user_params) do
+      {:ok, _} ->
+        redirect(conn, to: Routes.user_path(conn, :index))
+
       {:error, changeset} ->
         IO.inspect(changeset)
-        render(conn, :edit, changeset: changeset, user: user)
+        render(conn, :edit, changeset: changeset, user: existing_user)
     end
   end
 

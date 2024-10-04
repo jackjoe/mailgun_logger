@@ -11,6 +11,9 @@ defmodule MailgunLogger.Roles do
   @admin_role "admin"
   @member_role "member"
 
+  # Forbid roles to be edited/assigned in the app
+  @forbidden_roles ~w(superuser)
+
   #########################################################
 
   @default_actions ~w()a
@@ -135,4 +138,44 @@ defmodule MailgunLogger.Roles do
   def abilities(%Role{name: "member"}), do: @member_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
+
+  # Used to display role checkboxes on user forms. We do not want forbidden roles
+  # to be assignable. These are also filtered on POST requests for security.
+  @spec get_assignable_role_names() :: [binary()]
+  def get_assignable_role_names() do
+    Enum.map(list_roles(), fn role -> role.name end)
+    |> filter_forbidden_role_names()
+  end
+
+  @spec filter_forbidden_role_names([binary()]) :: [binary()]
+  def filter_forbidden_role_names(roles) do
+    Enum.filter(roles, fn role_name -> role_name not in @forbidden_roles end)
+  end
+
+  # add roles from the form the the user params object so they can be cast
+  # in the changeset.
+  @spec add_form_roles_to_user_params(map()) :: map()
+  def add_form_roles_to_user_params(%{"user" => user_params} = params) do
+    # set user_role_names to empty map if it is nil (no checkboxes checked)
+    user_role_names_map =
+      if params["user_role_names"] == nil, do: %{}, else: params["user_role_names"]
+
+    # params["user_role_names"] will be of shape %{"member" => "member"}
+    # so we need to grab just the keys so we have shape ["member"].
+    user_role_names =
+      Map.keys(user_role_names_map)
+      # Filter any forbidden roles for security
+      |> filter_forbidden_role_names()
+
+    # Manually adding roles to user_params before changeset is created in
+    # Users.update_user/2
+    user_params =
+      Map.put(
+        user_params,
+        "roles",
+        Enum.map(user_role_names, fn role_name -> get_role_by_name(role_name) end)
+      )
+
+    user_params
+  end
 end

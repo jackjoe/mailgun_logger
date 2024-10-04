@@ -1,4 +1,4 @@
 <h1>Edit user</h1>
-<%= render "form.html", action: Routes.user_path(@conn, :update, @user), changeset: @changeset, new?: false, flash: @flash %>
+<%= render "form.html", action: Routes.user_path(@conn, :update, @user), changeset: @changeset, new?: false, flash: @flash, all_role_names: @all_role_names %>
 <br />
 <%= link "delete", to: Routes.user_path(@conn, :delete, @user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-sm" %>

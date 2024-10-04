@@ -14,7 +14,7 @@
     <tr>
       <td><%= user.firstname <> " " <> user.lastname %></td>
       <td><%= user.email %></td>
-      <td><%= Enum.map(user.roles, & &1.name) %></td>
+      <td><%= Enum.join(Enum.map(user.roles, & &1.name), ", ") %></td>
       <td><%= link "edit", to: Routes.user_path(@conn, :edit, user) %></td>
     </tr>
     <% end %>
