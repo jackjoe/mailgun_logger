@@ -1,14 +1,20 @@
-## 2302.6.0 (2024-06-24)
+## 2410.1.0 (2024-10-09)
+
+- Fix: prevent creation of admins when setup has been done
+
+Thanks to @DriesCruyskens !
+
+## 2402.6.0 (2024-06-24)
 
 - Feat: `store_messages` config var can now be set with an env var
 - Fix: old mysql port is pg now
 - Fix: typo
 
-## 2302.2.0 (2024-02-27)
+## 2402.2.0 (2024-02-27)
 
 - Default ':delivered' filter
 
-## 2302.1.0 (2024-02-27)
+## 2402.1.0 (2024-02-27)
 
 - Bump packages
 - Fix `Endpoint.init/2` deprecation warning
