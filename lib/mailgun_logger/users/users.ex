@@ -72,7 +72,8 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec authenticate(String.t(), String.t()) :: {:error, :unknown_user} | {:error, any()} | {:ok, User.t()}
+  @spec authenticate(String.t(), String.t()) ::
+          {:error, :unknown_user} | {:error, any()} | {:ok, User.t()}
   def authenticate(email, password) do
     from(
       u in User,
@@ -145,8 +146,8 @@ defmodule MailgunLogger.Users do
     |> Repo.update()
   end
 
-  @spec any_users?() :: boolean
-  def any_users?(), do: length(Repo.all(User)) > 0
+  @spec any_users?() :: boolean()
+  def any_users?(), do: Repo.exists?(from(u in User, select: u.id))
 
   @spec create_admin(map()) :: ecto_user()
   def create_admin(attrs) do
