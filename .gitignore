@@ -33,3 +33,5 @@ Dockerfile-jackjoe
 .env.*
 docker-compose.yml
 node_modules
+
+.vscode/

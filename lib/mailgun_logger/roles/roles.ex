@@ -7,12 +7,15 @@ defmodule MailgunLogger.Roles do
 
   @superuser_role "superuser"
   @admin_role "admin"
+  @member_role "member"
 
   #########################################################
 
-  @default_actions ~w()
+  @default_actions ~w(undefined_permission)
 
-  @admin_actions ~w(do_stuff) ++ @default_actions
+  @member_actions ~w(view_events view_home view_events_detail view_events_detail_stored_message) ++ @default_actions
+
+  @admin_actions ~w(view_stats view_users edit_users delete_users create_users view_accounts edit_accounts create_accounts delete_accounts) ++ @member_actions
 
   @superuser_actions ~w() ++ @admin_actions
 
@@ -55,6 +58,12 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -64,6 +73,7 @@ defmodule MailgunLogger.Roles do
     action = String.to_atom(action)
     def can?(@superuser_role, unquote(action)), do: true
   end
+
 
   def can?(_, _), do: false
 
@@ -77,6 +87,7 @@ defmodule MailgunLogger.Roles do
   def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
+  def abilities(%Role{name: "member"}), do: @member_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
 end
