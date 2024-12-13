@@ -31,6 +31,14 @@
     <%= error_tag f, :email %>
   </div>
 
+  <div class="form-group">
+    <%= label f, :roles, class: "control-label" %>
+    <%= multiple_select f, :roles, Enum.map(@roles, &{&1.name, &1.id}),
+    selected: Enum.map(@user.roles, &(&1.id)), class: "form-control" %>
+    <%= error_tag f, :roles %>
+  </div>
+
+
   <%= if @new? do %>
   <div class="form-group">
     <%= label f, :password, class: "control-label" %>

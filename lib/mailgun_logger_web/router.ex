@@ -20,6 +20,7 @@ defmodule MailgunLoggerWeb.Router do
   pipeline :auth do
     plug(MailgunLoggerWeb.Plugs.SetupCheck)
     plug(MailgunLoggerWeb.Plugs.Auth)
+    plug(MailgunLoggerWeb.Plugs.Permissions)
   end
 
   # Always except in prod
