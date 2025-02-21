@@ -146,8 +146,8 @@ defmodule MailgunLogger.Users do
     |> Repo.update()
   end
 
-  @spec any_users?() :: boolean
-  def any_users?(), do: length(Repo.all(User)) > 0
+  @spec any_users?() :: boolean()
+  def any_users?(), do: Repo.exists?(from(u in User, select: u.id))
 
   @spec create_admin(map()) :: ecto_user()
   def create_admin(attrs) do

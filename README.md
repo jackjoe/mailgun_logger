@@ -2,7 +2,7 @@
 
 **BREAKING**
 
-Since the 2305.1.0 release we are no longer saving the actual stored message (the raw data) as it has proven to be too much stress on the db without any added value. There is a config option `store_message` that, if set to `true` also requires an AWS config to be added. Then the raw messages will be stored in an S3 bucket.
+Since the 2305.1.0 release we are no longer saving the actual stored message (the raw data) as it has proven to put too much stress on the db without any added value. There is a config option `store_message` that, if set to `true` also requires an AWS config to be added. Then the raw messages will be stored in an S3 bucket.
 Also, the `stored_message` data column should be regarded as deprecated and will be removed via a migration in a future release.
 
 **Note**
@@ -206,6 +206,13 @@ $ make install
 
 which will install all dependencies and setup local dev https certificates using `phx.cert`.
 
+Next you need to run the migrations and seeder:
+
+```bash
+$ source .env && mix ecto.migrate
+$ source .env && mix run priv/repo/seeds.exs
+```
+
 Then you can run the project:
 
 ```bash
@@ -220,7 +227,7 @@ All of the make targets are convenience wrappers around `mix`, feel free to run 
 $ . .env && make run
 ```
 
-Then head over to [https://0.0.0.0:7000](https://0.0.0.0:7000).
+Then head over to [https://0.0.0.0:7070](https://0.0.0.0:7070).
 
 ## TODO
 

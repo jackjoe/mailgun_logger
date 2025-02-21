@@ -1,6 +1,6 @@
 import Config
 
-port = System.get_env("PORT") || "7000"
+port = System.get_env("PORT") || "7070"
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [

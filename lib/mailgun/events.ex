@@ -11,7 +11,7 @@ defmodule Mailgun.Events do
   require Logger
 
   @chunk_size 10
-  @chunk_timeout 5_000
+  @chunk_timeout 25_000
 
   @doc """
   Get events.
