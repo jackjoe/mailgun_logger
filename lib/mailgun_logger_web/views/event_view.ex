@@ -78,7 +78,7 @@ defmodule MailgunLoggerWeb.EventView do
 
     ~H"""
     <code style="white-space: break-spaces">
-    <%= @html %>
+      <%= @html %>
     </code>
     """
   end
@@ -89,12 +89,14 @@ defmodule MailgunLoggerWeb.EventView do
     assigns = %{attachments: atts}
 
     ~H"""
-      <div style="font-style: italic;color: #aaa;">Note: listing belows shows filenames only, no links to the files available.</div>
-      <ul style="padding:0;">
-        <%= for a <- @attachments do %>
-          <li><%= a %></li>
-        <% end %>
-      </ul>    
+    <div style="font-style: italic;color: #aaa;">
+      Note: listing belows shows filenames only, no links to the files available.
+    </div>
+    <ul style="padding:0;">
+      <%= for a <- @attachments do %>
+        <li><%= a %></li>
+      <% end %>
+    </ul>
     """
   end
 

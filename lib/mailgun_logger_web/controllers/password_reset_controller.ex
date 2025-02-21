@@ -13,9 +13,9 @@ defmodule MailgunLoggerWeb.PasswordResetController do
   def request_create(conn, %{"password_reset" => %{"email" => email}}) do
     case Users.gen_password_reset_token(email) do
       {:ok, user} ->
-          user
-          |> Emails.reset_password()
-          |> Mailer.deliver_it_later()
+        user
+        |> Emails.reset_password()
+        |> Mailer.deliver_it_later()
 
       {_, _} ->
         {:error}

@@ -72,7 +72,8 @@ defmodule MailgunLogger.Users do
     |> Repo.one()
   end
 
-  @spec authenticate(String.t(), String.t()) :: {:error, :unknown_user} | {:error, any()} | {:ok, User.t()}
+  @spec authenticate(String.t(), String.t()) ::
+          {:error, :unknown_user} | {:error, any()} | {:ok, User.t()}
   def authenticate(email, password) do
     from(
       u in User,

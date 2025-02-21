@@ -31,8 +31,10 @@ defmodule MailgunLoggerWeb.UserController do
     user = Users.get_user!(id)
 
     case Users.update_user(user, params) do
-      {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
-      {:error, changeset} -> 
+      {:ok, _} ->
+        redirect(conn, to: Routes.user_path(conn, :index))
+
+      {:error, changeset} ->
         IO.inspect(changeset)
         render(conn, :edit, changeset: changeset, user: user)
     end

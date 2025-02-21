@@ -4,7 +4,7 @@ defmodule MailgunLoggerWeb.PageView do
 
   def print_date_labels(days) do
     days
-    |> Enum.map(& Calendar.strftime(&1, "%Y-%m-%d %H:%M")) 
+    |> Enum.map(&Calendar.strftime(&1, "%Y-%m-%d %H:%M"))
     |> Jason.encode!()
   end
 end

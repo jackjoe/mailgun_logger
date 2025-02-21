@@ -35,21 +35,24 @@ defmodule MailgunLoggerWeb.Components.Flop do
       <.filter_fields
         :let={i}
         form={@form}
-        fields={ 
-        [
-          event: [type: "select", options: [nil] ++ ~w(delivered accepted opened failed stored), default: :delivered],
+        fields={[
+          event: [
+            type: "select",
+            options: [nil] ++ ~w(delivered accepted opened failed stored),
+            default: :delivered
+          ],
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
           message_subject: [op: :ilike, placeholder: "subject"],
           account_id: [type: "select", options: @accounts]
         ]}
       >
-        <CoreComponents.input 
-        field={i.field}
-        label={i.label}
-        type={i.type}
-        phx-debounce={120}
-        {i.rest}
+        <CoreComponents.input
+          field={i.field}
+          label={i.label}
+          type={i.type}
+          phx-debounce={120}
+          {i.rest}
         />
       </.filter_fields>
       <CoreComponents.button>Search</CoreComponents.button>
