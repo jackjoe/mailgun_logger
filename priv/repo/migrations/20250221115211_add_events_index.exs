@@ -3,7 +3,7 @@ defmodule MailgunLogger.Repo.Migrations.AddEventsIndex do
 
   def change do
     execute """
-      CREATE INDEX events_delivered_timestamp_inserted_at_id_idx ON events (event, timestamp DESC, inserted_at DESC, id);
+      CREATE INDEX IF NOT EXISTS events_delivered_timestamp_inserted_at_id_idx ON events (event, timestamp DESC, inserted_at DESC, id);
     """
   end
 end

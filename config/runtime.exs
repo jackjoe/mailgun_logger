@@ -1,6 +1,7 @@
 import Config
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
+  server: true,
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 config :mailgun_logger, MailgunLogger.Repo,
