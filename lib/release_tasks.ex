@@ -91,7 +91,7 @@ defmodule JackJoe.ReleaseTasks do
   end
 
   defp priv_path_for(repo, filename) do
-    app = Keyword.get(repo.config, :otp_app)
+    app = Keyword.get(repo.config(), :otp_app)
 
     repo_underscore =
       repo

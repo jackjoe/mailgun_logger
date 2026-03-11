@@ -1,3 +1,9 @@
+## 2026.3.1 (2026-03-11)
+
+### Fixed
+
+- Add compound index on `(timestamp DESC, inserted_at DESC, id)` for the default unfiltered events page, preventing full table scan timeouts
+
 ## 2603.2.2 (2026-03-11)
 
 ### Fixed
