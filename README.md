@@ -13,8 +13,6 @@ Since version 2302.1.0 (Feb 2023) the database has switched from MySQL to Postgr
   <img src="./public/logo.svg" width="128" alt="" />
 </div>
 
-[![Build Status](https://app.travis-ci.com/jackjoe/mailgun_logger.svg?branch=master)](https://app.travis-ci.com/jackjoe/mailgun_logger)
-
 Simple Mailgun log persistence in Phoenix/Elixir.
 
 MailgunLogger is a simple admin tool that uses the Mailgun API to retrieves events on a regular basis from Mailgun - who only provide a limited time of event storage - and stores them inside a PostgreSQL database.
@@ -33,6 +31,12 @@ _This application is not affiliated, associated, authorized, endorsed by, or in 
 _This is NOT meant as a replacement for the excellent online tooling provided by Mailgun. Just simple storage, that's it._
 
 _Jack + Joe is not responsible for your use of this tool, neither for any persistence guarantees. Free comes at a price :)_
+
+## Requirements
+
+- Elixir ~> 1.17
+- Phoenix ~> 1.8
+- PostgreSQL
 
 ## Versioning
 
@@ -78,11 +82,15 @@ Following variables are available:
 - **ML_DB_PASSWORD**: database password
 - **ML_DB_NAME**: database name
 - **ML_DB_HOST**: database host
+- **SECRET_KEY_BASE**: secret key base for Phoenix (required for releases)
+- **HOST**: application host (e.g. `localhost`)
+- **PORT**: application port (default: `5050`)
 
 [Optional]
 
+- **ML_DB_PORT**: database port (default: `5432`)
+- **ML_PAGESIZE**: events per page (default: `50`)
 - **ML_STORE_MESSAGES**: when true, persist messages to the S3 bucket described below, defaults to false
-- **ML_PAGESIZE**: events per page
 - **ML_LOG_LEVEL**: log level (info, debug, warn, ...)
 - **MAILGUN_API_KEY**: to send the password reset email
 - **MAILGUN_DOMAIN**: to send the password reset email
@@ -106,6 +114,8 @@ $ docker run -d -p 5050:5050 \
   -e "ML_DB_PASSWORD=password" \
   -e "ML_DB_NAME=mailgun_logger" \
   -e "ML_DB_HOST=my_db_host" \
+  -e "SECRET_KEY_BASE=your-secret-key-base" \
+  -e "HOST=localhost" \
   --name mailgun_logger jackjoe/mailgun_logger
 ```
 
@@ -114,8 +124,6 @@ $ docker run -d -p 5050:5050 \
 With the following `docker-compose.yml`:
 
 ```yml
-version: "3"
-
 services:
   db:
     image: postgres
@@ -142,6 +150,8 @@ services:
       - "ML_DB_PASSWORD=logger"
       - "ML_DB_NAME=mailgun_logger"
       - "ML_DB_HOST=db"
+      - "SECRET_KEY_BASE=generate-a-secret-key-base"
+      - "HOST=localhost"
       - "MAILGUN_API_KEY=*****"
       - "MAILGUN_DOMAIN=m.mydomain.be"
       - "AWS_ACCESS_KEY_ID=******"
@@ -175,7 +185,7 @@ Then head over to [http://0.0.0.0:5050](http://0.0.0.0:5050).
 If you find yourself with many events in your database and a slow search, consider installing the [**pg_trm** extension](https://www.postgresql.org/docs/current/pgtrgm.html).
 Adding an index on these 3 fields will give you a huge speed gain:
 
-```mysql
+```sql
 CREATE EXTENSION pg_trgm;
 
 CREATE INDEX events_recipient_gin_trgm_idx ON events USING gin (recipient gin_trgm_ops);
@@ -189,12 +199,13 @@ To run on your local machine, you need to setup shop first.
 Mailgun Logger requires a PostgreSQL database using the following environment variables along with their defaults:
 
 ```elixir
-# config/config.ex
+# config/config.exs
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("ML_DB_USER", "mailgun_logger_ci"),
-  password: System.get_env("ML_DB_PASSWORD", "johndoe"),
-  database: System.get_env("ML_DB_NAME", "mailgun_logger_ci_test"),
-  hostname: System.get_env("ML_DB_HOST", "localhost"),
+  username: System.get_env("ML_DB_USER") || "root",
+  password: System.get_env("ML_DB_PASSWORD"),
+  database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
+  hostname: System.get_env("ML_DB_HOST") || "localhost",
+  port: System.get_env("ML_DB_PORT") || 5432
 ```
 
 Either export your own enviroment variables or adhere to the defaults. Then, for convenience, run:
