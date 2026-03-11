@@ -43,4 +43,9 @@ defmodule MailgunLogger.Accounts do
   def delete_account(%Account{} = account) do
     Repo.delete(account)
   end
+
+  @spec count_accounts() :: non_neg_integer()
+  def count_accounts do
+    Repo.aggregate(Account, :count)
+  end
 end

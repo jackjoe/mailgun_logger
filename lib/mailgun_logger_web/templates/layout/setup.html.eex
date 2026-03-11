@@ -1,3 +1,0 @@
-<%= render_partial("head.html", assigns) %>
-  <%= @inner_content %>
-<%= render_partial("foot.html", assigns) %>

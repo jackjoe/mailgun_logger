@@ -1,6 +1,5 @@
 defmodule MailgunLoggerWeb.AuthController do
   use MailgunLoggerWeb, :controller
-  import MailgunLoggerWeb.Gettext
 
   alias MailgunLogger.Users
   alias MailgunLoggerWeb.Plugs.Auth

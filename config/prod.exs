@@ -4,15 +4,12 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   http: [port: System.fetch_env!("PORT"), compress: true],
   url: [host: System.fetch_env!("HOST"), port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json",
-  debug_errors: true,
+  debug_errors: false,
   code_reloader: false,
-  root: ".",
   version: Application.spec(:mailgun_logger, :vsn)
 
-config :phoenix, :serve_endpoints, true
 
 config :logger,
-  backends: [:console, LoggerPapertrailBackend.Logger],
   level: String.to_existing_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info,
   compile_time_purge_matching: [[application: :remote_ip]]
 

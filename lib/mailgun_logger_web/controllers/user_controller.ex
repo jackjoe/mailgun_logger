@@ -35,7 +35,6 @@ defmodule MailgunLoggerWeb.UserController do
         redirect(conn, to: Routes.user_path(conn, :index))
 
       {:error, changeset} ->
-        IO.inspect(changeset)
         render(conn, :edit, changeset: changeset, user: user)
     end
   end

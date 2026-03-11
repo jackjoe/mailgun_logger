@@ -1,18 +1,14 @@
 <h1>Main dashboard</h1>
 
 <div>
-  <%= if @total_accounts == 0 do %>
-  <div class="warn">
+  <div :if={@total_accounts == 0} class="warn">
     <strong>Note:</strong>
     no accounts found...
-    <%= link "create an account", to: Routes.account_path(@conn, :new) %> to start receiving logs.
+    <.link href={Routes.account_path(@conn, :new)}>create an account</.link> to start receiving logs.
   </div>
-  <% end %>
-  <%= if Phoenix.Flash.get(@flash, :info) do %>
-    <div class="info" role="info">
-      <%= Phoenix.Flash.get(@flash, :info) %>
-    </div>
-  <% end %>
+  <div :if={Phoenix.Flash.get(@flash, :info)} class="info" role="info">
+    <%= Phoenix.Flash.get(@flash, :info) %>
+  </div>
   <h2>Some stats</h2>
   <h3>Event counts by type (all time)</h3>
   <dl>

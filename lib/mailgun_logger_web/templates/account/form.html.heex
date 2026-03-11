@@ -1,0 +1,24 @@
+<.form :let={f} for={@changeset} action={@action}>
+  <div :if={@changeset.action} class="alert alert-danger">
+    <p>Oops, something went wrong! Please check the errors below.</p>
+  </div>
+
+  <p>These settings can be found on your Mailgun dashboard. An account covers a sending domain / API key combo. If you have multiple domains, add them on seperate accounts.</p>
+
+  <div :if={Phoenix.Flash.get(@flash, :info)} class="alert alert-info" role="info">
+    <%= Phoenix.Flash.get(@flash, :info) %>
+  </div>
+
+  <.input field={f[:domain]} label="Sending domain" />
+  <div class="form-hint"><a href="https://app.mailgun.com/app/sending/domains" target="_blank">Find on Mailgun dashboard</a></div>
+
+  <.input field={f[:api_key]} label="API key" />
+  <div class="form-hint"><a href="https://app.mailgun.com/app/account/security/api_keys" target="_blank">Find on Mailgun dashboard</a></div>
+
+  <.input field={f[:is_active]} type="checkbox" label="Is active" />
+  <.input field={f[:is_eu]} type="checkbox" label="Is EU" />
+
+  <div class="form-group mt-5">
+    <%= submit "submit", class: "btn btn-primary"%>
+  </div>
+</.form>

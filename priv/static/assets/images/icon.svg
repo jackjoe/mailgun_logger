@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#161b22;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="120" height="120" rx="24" fill="url(#bgGrad)"/>
+
+  <!-- Subtle border -->
+  <rect width="120" height="120" rx="24" fill="none" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.25"/>
+
+  <!-- Glow -->
+  <ellipse cx="60" cy="60" rx="36" ry="36" fill="#f97316" fill-opacity="0.07" filter="url(#softglow)"/>
+
+  <!-- Envelope -->
+  <rect x="18" y="30" width="84" height="54" rx="7" fill="#1c2128" stroke="url(#iconGrad)" stroke-width="2.5" filter="url(#glow)"/>
+  <!-- Envelope flap V -->
+  <polyline points="18,38 60,62 102,38" fill="none" stroke="url(#iconGrad)" stroke-width="2.5" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- Log lines at bottom of envelope -->
+  <line x1="28" y1="73" x2="56" y2="73" stroke="#f97316" stroke-width="2.5" stroke-opacity="1" stroke-linecap="round"/>
+  <line x1="28" y1="81" x2="70" y2="81" stroke="#f97316" stroke-width="2.5" stroke-opacity="0.5" stroke-linecap="round"/>
+  <!-- Cursor blink dot -->
+  <circle cx="76" cy="81" r="2.5" fill="#f97316"/>
+
+</svg>

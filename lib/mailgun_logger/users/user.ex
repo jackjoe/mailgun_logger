@@ -20,6 +20,7 @@ defmodule MailgunLogger.User do
           encrypted_password: String.t(),
           reset_token: String.t(),
           password: String.t(),
+          theme: String.t(),
           roles: Ecto.Association.NotLoaded.t() | [Role.t()],
           inserted_at: NaiveDateTime.t(),
           updated_at: NaiveDateTime.t()
@@ -32,6 +33,7 @@ defmodule MailgunLogger.User do
     field(:token, :string)
     field(:encrypted_password, :string)
     field(:reset_token, :string, default: nil)
+    field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
@@ -43,7 +45,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -57,7 +59,7 @@ defmodule MailgunLogger.User do
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
