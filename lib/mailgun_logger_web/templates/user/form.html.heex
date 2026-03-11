@@ -1,0 +1,24 @@
+<.form :let={f} for={@changeset} action={@action}>
+  <div :if={@changeset.action} class="alert alert-danger">
+    <p>Oops, something went wrong! Please check the errors below.</p>
+  </div>
+
+  <div :if={Phoenix.Flash.get(@flash, :info)} class="alert alert-info" role="info">
+    {Phoenix.Flash.get(@flash, :info)}
+  </div>
+
+  <.input field={f[:firstname]} label="Firstname" />
+  <.input field={f[:lastname]} label="Lastname" />
+  <.input field={f[:email]} label="Email" />
+  <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+  <.input
+    field={f[:theme]}
+    type="select"
+    label="Theme"
+    options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
+  />
+
+  <div class="form-group mt-5">
+    {submit("submit", class: "btn btn-primary")}
+  </div>
+</.form>

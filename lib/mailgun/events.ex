@@ -42,7 +42,10 @@ defmodule Mailgun.Events do
       url ->
         url = build_stored_message_url(client, url)
         stored_message = Client.get(client, url)
-        save_stored_message(event.api_id, stored_message)
+
+        if Application.get_env(:mailgun_logger, :store_messages) do
+          save_stored_message(event.api_id, stored_message)
+        end
 
         case Events.has_stored_message(event) do
           {:ok, event} -> event
@@ -53,9 +56,16 @@ defmodule Mailgun.Events do
 
   # Store on S3
   defp save_stored_message(api_id, stored_message) do
-    bucket()
-    |> S3.put_object(file_path(api_id), Jason.encode!(stored_message))
-    |> ExAws.request!()
+    case bucket()
+         |> S3.put_object(file_path(api_id), Jason.encode!(stored_message))
+         |> ExAws.request() do
+      {:ok, _} ->
+        :ok
+
+      {:error, reason} ->
+        Logger.error("Failed to save stored message #{api_id} to S3: #{inspect(reason)}")
+        :error
+    end
   end
 
   def get_stored_message(event) do

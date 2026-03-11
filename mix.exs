@@ -4,19 +4,14 @@ defmodule MailgunLogger.Mixfile do
   def project do
     [
       app: :mailgun_logger,
-      version: "2502.1.0",
+      version: "2603.2.0",
       elixir: "~> 1.17",
       elixirc_paths: elixirc_paths(Mix.env()),
+      listeners: [Phoenix.CodeReloader],
       aliases: aliases(),
       deps: deps(),
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [
-        coveralls: :test,
-        "coveralls.detail": :test,
-        "coveralls.post": :test,
-        "coveralls.html": :test
-      ],
       dialyzer: [plt_add_deps: :transitive],
       releases: [
         production: [
@@ -46,6 +41,17 @@ defmodule MailgunLogger.Mixfile do
     ]
   end
 
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
+    ]
+  end
+
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
@@ -57,35 +63,33 @@ defmodule MailgunLogger.Mixfile do
       {:argon2_elixir, "~> 4.0"},
       {:bamboo, "~> 2.0"},
       {:bamboo_phoenix, "~> 1.0"},
-      {:decimal, "~> 2.0"},
-      {:ecto_sql, "~> 3.11"},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:ecto_sql, "~> 3.13"},
+      {:ex_doc, "~> 0.40", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
-      {:excoveralls, "~> 0.10", only: :test},
-      {:gettext, "~> 0.16"},
+      {:excoveralls, "~> 0.18", only: :test},
+      {:gettext, "~> 1.0"},
       {:hackney, "~> 1.12"},
       {:httpoison, "~> 2.1"},
       {:jason, "~> 1.3"},
-      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
-      {:flop, "~> 0.25.0"},
-      {:flop_phoenix, "~> 0.22.6"},
+      {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
+      {:flop, "~> 0.26"},
+      {:flop_phoenix, "~> 0.25"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:phoenix, "~> 1.7"},
+      {:phoenix, "~> 1.8"},
       {:phoenix_pubsub, "~> 2.0"},
-      {:plug_cowboy, "~> 2.1"},
-      {:phoenix_ecto, "~> 4.0"},
-      {:phoenix_html, "~> 4.0"},
+      {:plug_cowboy, "~> 2.7"},
+      {:phoenix_ecto, "~> 4.5"},
+      {:phoenix_html, "~> 4.1"},
       {:phoenix_html_helpers, "~> 1.0"},
-      {:phoenix_live_view, "~> 0.19"},
+      {:phoenix_live_view, "~> 1.1"},
       {:phoenix_view, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:floki, ">= 0.30.0", only: :test},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:logger_papertrail_backend, "~> 1.0"},
-      {:plug, "~> 1.7"},
-      {:quantum, "~> 3.4"},
-      {:sweet_xml, "~> 0.6"}
+      {:lazy_html, ">= 0.1.0", only: :test},
+      {:phoenix_live_reload, "~> 1.5", only: :dev},
+      {:plug, "~> 1.8"},
+      {:quantum, "~> 3.4"}
     ]
   end
 

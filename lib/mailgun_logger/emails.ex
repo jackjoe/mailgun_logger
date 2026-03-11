@@ -31,13 +31,6 @@ defmodule MailgunLogger.Emails do
     |> log(:reset_password)
   end
 
-  def test_mail(recipient) do
-    base_email()
-    |> to(recipient)
-    |> subject("test")
-    |> text_body("test")
-  end
-
   defp base_email do
     conf = Application.get_env(:mailgun_logger, MailgunLogger.Mailer)
 

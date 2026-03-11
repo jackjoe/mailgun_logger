@@ -12,10 +12,9 @@ defmodule Mailgun.Client do
         }
 
   alias Mailgun.Client
-  require Logger
 
-  @base_url "https://api:API_KEY@api.mailgun.net/v3"
-  @base_eu_url "https://api:API_KEY@api.eu.mailgun.net/v3"
+  @base_url "https://api.mailgun.net/v3"
+  @base_eu_url "https://api.eu.mailgun.net/v3"
 
   @ttl 60_000
   @request_opts [recv_timeout: @ttl, timeout: @ttl]
@@ -31,7 +30,7 @@ defmodule Mailgun.Client do
 
   defp get_page(client, url, acc \\ []) do
     # Logger.info "Mailgun client :: get_page :: #{url}"
-    Logger.debug(Atom.to_string(:get) <> " - " <> url)
+    Logger.debug("get" <> " - " <> url)
 
     :get
     |> HTTPoison.request!(url, "", [], request_opts(client))
@@ -39,7 +38,7 @@ defmodule Mailgun.Client do
   end
 
   defp _request(method, client, url, body \\ "") do
-    Logger.debug(Atom.to_string(method) <> " - " <> url)
+    Logger.debug("#{method} - #{url}")
 
     method
     |> HTTPoison.request!(url, body, [], request_opts(client))
@@ -112,7 +111,6 @@ defmodule Mailgun.Client do
   def url(%Client{is_eu: false} = client, path), do: _url(@base_url, client, path)
 
   defp _url(base_url, client, path) do
-    base_url = base_url |> String.replace("API_KEY", client.api_key)
     (base_url <> path) |> String.replace("DOMAIN", client.domain)
   end
 

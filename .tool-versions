@@ -1,6 +1,6 @@
-elixir 1.17.2
-erlang 27.0.1
-nodejs 20.17.0
+elixir 1.19.5-otp-28
+erlang 28.1
+nodejs 24.13.0
 rebar 3.22.1
-pnpm 9.9.0
+pnpm 10.28.2
 yarn 1.22.19

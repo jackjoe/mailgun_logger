@@ -15,11 +15,11 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
     certfile: "priv/cert/selfsigned.pem"
   ],
   live_reload: [
+    web_console_logger: true,
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{lib/mailgun_logger_web/views/.*(ex)$},
-      ~r{lib/mailgun_logger_web/templates/.*(eex)$}
+      ~r{lib/mailgun_logger_web/(?:controllers|components|lives|views|templates|router)/?.*\.(ex|heex)$}
     ]
   ],
   debug_errors: true,
@@ -36,5 +36,9 @@ config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
 # config :mailgun_logger, MailgunLogger.Mailer, adapter: Bamboo.LocalAdapter
 
 # Do not include metadata nor timestamps in development logs
-config :logger, :console, format: "[$level] $message\n"
+config :logger, :default_formatter, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
+
+config :phoenix_live_view,
+  debug_heex_annotations: true,
+  enable_expensive_runtime_checks: true

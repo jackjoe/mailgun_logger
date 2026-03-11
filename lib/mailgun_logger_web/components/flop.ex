@@ -38,8 +38,7 @@ defmodule MailgunLoggerWeb.Components.Flop do
         fields={[
           event: [
             type: "select",
-            options: [nil] ++ ~w(delivered accepted opened failed stored),
-            default: :delivered
+            options: [{"all", ""}] ++ ~w(delivered accepted opened failed stored)
           ],
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
@@ -60,29 +59,3 @@ defmodule MailgunLoggerWeb.Components.Flop do
     """
   end
 end
-
-# <%= text_input f, :subject, placeholder: "Subject" %>
-# <%= text_input f, :recipient, placeholder: "Recipient" %>
-# <%= text_input f, :from, placeholder: "From" %>
-
-# <%= checkbox f, :delivered %>
-# <%= label f, :delivered %>
-# <%= error_tag f, :delivered %>
-
-# <%= checkbox f, :accepted %>
-# <%= label f, :accepted %>
-# <%= error_tag f, :accepted %>
-
-# <%= checkbox f, :opened %>
-# <%= label f, :opened %>
-# <%= error_tag f, :opened %>
-
-# <%= checkbox f, :failed %>
-# <%= label f, :failed %>
-# <%= error_tag f, :failed %>
-
-# <%= checkbox f, :stored %>
-# <%= label f, :stored %>
-# <%= error_tag f, :stored %>
-
-# <%= select(f, :account, cbo_accounts(@accounts)) %>

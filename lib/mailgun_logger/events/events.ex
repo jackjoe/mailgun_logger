@@ -25,24 +25,24 @@ defmodule MailgunLogger.Events do
 
   def init_filters(%{"filters" => filters} = params) do
     filters =
-      Enum.map(filters, fn {k, v} ->
-        v =
-          v
-          |> Enum.map(fn
-            {"value", v} when is_binary(v) -> {"value", String.trim(v)}
-            {k, v} -> {k, v}
-          end)
-          |> Enum.into(%{})
-
-        {k, v}
+      filters
+      |> Enum.map(fn {_k, v} ->
+        v
+        |> Enum.map(fn
+          {"value", v} when is_binary(v) -> {"value", String.trim(v)}
+          {k, v} -> {k, v}
+        end)
+        |> Enum.into(%{})
       end)
-      |> Enum.into(%{})
+      |> Enum.reject(fn v -> v["value"] == "" end)
+      |> Enum.with_index()
+      |> Enum.into(%{}, fn {v, i} -> {to_string(i), v} end)
 
     %{params | "filters" => filters}
   end
 
   def init_filters(params) do
-    Map.put(params, "filters", %{"0" => %{"field" => "event", "value" => "delivered"}})
+    Map.put(params, "filters", %{})
   end
 
   @spec get_event(number) :: Event.t()
@@ -97,7 +97,7 @@ defmodule MailgunLogger.Events do
     |> Map.put("timestamp", conv_event_timestamp(event))
     |> Map.put("api_id", event["id"])
     |> Map.put("log_level", event["log-level"])
-    |> Map.put("delivery_attempt", event["delivery-status"]["attempt-no"])
+    |> Map.put("delivery_attempt", get_in(event, ["delivery-status", "attempt-no"]))
     |> Map.put("event", event["event"])
     |> Map.put("message_from", message["headers"]["from"])
     |> Map.put("message_to", message["headers"]["to"])
@@ -133,8 +133,12 @@ defmodule MailgunLogger.Events do
   end
 
   def get_stats(n_hours) do
+    now = DateTime.utc_now()
+    cutoff = DateTime.add(now, -n_hours * 3600)
+
     stats =
       from(e in Event,
+        where: e.timestamp >= ^cutoff,
         group_by: [
           e.event,
           fragment("CONCAT(to_char(?, 'yyyy-mm-dd hh24:mi:ss'), ?)", e.timestamp, ":00")
@@ -189,5 +193,4 @@ defmodule MailgunLogger.Events do
     end
   end
 
-  def bucket(), do: Application.get_env(:ex_aws, :bucket)
 end

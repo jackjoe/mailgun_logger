@@ -1,8 +1,0 @@
-    <footer>
-      <%= link "Mailgun", to: Routes.page_path(@conn, :non_affiliation) %> Logger v<%= Application.spec(:mailgun_logger, :vsn) %>
-      | created by Jack + Joe | <a href="https://raw.githubusercontent.com/jackjoe/mailgun_logger/master/LICENSE">MIT License</a>
-    </footer>
-    <script defer phx-track-static src="<%= Routes.static_path(@conn, "/assets/js/app.js") %>"></script>
-    <script src="<%= Routes.static_path(@conn, "/assets/js/util.js") %>"></script>
-  </body>
-</html>

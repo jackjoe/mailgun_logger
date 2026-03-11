@@ -67,7 +67,7 @@ defmodule MailgunLogger.Event do
     },
     default_pagination_type: :first,
     pagination_types: [:first, :last],
-    default_limit: 25
+    default_limit: 50
   }
 
   @type t :: %__MODULE__{

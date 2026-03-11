@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme={theme_preference(assigns)} data-user-theme={theme_preference(assigns)}>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Jack + Joe">
+    <meta name="version" content={Application.spec(:mailgun_logger, :vsn)}>
+    <meta name="env" content={to_string(Application.get_env(:mailgun_logger, :env))}>
+    <title>Mailgun Logger v<%= Application.spec(:mailgun_logger, :vsn) %></title>
+    <link rel="icon" type="image/png" href={Routes.static_path(@conn, "/assets/images/favicon.png")} />
+    <link rel="stylesheet" href={Routes.static_path(@conn, "/assets/css/style.css")}>
+    <meta name="csrf-token" content={Plug.CSRFProtection.get_csrf_token()} />
+    <script>
+      (function() {
+        var html = document.documentElement;
+        var theme = html.getAttribute("data-theme");
+        if (theme === "system") {
+          html.setAttribute("data-theme",
+            window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
+          );
+        }
+        window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function(e) {
+          if (html.dataset.userTheme === "system") {
+            html.setAttribute("data-theme", e.matches ? "light" : "dark");
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <header id="app-header">
+      <div class="top">
+        <nav id="main-nav">
+          <div id="app-logo">
+            <a href={Routes.event_path(@conn, :index)}>
+              <span class="logo-mark">&gt;_</span><span class="logo-text">ML</span>
+            </a>
+          </div>
+          <ul>
+            <%= if assigns[:current_user] do %>
+              <li><.link href={Routes.event_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.EventController)}>Events</.link></li>
+              <li><.link href={Routes.page_path(@conn, :stats)} class={active_link_class(@conn, MailgunLoggerWeb.PageController, :index)}>Stats</.link></li>
+              <li><.link href={Routes.account_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.AccountController, :index)}>Accounts</.link></li>
+              <li><.link href={Routes.user_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.UserController, :index)}>Users</.link></li>
+              <li class="nav-right">
+                <details class="nav-dropdown">
+                  <summary class="nav-dropdown-toggle">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M7.429 1.525a3.5 3.5 0 011.142 0 .75.75 0 01.57.549l.246 1.058a1.08 1.08 0 001.466.625l.97-.478a.75.75 0 01.758.069 5.5 5.5 0 01.572.572.75.75 0 01.069.758l-.478.97a1.08 1.08 0 00.625 1.466l1.058.246a.75.75 0 01.549.57 3.5 3.5 0 010 1.142.75.75 0 01-.549.57l-1.058.246a1.08 1.08 0 00-.625 1.466l.478.97a.75.75 0 01-.069.758 5.5 5.5 0 01-.572.572.75.75 0 01-.758.069l-.97-.478a1.08 1.08 0 00-1.466.625l-.246 1.058a.75.75 0 01-.57.549 3.5 3.5 0 01-1.142 0 .75.75 0 01-.57-.549l-.246-1.058a1.08 1.08 0 00-1.466-.625l-.97.478a.75.75 0 01-.758-.069 5.5 5.5 0 01-.572-.572.75.75 0 01-.069-.758l.478-.97a1.08 1.08 0 00-.625-1.466l-1.058-.246a.75.75 0 01-.549-.57 3.5 3.5 0 010-1.142.75.75 0 01.549-.57l1.058-.246a1.08 1.08 0 00.625-1.466l-.478-.97a.75.75 0 01.069-.758 5.5 5.5 0 01.572-.572.75.75 0 01.758-.069l.97.478a1.08 1.08 0 001.466-.625l.246-1.058a.75.75 0 01.57-.549zM8 11a3 3 0 100-6 3 3 0 000 6z"/></svg>
+                  </summary>
+                  <div class="nav-dropdown-menu">
+                    <div class="nav-dropdown-header"><%= @current_user.email %></div>
+                    <div class="nav-dropdown-divider"></div>
+                    <.link href={Routes.profile_path(@conn, :edit)} class="nav-dropdown-item">Profile</.link>
+                    <.link href={Routes.auth_path(@conn, :logout)} class="nav-dropdown-item">Logout</.link>
+                  </div>
+                </details>
+              </li>
+            <% else %>
+              <li class="nav-right"><.link href={Routes.auth_path(@conn, :new)}>Login</.link></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <%= @inner_content %>
+    </main>
+    <footer>
+      <.link href={Routes.page_path(@conn, :non_affiliation)}>Mailgun</.link> Logger v<%= Application.spec(:mailgun_logger, :vsn) %>
+      | created by Jack + Joe | <a href="https://raw.githubusercontent.com/jackjoe/mailgun_logger/master/LICENSE">MIT License</a>
+    </footer>
+    <script defer phx-track-static src={Routes.static_path(@conn, "/assets/js/app.js")}></script>
+    <script src={Routes.static_path(@conn, "/assets/js/util.js")}></script>
+  </body>
+</html>

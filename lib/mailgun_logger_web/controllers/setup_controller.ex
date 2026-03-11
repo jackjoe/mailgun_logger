@@ -1,7 +1,7 @@
 defmodule MailgunLoggerWeb.SetupController do
   use MailgunLoggerWeb, :controller
 
-  plug(:put_layout, :setup)
+  plug(:put_layout, {MailgunLoggerWeb.LayoutView, :setup})
 
   alias MailgunLogger.User
   alias MailgunLogger.Users

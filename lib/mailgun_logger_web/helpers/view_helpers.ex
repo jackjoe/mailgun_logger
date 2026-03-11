@@ -26,4 +26,11 @@ defmodule MailgunLoggerWeb.ViewHelpers do
       ""
     end
   end
+
+  def theme_preference(assigns) do
+    case assigns[:current_user] do
+      %{theme: theme} when theme in ~w(dark light system) -> theme
+      _ -> "dark"
+    end
+  end
 end

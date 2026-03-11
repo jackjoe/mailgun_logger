@@ -8,17 +8,15 @@ import Config
 config :mailgun_logger,
   ecto_repos: [MailgunLogger.Repo],
   env: Mix.env(),
-  store_messages: System.get_env("ML_STORE_MESSAGES") || false,
-  ml_pagesize: System.get_env("ML_PAGESIZE") || "100"
+  store_messages: System.get_env("ML_STORE_MESSAGES") || false
 
 # Configures the endpoint
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: System.get_env("HOST")],
   secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
-  live_view: [signing_salt: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d"],
-  pubsub_server: MailgunLogger.PubSub,
-  check_origin: false
+  live_view: [signing_salt: "ML_LV_Salt"],
+  pubsub_server: MailgunLogger.PubSub
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -30,22 +28,14 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-config :phoenix, :format_encoders, json: Jason
-config :phoenix, :json_library, Jason
+config :phoenix,
+  format_encoders: [json: Jason],
+  json_library: Jason
 
 # config :scrivener_html,
 #   routes_helper: MailgunLoggerWeb.Router.Helpers,
 #   # If you use a single view style everywhere, you can configure it here. See View Styles below for more info.
 #   view_style: :bootstrap
-
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:user_id]
-
-config :logger,
-  backends: [:console],
-  level: String.to_atom(System.get_env("ML_LOG_LEVEL", "debug")) || :debug
 
 config :flop, repo: MailgunLogger.Repo
 
@@ -90,16 +80,10 @@ config :mailgun_logger, MailgunLogger.Repo,
 
 # Configures Elixir's Logger
 config :logger,
-  backends: [:console],
-  level: :debug,
-  console: [
+  level: String.to_existing_atom(System.get_env("ML_LOG_LEVEL", "debug")),
+  default_formatter: [
     format: "$time $metadata[$level] $message\n",
     metadata: [:user_id]
-  ],
-  logger_papertrail_backend: [
-    host: System.get_env("PAPERTRAIL_HOST"),
-    system_name: "mailgun-logger",
-    format: "$metadata $message"
   ]
 
-import_config "#{Mix.env()}.exs"
+import_config "#{config_env()}.exs"
