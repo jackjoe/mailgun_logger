@@ -14,7 +14,7 @@ config :mailgun_logger,
 # Configures the endpoint
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: System.get_env("HOST")],
-  secret_key_base: "9zFYul0/t5smQYyvAsFKC+Lk3AQbQrMw9Fp/OgOOJGQtHEn1dvH6WmdH26mGvv2d",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
   live_view: [signing_salt: "ML_LV_Salt"],
   pubsub_server: MailgunLogger.PubSub
