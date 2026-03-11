@@ -33,6 +33,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
     
+      - name: Extract version from mix.exs
+        id: version
+        run: echo "value=$(grep 'version:' mix.exs | sed 's/.*version: "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+
       - name: Build image and push to Docker Hub
         uses: docker/build-push-action@v6
         with:
@@ -40,7 +44,8 @@ jobs:
           context: ./
           # Note: tags has to be all lower-case
           tags: |
-            jackjoe/mailgun_logger:latest 
+            jackjoe/mailgun_logger:latest
+            jackjoe/mailgun_logger:${{ steps.version.outputs.value }}
           # build on feature branches, push only on master branch
           push: ${{ github.ref == 'refs/heads/master' }}
 
