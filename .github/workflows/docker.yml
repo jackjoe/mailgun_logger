@@ -35,7 +35,9 @@ jobs:
     
       - name: Extract version from mix.exs
         id: version
-        run: echo "value=$(grep 'version:' mix.exs | sed 's/.*version: "\(.*\)".*/\1/')" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(grep 'version:' mix.exs | sed 's/.*version: "\(.*\)".*/\1/')
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build image and push to Docker Hub
         uses: docker/build-push-action@v6
