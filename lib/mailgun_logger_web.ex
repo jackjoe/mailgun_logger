@@ -21,9 +21,9 @@ defmodule MailgunLoggerWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: MailgunLoggerWeb
+      use Phoenix.Controller, formats: [html: "View", json: "View"]
       import Plug.Conn
-      import MailgunLoggerWeb.Gettext
+      use Gettext, backend: MailgunLoggerWeb.Gettext
       alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
       unquote(verified_routes())
@@ -41,11 +41,6 @@ defmodule MailgunLoggerWeb do
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [view_module: 1]
 
-      # TODO to be deleted and replaced with components
-      def render_partial(template, assigns \\ []) do
-        render(MailgunLoggerWeb.PartialView, template, assigns)
-      end
-
       unquote(html_helpers())
     end
   end
@@ -62,7 +57,7 @@ defmodule MailgunLoggerWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import MailgunLoggerWeb.Gettext
+      use Gettext, backend: MailgunLoggerWeb.Gettext
     end
   end
 
@@ -72,18 +67,12 @@ defmodule MailgunLoggerWeb do
       import Phoenix.HTML
       import Phoenix.HTML.Form
       use PhoenixHTMLHelpers
-      use Phoenix.LiveView
-
-      # Import LiveView and .heex helpers (live_render, live_patch, <.form>, etc)
-      import Phoenix.LiveView.Helpers
 
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import MailgunLoggerWeb.Gettext
+      use Gettext, backend: MailgunLoggerWeb.Gettext
       import MailgunLoggerWeb.ErrorHelpers
-      import MailgunLoggerWeb.Gettext
-      import MailgunLoggerWeb.PagingHelpers
       import MailgunLoggerWeb.ViewHelpers
       alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
@@ -95,15 +84,11 @@ defmodule MailgunLoggerWeb do
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
-
-      # Routes generation with the ~p sigil
-      unquote(verified_routes())
     end
   end
 
   def component do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
       use Phoenix.Component
 
       # Routes generation with the ~p sigil
@@ -113,6 +98,7 @@ defmodule MailgunLoggerWeb do
 
   def live_view do
     quote do
+      use Phoenix.LiveView
       unquote(html_helpers())
     end
   end

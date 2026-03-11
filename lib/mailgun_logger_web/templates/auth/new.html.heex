@@ -1,0 +1,24 @@
+<div class="login-wrapper">
+  <div class="login-panel">
+    <h2><%= gettext("Inloggen") %></h2>
+
+    <div :if={Phoenix.Flash.get(@flash, :info)} class="alert alert-info" role="alert">
+      <%= Phoenix.Flash.get(@flash, :info) %>
+    </div>
+
+    <div :if={Phoenix.Flash.get(@flash, :error)} class="validation-error" role="alert">
+      <%= Phoenix.Flash.get(@flash, :error) %>
+    </div>
+
+    <.form :let={f} for={@conn} action={Routes.auth_path(@conn, :create)} as={:user} novalidate>
+      <.input field={f[:email]} type="email" label={gettext("Email")} required autofocus />
+      <.input field={f[:password]} type="password" label={gettext("Password")} required />
+
+      <%= submit gettext("Inloggen"), class: "btn btn-primary" %>
+    </.form>
+
+    <hr>
+
+    <.link href={Routes.password_reset_path(@conn, :request_new)}><%= gettext("Forgot password?") %></.link>
+  </div>
+</div>

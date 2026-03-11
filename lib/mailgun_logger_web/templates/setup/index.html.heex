@@ -1,0 +1,14 @@
+<main>
+  <.form :let={f} for={@changeset} action={Routes.setup_path(@conn, :create_root)}>
+    <h1><%= gettext("Welcome newbie!") %></h1>
+    <p>Looks like this is the first time you are accessing Mailgun Logger.</p>
+    <p>Create the admin account below:</p>
+
+    <.input field={f[:email]} label="Email" />
+    <.input field={f[:password]} type="password" label="Password" />
+
+    <div class="form-group mt-5">
+      <%= submit "submit" %>
+    </div>
+  </.form>
+</main>

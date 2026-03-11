@@ -5,8 +5,6 @@ defmodule MailgunLoggerWeb.Endpoint do
 
   use Phoenix.Endpoint, otp_app: :mailgun_logger
 
-  socket("/socket", MailgunLoggerWeb.UserSocket)
-
   socket("/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]])
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -17,7 +15,7 @@ defmodule MailgunLoggerWeb.Endpoint do
     Plug.Static,
     from: :mailgun_logger,
     at: "/",
-    gzip: false,
+    gzip: not code_reloading?,
     only: MailgunLoggerWeb.static_paths()
   )
 
@@ -33,7 +31,7 @@ defmodule MailgunLoggerWeb.Endpoint do
     Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Jason
+    json_decoder: Phoenix.json_library()
   )
 
   plug(Plug.MethodOverride)

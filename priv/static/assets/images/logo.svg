@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 160" width="480" height="160">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#161b22;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fb923c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f97316;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="480" height="160" rx="16" fill="url(#bgGrad)"/>
+
+  <!-- Subtle grid lines -->
+  <line x1="0" y1="40" x2="480" y2="40" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="80" x2="480" y2="80" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="0" y1="120" x2="480" y2="120" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="120" y1="0" x2="120" y2="160" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="240" y1="0" x2="240" y2="160" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+  <line x1="360" y1="0" x2="360" y2="160" stroke="#ffffff" stroke-opacity="0.03" stroke-width="1"/>
+
+  <!-- Orange glow blob behind icon -->
+  <ellipse cx="72" cy="80" rx="44" ry="44" fill="#f97316" fill-opacity="0.08" filter="url(#softglow)"/>
+
+  <!-- Icon container -->
+  <rect x="24" y="36" width="96" height="88" rx="12" fill="#1c2128" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Envelope shape -->
+  <rect x="36" y="52" width="72" height="46" rx="5" fill="none" stroke="url(#iconGrad)" stroke-width="2" filter="url(#glow)"/>
+  <!-- Envelope flap (V) -->
+  <polyline points="36,57 72,78 108,57" fill="none" stroke="url(#iconGrad)" stroke-width="2" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- Storage lines below envelope (log lines) -->
+  <line x1="36" y1="110" x2="68" y2="110" stroke="#f97316" stroke-width="2" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="36" y1="117" x2="78" y2="117" stroke="#f97316" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
+  <!-- Little blinking cursor dot -->
+  <circle cx="83" cy="117" r="2" fill="#f97316" fill-opacity="0.9"/>
+
+  <!-- Divider -->
+  <line x1="140" y1="30" x2="140" y2="130" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>
+
+  <!-- Main text: mailgun -->
+  <text x="160" y="88"
+    font-family="'Courier New', 'Lucida Console', monospace"
+    font-size="42"
+    font-weight="700"
+    letter-spacing="-1"
+    fill="#f8f8f2">mail<tspan fill="url(#accentGrad)" filter="url(#glow)">gun</tspan></text>
+
+  <!-- Sub text: logger -->
+  <text x="162" y="114"
+    font-family="'Courier New', 'Lucida Console', monospace"
+    font-size="18"
+    font-weight="400"
+    letter-spacing="8"
+    fill="#8b949e">LOGGER</text>
+
+  <!-- Small decorative tag top right -->
+  <rect x="400" y="18" width="62" height="20" rx="4" fill="#f97316" fill-opacity="0.12" stroke="#f97316" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="431" y="32"
+    font-family="'Courier New', monospace"
+    font-size="9"
+    font-weight="600"
+    text-anchor="middle"
+    letter-spacing="1"
+    fill="#f97316" fill-opacity="0.8">v1.0.0</text>
+
+</svg>

@@ -12,44 +12,36 @@ defmodule MailgunLoggerWeb.EventView do
     end
   end
 
-  def event_name("delivered") do
-    assigns = %{}
+  def event_name(name) when name in ~w(delivered failed accepted opened) do
+    assigns = %{name: name}
 
-    ~L"""
-    <span style="background-color: lime; padding: 3px 5px; color: green;">delivered</span>
-    """
-  end
-
-  def event_name("failed") do
-    assigns = %{}
-
-    ~L"""
-    <span style="background-color: red; padding: 3px 5px; color: white;">failed</span>
+    ~H"""
+    <span class={"log-event log-event--#{@name}"}><%= @name %></span>
     """
   end
 
   def event_name(event_name), do: event_name
 
-  def event_type(event_type) when event_type in ~w(warn) do
-    assigns = %{event_type: event_type}
+  def event_type("warn") do
+    assigns = %{}
 
-    ~L"""
-    <span style="background-color: orange; padding: 3px 5px; color: #fff;"><%= event_type %></span>
+    ~H"""
+    <span class="log-level log-level--warn">warn</span>
     """
   end
 
   def event_type(event_type) when event_type in ~w(failed error) do
     assigns = %{event_type: event_type}
 
-    ~L"""
-    <span style="background-color: red; padding: 3px 5px; color: #fff;"><%= event_type %></span>
+    ~H"""
+    <span class="log-level log-level--error"><%= @event_type %></span>
     """
   end
 
   def event_type(event_type), do: event_type
 
-  def send_recv("SMTP"), do: "recv"
-  def send_recv(_), do: "send"
+  def send_recv("SMTP"), do: "<-"
+  def send_recv(_), do: "->"
 
   def error_msg(%{raw: %{"delivery-status" => %{"message" => msg}}}), do: msg
   def error_msg(_), do: "-"
@@ -89,7 +81,7 @@ defmodule MailgunLoggerWeb.EventView do
     assigns = %{attachments: atts}
 
     ~H"""
-    <div style="font-style: italic;color: #aaa;">
+    <div class="text-dim" style="font-style: italic;">
       Note: listing belows shows filenames only, no links to the files available.
     </div>
     <ul style="padding:0;">

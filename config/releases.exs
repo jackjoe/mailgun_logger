@@ -1,5 +1,8 @@
 import Config
 
+config :mailgun_logger, MailgunLoggerWeb.Endpoint,
+  secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
+
 config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER"),
   password: System.get_env("ML_DB_PASSWORD"),
@@ -12,8 +15,6 @@ config :mailgun_logger, MailgunLogger.Mailer,
   api_key: System.get_env("MAILGUN_API_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN"),
   from: System.get_env("MAILGUN_FROM") || "no-reply@jackjoe.be"
-
-config :logger, logger_papertrail_backend: [host: System.get_env("PAPERTRAIL_HOST")]
 
 config :ex_aws,
   access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),

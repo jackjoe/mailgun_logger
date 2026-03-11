@@ -1,0 +1,30 @@
+<h1>Accounts</h1>
+
+<table cellspacing="0" class="table">
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>API key</th>
+      <th>EU</th>
+      <th>Active</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for account <- @accounts do %>
+    <tr>
+      <td><%= account.domain %></td>
+      <td><%= account.api_key %></td>
+      <td><span :if={account.is_eu}>EU</span></td>
+      <td>
+        <pre :if={account.is_active} class="dot active">active</pre>
+        <pre :if={!account.is_active} class="dot inactive">inactive</pre>
+      </td>
+      <td><.link href={Routes.account_path(@conn, :edit, account)}>edit</.link></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<div class="mt-5">
+  <.link href={Routes.account_path(@conn, :new)} class="btn">+ Add account</.link>
+</div>

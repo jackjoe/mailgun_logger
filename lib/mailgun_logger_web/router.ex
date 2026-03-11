@@ -7,6 +7,7 @@ defmodule MailgunLoggerWeb.Router do
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_live_flash)
+    plug(:put_layout, {MailgunLoggerWeb.LayoutView, :app})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Plug.Logger)
@@ -76,6 +77,8 @@ defmodule MailgunLoggerWeb.Router do
     resources("/events", EventController, only: [:index, :show])
     get("/events/:id/stored_message", EventController, :stored_message)
     resources("/accounts", AccountController, except: [:show])
+    get("/profile", ProfileController, :edit)
+    put("/profile", ProfileController, :update)
     resources("/users", UserController, except: [:show])
 
     get("/", PageController, :index)

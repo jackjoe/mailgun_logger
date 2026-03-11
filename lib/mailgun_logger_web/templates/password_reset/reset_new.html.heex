@@ -1,0 +1,11 @@
+<div class="mx-auto panel">
+  <.form :let={f} for={@changeset} action={Routes.password_reset_path(@conn, :reset_create, @reset_token)}>
+    <h2 class="h2"><%= gettext "Password forgot" %></h2>
+    <p class="mb-4"><%= gettext "Enter and confirm your new password" %></p>
+
+    <.input field={f[:password]} type="password" label={gettext("Wachtwoord")} required />
+    <.input field={f[:password_confirmation]} type="password" label={gettext("Wachtwoord bevestigen")} required />
+
+    <%= submit gettext("Reset password"), class: "btn btn-primary" %>
+  </.form>
+</div>
