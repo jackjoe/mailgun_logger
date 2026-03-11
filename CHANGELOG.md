@@ -1,3 +1,15 @@
+## 2603.2.2 (2026-03-11)
+
+### Fixed
+
+- Migrate `config/releases.exs` to `config/runtime.exs` (deprecated since Elixir 1.11, ignored in 1.19)
+- Add `server: true` to runtime endpoint config so the HTTP server starts in releases
+- Add `IF NOT EXISTS` to events index migration to prevent crash on existing databases
+
+### Changed
+
+- Docker workflow now tags images with the version from `mix.exs` in addition to `latest`
+
 ## 2603.2.0 (2026-03-11)
 
 **BREAKING**
