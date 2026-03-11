@@ -1,7 +1,7 @@
 import Config
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
-  secret_key_base: System.fetch_env!("SECRET_KEY_BASE")
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER"),
