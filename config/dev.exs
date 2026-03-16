@@ -5,15 +5,19 @@ port = System.get_env("PORT") || "7070"
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [
     host: System.get_env("HOST", "0.0.0.0"),
-    scheme: "https",
+    scheme: "http",
     port: port
   ],
-  https: [
-    port: port,
-    cipher_suite: :strong,
-    keyfile: "priv/cert/selfsigned_key.pem",
-    certfile: "priv/cert/selfsigned.pem"
+  http: [
+    ip: {127, 0, 0, 1},
+    port: String.to_integer(System.get_env("PORT") || "7070")
   ],
+  # https: [
+  #   port: port,
+  #   cipher_suite: :strong,
+  #   keyfile: "priv/cert/selfsigned_key.pem",
+  #   certfile: "priv/cert/selfsigned.pem"
+  # ],
   live_reload: [
     web_console_logger: true,
     patterns: [
@@ -28,7 +32,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ],
-  secret_key_base: "rnd"
+  secret_key_base: "J1jNMO9my3zkgQO5maa6mcMKQDjMJgjw+RgHkaSBYCtwv4GhhPAK7P0y312T2gRD"
 
 config :ex_aws,
   raw_path: "_dev_mailgun_logger/messages"
