@@ -64,18 +64,15 @@ defmodule MailgunLogger.Roles do
 
 
   for action <- @admin_actions do
-    action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
   end
 
   for action <- @superuser_actions do
-    action = String.to_atom(action)
     def can?(@superuser_role, unquote(action)), do: true
   end
 
   # Added loop for member actions to define permissions for basic users
   for action <- @member_actions do
-    action = String.to_atom(action)
     def can?(@member_role, unquote(action)), do: true
   end
 
