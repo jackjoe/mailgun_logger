@@ -7,14 +7,21 @@ defmodule MailgunLogger.Roles do
 
   @superuser_role "superuser"
   @admin_role "admin"
+  @member_role "member" # Added member role for basic users
 
   #########################################################
 
-  @default_actions ~w()
+  # used ~w(... )a to create lists of atoms for actions instead of strings
 
-  @admin_actions ~w(do_stuff) ++ @default_actions
+  @default_actions ~w(view_events edit_profile)a
 
-  @superuser_actions ~w() ++ @admin_actions
+  # Gave members default actions that allow them to view events and edit their profile, but not manage users or accounts
+  @member_actions @default_actions
+
+  @admin_actions ~w(do_stuff manage_users manage_accounts view_stats)a ++ @default_actions
+
+  @superuser_actions @admin_actions
+
 
   #########################################################
 
@@ -55,6 +62,7 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -65,8 +73,15 @@ defmodule MailgunLogger.Roles do
     def can?(@superuser_role, unquote(action)), do: true
   end
 
+  # Added loop for member actions to define permissions for basic users
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   def can?(_, _), do: false
 
+  def is?(%User{roles: roles}, :member), do: is(roles, "member") # Added case for member role
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
@@ -75,8 +90,8 @@ defmodule MailgunLogger.Roles do
 
   def abilities(%User{roles: []}), do: []
   def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
+  def abilities(%Role{name: "member"}), do: @member_actions # Added case for member role to return their specific actions
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
-
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
 end
