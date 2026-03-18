@@ -39,9 +39,11 @@
           <ul>
             <%= if assigns[:current_user] do %>
               <li><.link href={Routes.event_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.EventController)}>Events</.link></li>
-              <li><.link href={Routes.page_path(@conn, :stats)} class={active_link_class(@conn, MailgunLoggerWeb.PageController, :index)}>Stats</.link></li>
-              <li><.link href={Routes.account_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.AccountController, :index)}>Accounts</.link></li>
-              <li><.link href={Routes.user_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.UserController, :index)}>Users</.link></li>
+              <%= if not MailgunLogger.Roles.is?(@current_user, :member) do %>
+                <li><.link href={Routes.page_path(@conn, :stats)} class={active_link_class(@conn, MailgunLoggerWeb.PageController, :index)}>Stats</.link></li>
+                <li><.link href={Routes.account_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.AccountController, :index)}>Accounts</.link></li>
+                <li><.link href={Routes.user_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.UserController, :index)}>Users</.link></li>
+              <% end %>
               <li class="nav-right">
                 <details class="nav-dropdown">
                   <summary class="nav-dropdown-toggle">
