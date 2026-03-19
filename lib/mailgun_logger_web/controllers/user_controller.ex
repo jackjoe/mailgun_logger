@@ -36,7 +36,16 @@ defmodule MailgunLoggerWeb.UserController do
   def update(conn, %{"id" => id, "user" => params}) do
     user = Users.get_user!(id)
 
-    case Users.update_user(user, params) do
+    current_user = conn.assigns.current_user
+    effective_params =
+      if current_user.id == user.id do
+        # Prevent self role changes, even for forged requests
+        Map.delete(params, "current_roles")
+      else
+        params
+      end
+
+    case Users.update_user(user, effective_params) do
       {:ok, _} ->
         redirect(conn, to: Routes.user_path(conn, :index))
 
