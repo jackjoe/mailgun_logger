@@ -11,6 +11,14 @@
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
   <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+
+  <.input
+    :if={@current_user.id != @changeset.data.id}
+    field={f[:current_role]}
+    type="select"
+    label="Role"
+    options={[{"Member", "member"}, {"Superuser", "superuser"}, {"Admin", "admin"}]}
+  />
   <.input
     field={f[:theme]}
     type="select"

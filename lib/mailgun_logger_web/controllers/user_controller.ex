@@ -23,7 +23,18 @@ defmodule MailgunLoggerWeb.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
-    changeset = User.changeset(user)
+
+    # Set the users current role so we can edit it.
+    current_role =
+      case List.first(user.roles) do
+        nil -> nil
+        role -> role.name
+      end
+
+    user = %{user | current_role: current_role}
+
+    changeset = User.update_changeset(user)
+
     render(conn, :edit, changeset: changeset, user: user)
   end
 

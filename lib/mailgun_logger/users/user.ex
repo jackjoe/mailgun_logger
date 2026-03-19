@@ -36,6 +36,8 @@ defmodule MailgunLogger.User do
     field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
 
+    field(:current_role, :string, virtual: true)
+
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
     timestamps()
@@ -45,7 +47,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :current_role])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -53,16 +55,18 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> update_role()
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme, :current_role])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    |> update_role()
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -107,6 +111,15 @@ defmodule MailgunLogger.User do
     length = 75
     token = :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
     put_change(changeset, :token, token)
+  end
+
+  defp update_role(%Ecto.Changeset{} = changeset) do
+    case get_change(changeset, :current_role) do
+      nil  -> changeset
+      role_name ->
+        role = Roles.get_role_by_name(role_name)
+        put_assoc(changeset, :roles, [role])
+    end
   end
 
   @doc false
