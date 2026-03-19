@@ -67,7 +67,7 @@ defmodule MailgunLoggerWeb.UserController do
 
   defp create_current_roles_map(roles) do
     # Iterate over the roles in the app and try to find them in the users roles, so we can set them to true or false
-    Enum.map([:member, :superuser, :admin], fn role ->
+    Enum.into([:member, :superuser, :admin], %{}, fn role ->
         has_role =
           Enum.any?(roles, fn r -> r.name == Atom.to_string(role) end)
 
