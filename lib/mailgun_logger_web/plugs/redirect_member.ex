@@ -11,7 +11,7 @@ defmodule MailgunLoggerWeb.Plugs.RedirectMember do
   def call(conn, _opts) do
     case conn.assigns[:current_user] do
       %User{} = user ->
-        if Roles.is?(user, :member) do
+        unless Roles.is?(user, :admin) or Roles.is?(user, :superuser) do
           conn
           |> redirect(to: Routes.event_path(conn, :index))
           |> halt()
