@@ -96,6 +96,32 @@ defmodule MailgunLogger.User do
     |> hash_password()
   end
 
+  @doc "used by admins/superusers to create a user with one or more roles"
+  @spec management_create_changeset(User.t(), map()) :: Ecto.Changeset.t()
+  def management_create_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
+    |> validate_required([:email, :password])
+    |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, @email_format)
+    |> validate_length(:password, min: 8)
+    |> unique_constraint(:email)
+    |> hash_password()
+    |> generate_token()
+    |> put_assoc(:roles, Roles.get_roles_by_id(attrs["role_ids"] || []))
+  end
+
+  @doc "used by admins/superusers to update a user with one or more roles"
+  @spec management_update_changeset(User.t(), map()) :: Ecto.Changeset.t()
+  def management_update_changeset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:firstname, :lastname, :email, :theme])
+    |> update_change(:email, &String.downcase/1)
+    |> validate_format(:email, @email_format)
+    |> unique_constraint(:email)
+    |> put_assoc(:roles, Roles.get_roles_by_id(attrs["role_ids"] || []))
+  end
+
   @spec hash_password(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   defp hash_password(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
     change(changeset, encrypted_password: Argon2.hash_pwd_salt(password))
