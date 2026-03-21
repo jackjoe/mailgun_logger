@@ -18,6 +18,32 @@
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
 
+  <% selected_role_ids = Enum.map(@user.roles || [], & &1.id) %>
+
+<div class="form-group">
+  <label>Roles</label>
+
+  <%= for role <- @roles do %>
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          name="user[role_ids][]"
+          value={role.id}
+          checked={role.id in selected_role_ids}
+        />
+        <%= role.name %>
+      </label>
+    </div>
+  <% end %>
+</div>
+
+<%= if Keyword.has_key?(@changeset.errors, :roles) do %>
+  <span class="text-red-600">
+    <%= elem(@changeset.errors[:roles], 0) %>
+  </span>
+<% end %>
+
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
   </div>

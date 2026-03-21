@@ -36,7 +36,9 @@ end
       conn
     else
       changeset = User.changeset(%User{})
-      render(conn, :new, changeset: changeset)
+      roles = Roles.list_roles()
+      user = %User{roles: []}
+      render(conn, :new, changeset: changeset, roles: roles, user: user)
     end
   end
 
@@ -46,7 +48,7 @@ end
     if conn.halted do
       conn
     else
-      case Users.create_user(params) do
+      case Users.create_managed_user(params) do
         {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
         {:error, changeset} -> render(conn, :new, changeset: changeset)
       end
@@ -60,11 +62,12 @@ end
       conn
     else      user = Users.get_user!(id)
       changeset = User.changeset(user)
-      render(conn, :edit, changeset: changeset, user: user)
+      roles = Roles.list_roles()
+      render(conn, :edit, changeset: changeset, user: user, roles: roles)
     end
   end
 
-  def update(conn, %{"id" => id, "user" => params}) do
+  def update(conn, %{"id" => id, "user" => user_params}) do
     conn = authorize!(conn, :manage_users)
 
     if conn.halted do
@@ -72,12 +75,14 @@ end
     else
       user = Users.get_user!(id)
 
-      case Users.update_user(user, params) do
+      case Users.update_managed_user(conn.assigns.current_user, user, user_params) do
         {:ok, _} ->
           redirect(conn, to: Routes.user_path(conn, :index))
 
         {:error, changeset} ->
-          render(conn, :edit, changeset: changeset, user: user)
+          roles = Roles.list_roles()
+
+          render(conn, :edit, roles: roles, changeset: changeset, user: user)
       end
     end
   end

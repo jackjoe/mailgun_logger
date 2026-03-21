@@ -162,4 +162,53 @@ defmodule MailgunLogger.Users do
   def delete_user(%User{} = user) do
     Repo.delete(user)
   end
+
+  @spec create_managed_user(map) :: ecto_user()
+  def create_managed_user(params) do
+    %User{}
+    |> User.management_create_changeset(params)
+    |> Repo.insert()
+  end
+
+  @spec update_managed_user(User.t(), User.t(), map()) :: ecto_user()
+  def update_managed_user(current_user, user_to_update, params) do
+    if self_downgrade?(current_user, user_to_update, params) do
+      {:error, self_downgrade_changeset(user_to_update, params)}
+    else
+      user_to_update
+      |> Repo.preload(:roles)
+      |> User.management_update_changeset(params)
+      |> Repo.update()
+    end
+  end
+
+  # true als je jezelf aan het downgraden bent, je een managing user (admin of superuser) bent en je de management rol niet behoudt in de update params
+  defp self_downgrade?(current_user, user_to_update, params) do
+    current_user.id == user_to_update.id and
+      managing_user?(current_user) and
+      not keeps_management_role?(params)
+  end
+
+  defp managing_user?(user) do
+    MailgunLogger.Roles.is?(user, :admin) or
+      MailgunLogger.Roles.is?(user, :superuser)
+  end
+
+  defp keeps_management_role?(params) do
+    role_ids =
+      params["role_ids"]
+      |> Kernel.||([])
+      |> Enum.reject(&(&1 in ["", nil]))
+
+    roles = MailgunLogger.Roles.get_roles_by_id(role_ids)
+    role_names = Enum.map(roles, & &1.name)
+
+    "admin" in role_names or "superuser" in role_names
+  end
+
+  defp self_downgrade_changeset(user, params) do
+    user
+    |> User.management_update_changeset(params)
+    |> Ecto.Changeset.add_error(:roles, "You cannot downgrade your own admin privileges")
+  end
 end
