@@ -1,5 +1,8 @@
 import Config
 
+config :mailgun_logger,
+  store_messages: System.get_env("ML_STORE_MESSAGES", "false") |> String.downcase() == "true"
+
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   server: true,
   secret_key_base: System.get_env("SECRET_KEY_BASE")
