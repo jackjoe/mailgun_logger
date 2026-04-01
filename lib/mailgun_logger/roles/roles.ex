@@ -69,6 +69,7 @@ defmodule MailgunLogger.Roles do
 
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
+  def is?(%User{roles: roles}, :member), do: is(roles, "member")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
 
   defp is(roles, role) when is_binary(role), do: Enum.map(roles, & &1.name) |> Enum.member?(role)

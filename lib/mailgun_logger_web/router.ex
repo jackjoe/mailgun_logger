@@ -23,6 +23,10 @@ defmodule MailgunLoggerWeb.Router do
     plug(MailgunLoggerWeb.Plugs.Auth)
   end
 
+  pipeline :redirect_member do
+    plug(MailgunLoggerWeb.Plugs.RedirectMember)
+  end
+
   # Always except in prod
   if Application.compile_env(:mailgun_logger, :env) == :dev do
     forward("/sent_emails", Bamboo.SentEmailViewerPlug)
@@ -69,6 +73,7 @@ defmodule MailgunLoggerWeb.Router do
     post("/", SetupController, :create_root)
   end
 
+  # - Scope for all authenticated users
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
 
@@ -76,15 +81,21 @@ defmodule MailgunLoggerWeb.Router do
 
     resources("/events", EventController, only: [:index, :show])
     get("/events/:id/stored_message", EventController, :stored_message)
-    resources("/accounts", AccountController, except: [:show])
     get("/profile", ProfileController, :edit)
     put("/profile", ProfileController, :update)
-    resources("/users", UserController, except: [:show])
 
     get("/", PageController, :index)
     post("/trigger-run", PageController, :trigger_run)
-    get("/stats", PageController, :stats)
     get("/graphs", PageController, :graphs)
     get("/non-affiliation", PageController, :non_affiliation)
+  end
+
+  # - Only for users with role set as admin or superuser, members get redirected
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :redirect_member])
+
+    resources("/users", UserController, except: [:show])
+    resources("/accounts", AccountController, except: [:show])
+    get("/stats", PageController, :stats)
   end
 end

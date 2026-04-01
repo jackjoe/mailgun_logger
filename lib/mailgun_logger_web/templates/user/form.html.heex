@@ -11,6 +11,19 @@
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
   <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+
+  <div :if={@current_user.id != @changeset.data.id}>
+    <label>Roles</label>
+    <div style="margin-bottom: 1em; display: flex; gap: 2em; align-items: center;">
+      <%= for {role, checked} <- f[:current_roles].value || %{} do %>
+        <label style="display: flex; align-items: center; gap: 0.25em; margin-bottom: 0;">
+          <input type="hidden" name={"user[current_roles][#{role}]"} value="false" />
+          <input type="checkbox" name={"user[current_roles][#{role}]"} value="true" checked={checked} />
+          {Phoenix.Naming.humanize(role)}
+        </label>
+      <% end %>
+    </div>
+  </div>
   <.input
     field={f[:theme]}
     type="select"
