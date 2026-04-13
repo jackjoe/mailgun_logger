@@ -1,10 +1,10 @@
-defmodule MailgunLoggerWeb.Authorize do
+defmodule MailgunLoggerWeb.Plugs.Authorize do
   import Plug.Conn
   import Phoenix.Controller
 
   alias MailgunLogger.Roles
 
-  def require(action) do
+  def require_permission(action) do
     fn conn, _opts ->
       user = conn.assigns.current_user
 

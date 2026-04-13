@@ -1,6 +1,8 @@
 defmodule MailgunLoggerWeb.Router do
   use MailgunLoggerWeb, :router
   use Plug.ErrorHandler
+  alias MailgunLoggerWeb.Plugs.Authorize
+  alias Authorize
   @moduledoc false
 
   pipeline :browser do
