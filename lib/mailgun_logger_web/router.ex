@@ -1,8 +1,6 @@
 defmodule MailgunLoggerWeb.Router do
   use MailgunLoggerWeb, :router
   use Plug.ErrorHandler
-  alias MailgunLoggerWeb.Plugs.Authorize
-  alias Authorize
   @moduledoc false
 
   pipeline :browser do
@@ -23,6 +21,10 @@ defmodule MailgunLoggerWeb.Router do
   pipeline :auth do
     plug(MailgunLoggerWeb.Plugs.SetupCheck)
     plug(MailgunLoggerWeb.Plugs.Auth)
+  end
+
+  pipeline :require_admin do
+    plug MailgunLoggerWeb.Plugs.Authorize, :do_stuff
   end
 
   # Always except in prod
@@ -74,13 +76,20 @@ defmodule MailgunLoggerWeb.Router do
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
 
+    resources "/events", EventController, only: [:index, :show]
+    get "/events/:id/stored_message", EventController, :stored_message
+
+    get "/profile", ProfileController, :edit
+    put "/profile", ProfileController, :update
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :require_admin])
+
     get("/logout", AuthController, :logout)
 
     resources("/events", EventController, only: [:index, :show])
-    get("/events/:id/stored_message", EventController, :stored_message)
     resources("/accounts", AccountController, except: [:show])
-    get("/profile", ProfileController, :edit)
-    put("/profile", ProfileController, :update)
     resources("/users", UserController, except: [:show])
 
     get("/", PageController, :index)

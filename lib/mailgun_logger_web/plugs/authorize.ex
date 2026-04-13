@@ -1,20 +1,21 @@
 defmodule MailgunLoggerWeb.Plugs.Authorize do
   import Plug.Conn
   import Phoenix.Controller
-
+  alias MailgunLoggerWeb.Router.Helpers
   alias MailgunLogger.Roles
 
-  def require_permission(action) do
-    fn conn, _opts ->
-      user = conn.assigns.current_user
+  def init(action), do: action
 
-      if Roles.can?(user, action) do
-        conn
-      else
-        conn
-        |> put_status(:forbidden)
-        |> halt()
-      end
+  def call(conn, action) do
+    user = conn.assigns.current_user
+
+    if Roles.can?(user, action) do
+      conn
+    else
+      conn
+      |> put_status(:forbidden)
+      |> redirect(to: Helpers.event_path(conn, :index))
+      |> halt()
     end
   end
 end
