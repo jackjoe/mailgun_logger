@@ -9,14 +9,19 @@
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
   <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+  <% assigned_roles =
+    case assigns do
+      %{user: %{roles: roles}} -> Enum.map(roles, & &1.name)
+      _ -> []
+    end %>
   <%= for role <- @assignable_roles do %>
     <label>
       <input
         type="checkbox"
         name="user[roles][]"
         value={role}
-        alias
-        checked={role == :member}
+        checked={role in assigned_roles}
+        disabled={!@editable_roles}
       />
       {role}
     </label>

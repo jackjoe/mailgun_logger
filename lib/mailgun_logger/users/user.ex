@@ -61,18 +61,17 @@ defmodule MailgunLogger.User do
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
-    roles = Map.get(attrs, "roles")
+    roles = Map.get(attrs, "roles", []) |> Roles.get_roles_by_names()
+    IO.inspect("roles:")
+    IO.inspect(roles)
 
     user
     |> cast(attrs, [:firstname, :lastname, :email, :theme])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
-    |> maybe_put_roles(roles)
+    |> put_assoc(:roles, roles)
     |> unique_constraint(:email)
   end
-
-  defp maybe_put_roles(changeset, nil), do: changeset
-  defp maybe_put_roles(changeset, roles), do: put_assoc(changeset, :roles, roles)
 
   @doc "Used when creating an admin, e.g. from the setup flow"
   @spec superuser_changeset(User.t(), map()) :: Ecto.Changeset.t()

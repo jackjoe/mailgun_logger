@@ -17,8 +17,6 @@ defmodule MailgunLoggerWeb.UserController do
   end
 
   def create(conn, %{"user" => params}) do
-    IO.inspect(params)
-
     case Users.create_user(params) do
       {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
       {:error, changeset} -> render(conn, :new, changeset: changeset)
@@ -29,35 +27,28 @@ defmodule MailgunLoggerWeb.UserController do
     user = Users.get_user!(id)
     changeset = User.changeset(user)
 
-    assignable_roles = Roles.assignable_roles(conn.assigns.current_user, user)
-
     render(conn, :edit,
       changeset: changeset,
       user: user,
-      assignable_roles: assignable_roles
+      assignable_roles: Roles.assignable_roles(),
+      editable_roles: Roles.can_modify_roles?(conn.assigns.current_user, user)
     )
   end
 
   def update(conn, %{"id" => id, "user" => params}) do
     # A user should be able to update a target user if it's
     user = Users.get_user!(id)
-    current_user = conn.assigns.current_user
 
     case Users.update_user(user, params) do
       {:ok, _} ->
         redirect(conn, to: Routes.user_path(conn, :index))
 
       {:error, changeset} ->
-        assignable_roles =
-          Roles.assignable_roles(
-            conn.assigns.current_user,
-            user
-          )
-
         render(conn, :edit,
           changeset: changeset,
           user: user,
-          assignable_roles: assignable_roles
+          assignable_roles: Roles.assignable_roles(),
+          editable_roles: Roles.can_modify_roles?(conn.assigns.current_user, user)
         )
     end
   end

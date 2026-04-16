@@ -3,5 +3,8 @@
   action: Routes.profile_path(@conn, :update),
   changeset: @changeset,
   new?: false,
-  flash: @flash
+  flash: @flash,
+  editable_roles: false,
+  assignable_roles: @assignable_roles,
+  user: @user
 )}

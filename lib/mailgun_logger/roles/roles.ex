@@ -115,20 +115,14 @@ defmodule MailgunLogger.Roles do
   def can_modify_roles?(user, target) do
     user.id != target.id and
       Enum.any?([:manage_admins, :assign_roles], fn action ->
-        can?(user, action) and
-          not can?(target, action)
+        can?(user, action)
+        # and not can?(target, action)
+        # NOTE: For when we don't want admins to manage superusers or allow same role
+        # role modification, might be overengineering for now
       end)
   end
 
   def assignable_roles() do
     @assignable_roles
-  end
-
-  def assignable_roles(user, target) do
-    if can_modify_roles?(user, target) do
-      @assignable_roles -- roles(target)
-    else
-      []
-    end
   end
 end
