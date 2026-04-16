@@ -2,15 +2,30 @@
   <div :if={@changeset.action} class="alert alert-danger">
     <p>Oops, something went wrong! Please check the errors below.</p>
   </div>
-
   <div :if={Phoenix.Flash.get(@flash, :info)} class="alert alert-info" role="info">
     {Phoenix.Flash.get(@flash, :info)}
   </div>
-
   <.input field={f[:firstname]} label="Firstname" />
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
   <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+  <% assigned_roles =
+    case assigns do
+      %{user: %{roles: roles}} -> Enum.map(roles, & &1.name)
+      _ -> []
+    end %>
+  <%= for role <- @assignable_roles do %>
+    <label>
+      <input
+        type="checkbox"
+        name="user[roles][]"
+        value={role}
+        checked={role in assigned_roles}
+        disabled={!@editable_roles}
+      />
+      {role}
+    </label>
+  <% end %>
   <.input
     field={f[:theme]}
     type="select"

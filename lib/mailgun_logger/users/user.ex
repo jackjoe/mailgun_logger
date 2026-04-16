@@ -44,6 +44,8 @@ defmodule MailgunLogger.User do
   @doc false
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
+    roles = Map.get(attrs, "roles", []) |> Roles.get_roles_by_names()
+
     user
     |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
     |> validate_required([:email, :password])
@@ -53,21 +55,25 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> put_assoc(:roles, roles)
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
+    roles = Map.get(attrs, "roles", []) |> Roles.get_roles_by_names()
+
     user
     |> cast(attrs, [:firstname, :lastname, :email, :theme])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
+    |> put_assoc(:roles, roles)
     |> unique_constraint(:email)
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
-  @spec admin_changeset(User.t(), map()) :: Ecto.Changeset.t()
-  def admin_changeset(%User{} = user, attrs) do
+  @spec superuser_changeset(User.t(), map()) :: Ecto.Changeset.t()
+  def superuser_changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, [:email, :password])
     |> validate_required([:email, :password])
@@ -77,7 +83,7 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
-    |> put_assoc(:roles, [Roles.get_role_by_name("admin")])
+    |> put_assoc(:roles, [Roles.get_role_by_name("superuser")])
   end
 
   @doc false

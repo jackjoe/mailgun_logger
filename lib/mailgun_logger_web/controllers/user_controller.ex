@@ -1,4 +1,5 @@
 defmodule MailgunLoggerWeb.UserController do
+  alias MailgunLogger.Roles
   use MailgunLoggerWeb, :controller
 
   alias MailgunLogger.Users
@@ -11,7 +12,8 @@ defmodule MailgunLoggerWeb.UserController do
 
   def new(conn, _) do
     changeset = User.changeset(%User{})
-    render(conn, :new, changeset: changeset)
+    assignable_roles = Roles.assignable_roles()
+    render(conn, :new, changeset: changeset, assignable_roles: assignable_roles)
   end
 
   def create(conn, %{"user" => params}) do
@@ -24,18 +26,45 @@ defmodule MailgunLoggerWeb.UserController do
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
     changeset = User.changeset(user)
-    render(conn, :edit, changeset: changeset, user: user)
+
+    render(conn, :edit,
+      changeset: changeset,
+      user: user,
+      assignable_roles: Roles.assignable_roles(),
+      editable_roles: Roles.can_modify_roles?(conn.assigns.current_user, user)
+    )
   end
 
   def update(conn, %{"id" => id, "user" => params}) do
-    user = Users.get_user!(id)
+    target = Users.get_user!(id)
+    actor = conn.assigns.current_user
+    params = Map.put(params, "roles", Map.get(params, "roles", []))
 
-    case Users.update_user(user, params) do
-      {:ok, _} ->
-        redirect(conn, to: Routes.user_path(conn, :index))
+    roles_modified? =
+      MapSet.new(Enum.map(target.roles, & &1.name)) !=
+        MapSet.new(Map.get(params, "roles"))
 
-      {:error, changeset} ->
-        render(conn, :edit, changeset: changeset, user: user)
+    if roles_modified? and not Roles.can_modify_roles?(actor, target) do
+      conn
+      |> put_flash(:error, "Not authorized to modify roles")
+      |> redirect(to: Routes.user_path(conn, :edit, target))
+    else
+      case Users.update_user(target, params) do
+        {:ok, _} ->
+          redirect(conn, to: Routes.user_path(conn, :index))
+
+        {:error, changeset} ->
+          render(conn, :edit,
+            changeset: changeset,
+            user: target,
+            assignable_roles: Roles.assignable_roles(),
+            editable_roles:
+              Roles.can_modify_roles?(
+                actor,
+                target
+              )
+          )
+      end
     end
   end
 

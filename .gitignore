@@ -35,3 +35,5 @@ docker-compose.yml
 node_modules
 .serena
 .playwright-mcp
+mailgun_logger_accounts_events.sql
+*.pem

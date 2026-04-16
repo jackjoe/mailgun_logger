@@ -1,2 +1,10 @@
 <h1>Profile</h1>
-<%= render "form.html", action: Routes.profile_path(@conn, :update), changeset: @changeset, new?: false, flash: @flash %>
+{render("form.html",
+  action: Routes.profile_path(@conn, :update),
+  changeset: @changeset,
+  new?: false,
+  flash: @flash,
+  editable_roles: false,
+  assignable_roles: @assignable_roles,
+  user: @user
+)}

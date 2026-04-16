@@ -7,14 +7,23 @@ defmodule MailgunLogger.Roles do
 
   @superuser_role "superuser"
   @admin_role "admin"
+  @member_role "member"
+
+  #########################################################
+
+  @all_roles [@superuser_role, @admin_role, @member_role]
+  @assignable_roles Enum.reject(@all_roles, &(&1 == @superuser_role))
 
   #########################################################
 
   @default_actions ~w()
-
-  @admin_actions ~w(do_stuff) ++ @default_actions
-
-  @superuser_actions ~w() ++ @admin_actions
+  @member_actions ~w(
+  view_events
+  view_event_details
+  edit_profile
+) ++ @default_actions
+  @admin_actions ~w(do_stuff assign_roles) ++ @member_actions
+  @superuser_actions ~w(manage_admins) ++ @admin_actions
 
   #########################################################
 
@@ -36,6 +45,15 @@ defmodule MailgunLogger.Roles do
     |> Repo.one()
   end
 
+  @spec get_roles_by_names([String.t()]) :: [Role.t()]
+  def get_roles_by_names([]), do: []
+
+  def get_roles_by_names(names) do
+    Role
+    |> where([r], r.name in ^names)
+    |> Repo.all()
+  end
+
   @spec get_by_user(User.t()) :: [Role.t()]
   def get_by_user(%User{} = user) do
     user
@@ -55,6 +73,11 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -69,14 +92,37 @@ defmodule MailgunLogger.Roles do
 
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
+  def is?(%User{roles: roles}, :member), do: is(roles, "member")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
 
   defp is(roles, role) when is_binary(role), do: Enum.map(roles, & &1.name) |> Enum.member?(role)
 
   def abilities(%User{roles: []}), do: []
-  def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
+
+  def abilities(%User{roles: roles}),
+    do:
+      roles
+      |> Enum.flat_map(&abilities/1)
+      |> Enum.uniq()
+
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
+  def abilities(%Role{name: "member"}), do: @member_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
+
+  @spec can_modify_roles?(User.t(), User.t()) :: boolean()
+  def can_modify_roles?(user, target) do
+    user.id != target.id and
+      Enum.any?([:manage_admins, :assign_roles], fn action ->
+        can?(user, action)
+        # and not can?(target, action)
+        # NOTE: For when we don't want admins to manage superusers or allow same role
+        # role modification, might be overengineering for now
+      end)
+  end
+
+  def assignable_roles() do
+    @assignable_roles
+  end
 end
