@@ -7,12 +7,18 @@ defmodule MailgunLogger.Roles do
 
   @superuser_role "superuser"
   @admin_role "admin"
+  # role met limited rechten
+  @member_role "member"
 
   #########################################################
 
   @default_actions ~w()
 
-  @admin_actions ~w(do_stuff) ++ @default_actions
+  #member kan enkel events checken
+  #w() maakt lijst van woorden splitsend op whitespace
+  @member_actions ~w(view_events)
+
+  @admin_actions ~w(do_stuff) ++ @member_actions ++ @default_actions
 
   @superuser_actions ~w() ++ @admin_actions
 
@@ -55,6 +61,12 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+  # rechten member rol
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -69,6 +81,8 @@ defmodule MailgunLogger.Roles do
 
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
+  # check user rol
+  def is?(%User{roles: roles}, :member), do: is(roles, "member")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
 
   defp is(roles, role) when is_binary(role), do: Enum.map(roles, & &1.name) |> Enum.member?(role)
@@ -77,6 +91,8 @@ defmodule MailgunLogger.Roles do
   def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
+  # mogelijkheden vr member
+  def abilities(%Role{name: "member"}), do: @member_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
 end

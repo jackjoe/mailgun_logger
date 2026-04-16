@@ -18,6 +18,31 @@
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
 
+<%# keuze enkel visible voor admin en superuser %>
+  <%= if assigns[:roles] do %>
+    <div class="form-group">
+    <br>
+      <label style="text-decoration: underline;">Rollen</label>
+
+      <%= for role <- @roles do %>
+        <div>
+          <label for={"role-#{role.id}"} style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <input
+              type="checkbox"
+              name="user[role_ids][]"
+              value={role.id}
+              id={"role-#{role.id}"}
+              checked={role.id in @selected_role_ids}
+            />
+            <span><%= role.name %></span>
+          </label>
+        </div>
+
+      <% end %>
+    </div>
+
+  <% end %>
+
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
   </div>

@@ -3,6 +3,7 @@ defmodule MailgunLogger.Users do
 
   alias MailgunLogger.Repo
   alias MailgunLogger.User
+  alias MailgunLogger.Roles # nodig voor rollen ophalen bij create/update user with roles
 
 
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
@@ -155,6 +156,28 @@ defmodule MailgunLogger.Users do
   def update_user(user, params) do
     user
     |> User.update_changeset(params)
+    |> Repo.update()
+  end
+
+  # maak nieuwe User aan met gegeven rollen
+  @spec create_user_with_roles(map(), [integer()]) :: ecto_user()
+  def create_user_with_roles(params, role_ids) do
+    roles = Roles.get_roles_by_id(role_ids)
+
+    %User{}
+    |> User.changeset(params)
+    |> User.with_roles(roles)
+    |> Repo.insert()
+  end
+
+  # update user en overschrijft rollen
+  @spec update_user_with_roles(User.t(), map(), [integer()]) :: ecto_user()
+  def update_user_with_roles(user, params, role_ids) do
+    roles = Roles.get_roles_by_id(role_ids)
+
+    user
+    |> User.update_changeset(params)
+    |> User.with_roles(roles)
     |> Repo.update()
   end
 

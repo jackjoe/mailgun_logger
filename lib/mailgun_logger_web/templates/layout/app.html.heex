@@ -39,9 +39,16 @@
           <ul>
             <%= if assigns[:current_user] do %>
               <li><.link href={Routes.event_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.EventController)}>Events</.link></li>
-              <li><.link href={Routes.page_path(@conn, :stats)} class={active_link_class(@conn, MailgunLoggerWeb.PageController, :index)}>Stats</.link></li>
-              <li><.link href={Routes.account_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.AccountController, :index)}>Accounts</.link></li>
-              <li><.link href={Routes.user_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.UserController, :index)}>Users</.link></li>
+
+              <%= if MailgunLogger.Roles.can?(@current_user, :do_stuff) do %>
+                <%# zichtbaar voor admin en superuser %>
+
+                <li><.link href={Routes.page_path(@conn, :stats)} class={active_link_class(@conn, MailgunLoggerWeb.PageController, :index)}>Stats</.link></li>
+                <li><.link href={Routes.account_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.AccountController, :index)}>Accounts</.link></li>
+                <li><.link href={Routes.user_path(@conn, :index)} class={active_link_class(@conn, MailgunLoggerWeb.UserController, :index)}>Users</.link></li>
+
+              <% end %>
+              
               <li class="nav-right">
                 <details class="nav-dropdown">
                   <summary class="nav-dropdown-toggle">
@@ -63,6 +70,13 @@
       </div>
     </header>
     <main>
+      <%# flash meldingen (info en error) %>
+      <%= if Phoenix.Flash.get(@flash, :info) do %>
+        <div class="alert alert-info" role="info"><%= Phoenix.Flash.get(@flash, :info) %></div>
+      <% end %>
+      <%= if Phoenix.Flash.get(@flash, :error) do %>
+        <div class="alert alert-danger" role="alert"><%= Phoenix.Flash.get(@flash, :error) %></div>
+      <% end %>
       <%= @inner_content %>
     </main>
     <footer>

@@ -35,3 +35,6 @@ docker-compose.yml
 node_modules
 .serena
 .playwright-mcp
+
+.DS_Store                                                                                                      
+

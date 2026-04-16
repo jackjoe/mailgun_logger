@@ -109,6 +109,18 @@ defmodule MailgunLogger.User do
     put_change(changeset, :token, token)
   end
 
+  @doc """
+  voeg rollen toe aan changeset +
+  bestaande rollen worden overwritten
+
+  @spec = params en :: return type
+"""
+  @spec with_roles(Ecto.Changeset.t(), [Role.t()]) :: Ecto.Changeset.t()
+  def with_roles(%Ecto.Changeset{} = changeset, roles) do
+    put_assoc(changeset, :roles, roles)
+  end
+  # putassoc => associatie zette in changeset
+
   @doc false
   def full_name(nil), do: ""
   def full_name(%User{lastname: nil, firstname: nil, email: nil}), do: ""
