@@ -62,8 +62,6 @@ defmodule MailgunLogger.User do
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     roles = Map.get(attrs, "roles", []) |> Roles.get_roles_by_names()
-    IO.inspect("roles:")
-    IO.inspect(roles)
 
     user
     |> cast(attrs, [:firstname, :lastname, :email, :theme])
