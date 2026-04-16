@@ -11,14 +11,19 @@ defmodule MailgunLogger.Roles do
 
   #########################################################
 
+  @all_roles [@superuser_role, @admin_role, @member_role]
+  @assignable_roles Enum.reject(@all_roles, &(&1 == @superuser_role))
+
+  #########################################################
+
   @default_actions ~w()
   @member_actions ~w(
   view_events
   view_event_details
   edit_profile
 ) ++ @default_actions
-  @admin_actions ~w(do_stuff) ++ @member_actions
-  @superuser_actions ~w() ++ @admin_actions
+  @admin_actions ~w(do_stuff assign_roles) ++ @member_actions
+  @superuser_actions ~w(manage_admins) ++ @admin_actions
 
   #########################################################
 
@@ -38,6 +43,15 @@ defmodule MailgunLogger.Roles do
     Role
     |> where([c], c.name == ^name)
     |> Repo.one()
+  end
+
+  @spec get_roles_by_names([String.t()]) :: [Role.t()]
+  def get_roles_by_names([]), do: []
+
+  def get_roles_by_names(names) do
+    Role
+    |> where([r], r.name in ^names)
+    |> Repo.all()
   end
 
   @spec get_by_user(User.t()) :: [Role.t()]
@@ -96,4 +110,25 @@ defmodule MailgunLogger.Roles do
   def abilities(%Role{name: "member"}), do: @member_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
+
+  @spec can_modify_roles?(User.t(), User.t()) :: boolean()
+  def can_modify_roles?(user, target) do
+    user.id != target.id and
+      Enum.any?([:manage_admins, :assign_roles], fn action ->
+        can?(user, action) and
+          not can?(target, action)
+      end)
+  end
+
+  def assignable_roles() do
+    @assignable_roles
+  end
+
+  def assignable_roles(user, target) do
+    if can_modify_roles?(user, target) do
+      @assignable_roles -- roles(target)
+    else
+      []
+    end
+  end
 end

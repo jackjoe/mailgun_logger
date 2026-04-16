@@ -11,12 +11,12 @@
   </thead>
   <tbody>
     <%= for user <- @users do %>
-    <tr>
-      <td><%= "#{user.firstname || ""} #{user.lastname || ""}" |> String.trim() %></td>
-      <td><%= user.email %></td>
-      <td><%= Enum.map(user.roles, & &1.name) %></td>
-      <td><.link href={Routes.user_path(@conn, :edit, user)}>edit</.link></td>
-    </tr>
+      <tr>
+        <td>{"#{user.firstname || ""} #{user.lastname || ""}" |> String.trim()}</td>
+        <td>{user.email}</td>
+        <td>{user.roles |> Enum.map(& &1.name) |> Enum.join(", ")}</td>
+        <td><.link href={Routes.user_path(@conn, :edit, user)}>edit</.link></td>
+      </tr>
     <% end %>
   </tbody>
 </table>

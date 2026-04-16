@@ -75,6 +75,7 @@ defmodule MailgunLoggerWeb.Router do
 
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
+    get("/logout", AuthController, :logout)
 
     resources "/events", EventController, only: [:index, :show]
     get "/events/:id/stored_message", EventController, :stored_message
@@ -85,8 +86,6 @@ defmodule MailgunLoggerWeb.Router do
 
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth, :require_admin])
-
-    get("/logout", AuthController, :logout)
 
     resources("/events", EventController, only: [:index, :show])
     resources("/accounts", AccountController, except: [:show])

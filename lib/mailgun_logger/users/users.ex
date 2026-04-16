@@ -4,7 +4,6 @@ defmodule MailgunLogger.Users do
   alias MailgunLogger.Repo
   alias MailgunLogger.User
 
-
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
 
@@ -140,7 +139,7 @@ defmodule MailgunLogger.Users do
   @spec create_admin(map()) :: ecto_user()
   def create_admin(attrs) do
     %User{}
-    |> User.admin_changeset(attrs)
+    |> User.superuser_changeset(attrs)
     |> Repo.insert()
   end
 
