@@ -5,6 +5,7 @@ defmodule MailgunLogger.Roles do
   alias MailgunLogger.User
   alias MailgunLogger.Repo
 
+  @member_role "member"
   @superuser_role "superuser"
   @admin_role "admin"
 
@@ -12,7 +13,9 @@ defmodule MailgunLogger.Roles do
 
   @default_actions ~w()
 
-  @admin_actions ~w(do_stuff) ++ @default_actions
+  @member_actions ~w(view_events view_event_details edit_own_profile) ++ @default_actions
+
+  @admin_actions ~w(view_stats manage_accounts manage_users) ++ @member_actions
 
   @superuser_actions ~w() ++ @admin_actions
 
@@ -55,6 +58,11 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -67,6 +75,7 @@ defmodule MailgunLogger.Roles do
 
   def can?(_, _), do: false
 
+  def is?(%User{roles: roles}, :member), do: is(roles, "member")
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
@@ -75,6 +84,7 @@ defmodule MailgunLogger.Roles do
 
   def abilities(%User{roles: []}), do: []
   def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
+  def abilities(%Role{name: "member"}), do: @member_actions
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
 
