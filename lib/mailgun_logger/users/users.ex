@@ -3,7 +3,7 @@ defmodule MailgunLogger.Users do
 
   alias MailgunLogger.Repo
   alias MailgunLogger.User
-
+  alias MailgunLogger.Roles
 
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
@@ -146,16 +146,54 @@ defmodule MailgunLogger.Users do
 
   @spec create_user(map) :: ecto_user()
   def create_user(params) do
+    roles = get_roles_from_params(params)
+
     %User{}
     |> User.changeset(params)
+    |> Ecto.Changeset.put_assoc(:roles, roles)
     |> Repo.insert()
   end
 
   @spec update_user(User.t(), map) :: ecto_user()
   def update_user(user, params) do
+    roles = get_roles_from_params(params)
+
     user
     |> User.update_changeset(params)
+    |> Ecto.Changeset.put_assoc(:roles, roles)
     |> Repo.update()
+  end
+
+  @spec update_user(User.t(), User.t(), map) :: ecto_user()
+  def update_user(actor, user, params) do
+    roles = get_roles_from_params(params)
+    changeset = User.update_changeset(user, params)
+
+    if self_downgrade?(actor, user, roles) do
+      changeset
+      |> Ecto.Changeset.add_error(:roles, "You cannot remove your own user management access.")
+      |> then(&{:error, &1})
+    else
+      changeset
+      |> Ecto.Changeset.put_assoc(:roles, roles)
+      |> Repo.update()
+    end
+  end
+
+  defp self_downgrade?(actor, user, roles) do
+    actor.id == user.id and not keeps_user_management_access?(roles)
+  end
+
+  defp keeps_user_management_access?(roles) do
+    Enum.any?(roles, &Roles.can?(&1.name, :manage_users))
+  end
+
+  defp get_roles_from_params(params) do
+    params
+    |> Map.get("role_ids", [])
+    |> Enum.reject(&(&1 in [nil, ""]))
+    |> Enum.map(&String.to_integer/1)
+    |> Roles.get_roles_by_id()
   end
 
   @spec delete_user(User.t()) :: ecto_user()
