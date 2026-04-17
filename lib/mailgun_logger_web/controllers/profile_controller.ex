@@ -6,7 +6,7 @@ defmodule MailgunLoggerWeb.ProfileController do
 
   def edit(conn, _) do
     user = conn.assigns.current_user
-    changeset = User.changeset(user)
+    changeset = User.update_changeset(user)
 
     conn
     |> put_view(MailgunLoggerWeb.UserView)
