@@ -60,9 +60,9 @@ defmodule MailgunLogger.Event do
       :message_subject,
       :account_id
     ],
-    sortable: [:inserted_at, :id],
+    sortable: [:timestamp, :id],
     default_order: %{
-      order_by: [:inserted_at, :id],
+      order_by: [:timestamp, :id],
       order_directions: [:desc, :asc]
     },
     default_pagination_type: :first,

@@ -18,7 +18,6 @@ defmodule MailgunLogger.Events do
       )
 
     Event
-    |> order_by([e], desc: e.timestamp)
     |> select([e], ^fields)
     |> Flop.validate_and_run(params, for: Event)
   end
@@ -192,5 +191,4 @@ defmodule MailgunLogger.Events do
       %{count: count} -> count
     end
   end
-
 end
