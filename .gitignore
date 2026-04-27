@@ -36,3 +36,4 @@ node_modules
 .serena
 .playwright-mcp
 .claude
+.dexter.db*
