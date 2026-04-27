@@ -10,7 +10,8 @@ defmodule MailgunLoggerWeb.UserController do
   end
 
   def new(conn, _) do
-    changeset = User.changeset(%User{})
+    user = %User{current_roles: create_current_roles_map([])}
+    changeset = User.changeset(user)
     render(conn, :new, changeset: changeset)
   end
 
@@ -23,14 +24,28 @@ defmodule MailgunLoggerWeb.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
-    changeset = User.changeset(user)
+
+    # Add the current roles to the user
+    user = %{user | current_roles: create_current_roles_map(user.roles)}
+
+    changeset = User.update_changeset(user)
+
     render(conn, :edit, changeset: changeset, user: user)
   end
 
   def update(conn, %{"id" => id, "user" => params}) do
     user = Users.get_user!(id)
 
-    case Users.update_user(user, params) do
+    current_user = conn.assigns.current_user
+    effective_params =
+      if current_user.id == user.id do
+        # Prevent self role changes, even for forged requests
+        Map.delete(params, "current_roles")
+      else
+        params
+      end
+
+    case Users.update_user(user, effective_params) do
       {:ok, _} ->
         redirect(conn, to: Routes.user_path(conn, :index))
 
@@ -48,5 +63,15 @@ defmodule MailgunLoggerWeb.UserController do
     conn
     |> put_flash(:info, "user deleted successfully.")
     |> redirect(to: Routes.user_path(conn, :index))
+  end
+
+  defp create_current_roles_map(roles) do
+    # Iterate over the roles in the app and try to find them in the users roles, so we can set them to true or false
+    Enum.into([:member, :superuser, :admin], %{}, fn role ->
+        has_role =
+          Enum.any?(roles, fn r -> r.name == Atom.to_string(role) end)
+
+        {role, has_role}
+      end)
   end
 end

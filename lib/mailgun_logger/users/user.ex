@@ -36,6 +36,8 @@ defmodule MailgunLogger.User do
     field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
 
+    field(:current_roles, :map, virtual: true, default: %{})
+
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
     timestamps()
@@ -45,7 +47,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :current_roles])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -53,16 +55,18 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> update_roles()
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme, :current_roles])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    |> update_roles()
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -107,6 +111,22 @@ defmodule MailgunLogger.User do
     length = 75
     token = :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
     put_change(changeset, :token, token)
+  end
+
+  defp update_roles(%Ecto.Changeset{} = changeset) do
+    case get_change(changeset, :current_roles) do
+      nil ->
+        changeset
+
+      roles_map when is_map(roles_map) ->
+        roles =
+          roles_map
+          |> Enum.filter(fn {_name, checked} -> checked == "true" or checked == true end)
+          |> Enum.map(fn {name, _} -> Roles.get_role_by_name(to_string(name)) end)
+          |> Enum.reject(&is_nil/1)
+
+        put_assoc(changeset, :roles, roles)
+    end
   end
 
   @doc false
