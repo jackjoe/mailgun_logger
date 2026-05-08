@@ -23,6 +23,30 @@ defmodule MailgunLoggerWeb.Router do
     plug(MailgunLoggerWeb.Plugs.Auth)
   end
 
+  pipeline :can_view_events do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :view_events)
+  end
+
+  pipeline :can_view_event_details do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :view_event_details)
+  end
+
+  pipeline :can_edit_own_profile do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :edit_own_profile)
+  end
+
+  pipeline :can_view_stats do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :view_stats)
+  end
+
+  pipeline :can_manage_accounts do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :manage_accounts)
+  end
+
+  pipeline :can_manage_users do
+    plug(MailgunLoggerWeb.Plugs.Authorize, :manage_users)
+  end
+
   # Always except in prod
   if Application.compile_env(:mailgun_logger, :env) == :dev do
     forward("/sent_emails", Bamboo.SentEmailViewerPlug)
@@ -66,25 +90,54 @@ defmodule MailgunLoggerWeb.Router do
   scope "/setup", MailgunLoggerWeb do
     pipe_through(:browser)
     get("/", SetupController, :index)
+    get("/non-affiliation", PageController, :non_affiliation)
     post("/", SetupController, :create_root)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_view_events])
+
+    get("/", PageController, :index)
+    get("/events", EventController, :index)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_view_event_details])
+
+    get("/events/:id", EventController, :show)
+    get("/events/:id/stored_message", EventController, :stored_message)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_edit_own_profile])
+
+    get("/profile", ProfileController, :edit)
+    put("/profile", ProfileController, :update)
   end
 
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
 
     get("/logout", AuthController, :logout)
+  end
 
-    resources("/events", EventController, only: [:index, :show])
-    get("/events/:id/stored_message", EventController, :stored_message)
-    resources("/accounts", AccountController, except: [:show])
-    get("/profile", ProfileController, :edit)
-    put("/profile", ProfileController, :update)
-    resources("/users", UserController, except: [:show])
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_view_stats])
 
-    get("/", PageController, :index)
-    post("/trigger-run", PageController, :trigger_run)
     get("/stats", PageController, :stats)
     get("/graphs", PageController, :graphs)
-    get("/non-affiliation", PageController, :non_affiliation)
+    post("/trigger-run", PageController, :trigger_run)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_manage_accounts])
+
+    resources("/accounts", AccountController, except: [:show])
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_manage_users])
+
+    resources("/users", UserController, except: [:show])
   end
 end

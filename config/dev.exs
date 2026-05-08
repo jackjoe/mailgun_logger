@@ -4,15 +4,13 @@ port = System.get_env("PORT") || "7070"
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [
-    host: System.get_env("HOST", "0.0.0.0"),
-    scheme: "https",
+    host: System.get_env("HOST", "localhost"),
+    scheme: "http",
     port: port
   ],
-  https: [
+  http: [
+    ip: {0, 0, 0, 0},
     port: port,
-    cipher_suite: :strong,
-    keyfile: "priv/cert/selfsigned_key.pem",
-    certfile: "priv/cert/selfsigned.pem"
   ],
   live_reload: [
     web_console_logger: true,
