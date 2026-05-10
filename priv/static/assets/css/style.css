@@ -330,6 +330,31 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+.role-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--c-border);
+  cursor: pointer;
+}
+
+.role-option:hover {
+  border-color: var(--c-accent);
+}
+
+.role-option label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
 /* ---- Buttons ---- */
 
 button,
