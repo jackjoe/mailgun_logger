@@ -27,7 +27,7 @@ defmodule MailgunLogger.UsersTest do
     end
   end
 
-  describe "update_user_with_ro les/3" do
+  describe "update_user_with_roles/3" do
     test "replaces existing roles atomically" do
       member_role = insert(:role, name: "member")
       admin_role = insert(:role, name: "admin")
