@@ -1,38 +1,42 @@
 <dl :if={@event.event == "failed"} class="dl-error">
   <dt>Error detail</dt>
-  <dd><%= error_msg(@event) %></dd>
+  <dd>{error_msg(@event)}</dd>
 </dl>
 <dl>
   <dt>Recipient</dt>
-  <dd><%= @event.recipient %></dd>
+  <dd>{@event.recipient}</dd>
   <dt>Message subject</dt>
-  <dd><%= @event.message_subject %></dd>
+  <dd>{@event.message_subject}</dd>
   <dt>Account</dt>
-  <dd><%= @event.account.domain %></dd>
+  <dd>{@event.account.domain}</dd>
   <dt>Event</dt>
-  <dd><%= event_name(@event.event) %></dd>
+  <dd>{event_name(@event.event)}</dd>
   <dt>Method</dt>
-  <dd><%= @event.method %></dd>
+  <dd>{@event.method}</dd>
   <dt>Attachments</dt>
-  <dd><%= list_attachments(@event.raw) %></dd>
+  <dd>{list_attachments(@event.raw)}</dd>
   <dt>Timestamp</dt>
-  <dd><%= @event.timestamp %></dd>
+  <dd>{@event.timestamp}</dd>
   <dt>From</dt>
-  <dd><%= @event.message_from %></dd>
+  <dd>{@event.message_from}</dd>
   <dt>Linked events</dt>
   <dd>
     <ul class="linked-events">
       <%= for linked <- @event.linked_events do %>
-        <li><a href={Routes.event_path(@conn, :show, linked)}><%= linked.event %> (<%= linked.timestamp %>)</a></li>
+        <li>
+          <a href={Routes.event_path(@conn, :show, linked)}>
+            {linked.event} ({linked.timestamp})
+          </a>
+        </li>
       <% end %>
     </ul>
   </dd>
   <%= if Application.get_env(:mailgun_logger, :store_messages) and @event.has_stored_message do %>
-  <dt>Raw Stored Message data</dt>
-  <dd><a href={stored_message_url(@event.api_id)}>view json file on S3</a></dd>
-  <dt>Actual sent email</dt>
-  <dd><a href={Routes.event_path(@conn, :stored_message, @event)} target="_blank">view</a></dd>
+    <dt>Raw Stored Message data</dt>
+    <dd><a href={stored_message_url(@event.api_id)}>view json file on S3</a></dd>
+    <dt>Actual sent email</dt>
+    <dd><a href={Routes.event_path(@conn, :stored_message, @event)} target="_blank">view</a></dd>
   <% end %>
   <dt>Dev Stuff</dt>
-  <dd><%= pretty_raw(@event.raw) %></dd>
+  <dd>{pretty_raw(@event.raw)}</dd>
 </dl>

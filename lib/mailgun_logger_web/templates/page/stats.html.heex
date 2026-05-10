@@ -3,26 +3,26 @@
 <div>
   <div :if={@total_accounts == 0} class="warn">
     <strong>Note:</strong>
-    no accounts found...
-    <.link href={Routes.account_path(@conn, :new)}>create an account</.link> to start receiving logs.
+    no accounts found... <.link href={Routes.account_path(@conn, :new)}>create an account</.link>
+    to start receiving logs.
   </div>
   <div :if={Phoenix.Flash.get(@flash, :info)} class="info" role="info">
-    <%= Phoenix.Flash.get(@flash, :info) %>
+    {Phoenix.Flash.get(@flash, :info)}
   </div>
   <h2>Some stats</h2>
   <h3>Event counts by type (all time)</h3>
   <dl>
     <dt>Failed:</dt>
-    <dd><%= @event_counts.by_type["failed"] %></dd>
+    <dd>{@event_counts.by_type["failed"]}</dd>
     <dt>Accepted:</dt>
-    <dd><%= @event_counts.by_type["accepted"] %></dd>
+    <dd>{@event_counts.by_type["accepted"]}</dd>
     <dt>Delivered:</dt>
-    <dd><%= @event_counts.by_type["delivered"] %></dd>
+    <dd>{@event_counts.by_type["delivered"]}</dd>
     <dt>Clicked:</dt>
-    <dd><%= @event_counts.by_type["clicked"] %></dd>
+    <dd>{@event_counts.by_type["clicked"]}</dd>
     <dt>Opened:</dt>
-    <dd><%= @event_counts.by_type["opened"] %></dd>
+    <dd>{@event_counts.by_type["opened"]}</dd>
     <dt>Stored:</dt>
-    <dd><%= @event_counts.by_type["stored"] %></dd>
+    <dd>{@event_counts.by_type["stored"]}</dd>
   </dl>
 </div>

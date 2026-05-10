@@ -7,8 +7,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   server: false
 
 # Quantum cron schedule
-config :mailgun_logger, MailgunLogger.Scheduler,
-  jobs: []
+config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
 
 config :logger, level: :warning
 config :mailgun_logger, MailgunLogger.Repo, pool: Ecto.Adapters.SQL.Sandbox

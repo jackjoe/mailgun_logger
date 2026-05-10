@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>Events</h1>
   <.form for={@conn} action={~p"/trigger-run"}>
-    <%= submit("Trigger Run") %>
+    {submit("Trigger Run")}
   </.form>
 </div>
 
@@ -26,15 +26,21 @@
   </div>
   <%= for event <- @events do %>
     <div class="log-row">
-      <span class="log-col-event"><%= event_name(event.event) %></span>
-      <span class="log-col-level"><%= event_type(event.log_level) %></span>
-      <span class="log-col-dir"><%= send_recv(event.method) %></span>
-      <span class="log-col-ts"><%= event.timestamp %></span>
-      <span class="log-col-from" title={event.message_from}><%= event.message_from %></span>
-      <span class="log-col-to" title={event.recipient}><%= event.recipient %></span>
-      <span class="log-col-subject" title={event.message_subject}><%= event.message_subject %></span>
+      <span class="log-col-event">{event_name(event.event)}</span>
+      <span class="log-col-level">{event_type(event.log_level)}</span>
+      <span class="log-col-dir">{send_recv(event.method)}</span>
+      <span class="log-col-ts">{event.timestamp}</span>
+      <span class="log-col-from" title={event.message_from}>{event.message_from}</span>
+      <span class="log-col-to" title={event.recipient}>{event.recipient}</span>
+      <span class="log-col-subject" title={event.message_subject}>{event.message_subject}</span>
       <span class="log-col-actions">
-        <a :if={event.event in ~w(delivered accepted failed)} href={Routes.event_path(@conn, :stored_message, event.id)} target="_blank">msg</a>
+        <a
+          :if={event.event in ~w(delivered accepted failed)}
+          href={Routes.event_path(@conn, :stored_message, event.id)}
+          target="_blank"
+        >
+          msg
+        </a>
         <.link href={Routes.event_path(@conn, :show, event.id)}>detail</.link>
       </span>
     </div>
@@ -42,7 +48,12 @@
 </div>
 
 <div class="pagination-wrapper">
-  <Flop.Phoenix.pagination meta={@meta} path={~p"/events"} class="pagination-nav" disabled_link_attrs={[class: "pagination-btn pagination-btn--disabled"]}>
+  <Flop.Phoenix.pagination
+    meta={@meta}
+    path={~p"/events"}
+    class="pagination-nav"
+    disabled_link_attrs={[class: "pagination-btn pagination-btn--disabled"]}
+  >
     <:previous attrs={[class: "pagination-btn"]}>
       ← Previous
     </:previous>

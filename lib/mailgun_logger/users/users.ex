@@ -4,7 +4,6 @@ defmodule MailgunLogger.Users do
   alias MailgunLogger.Repo
   alias MailgunLogger.User
 
-
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
 
