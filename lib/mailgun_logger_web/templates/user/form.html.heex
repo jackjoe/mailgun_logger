@@ -7,6 +7,10 @@
     {Phoenix.Flash.get(@flash, :info)}
   </div>
 
+  <div :if={Phoenix.Flash.get(@flash, :error)} class="alert alert-danger" role="alert">
+    {Phoenix.Flash.get(@flash, :error)}
+  </div>
+
   <.input field={f[:firstname]} label="Firstname" />
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
@@ -17,6 +21,22 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
+
+  <div :if={@show_roles?} class="form-group">
+    <label>Roles</label>
+    <div class="role-checkboxes">
+      <div :for={role <- @all_roles} class="role-option">
+        <input
+          type="checkbox"
+          name="user[role_ids][]"
+          value={role.id}
+          checked={role.id in @selected_role_ids}
+          id={"role_#{role.id}"}
+        />
+        <label for={"role_#{role.id}"}>{role.name}</label>
+      </div>
+    </div>
+  </div>
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}

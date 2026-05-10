@@ -3,5 +3,8 @@
   action: Routes.user_path(@conn, :create),
   changeset: @changeset,
   flash: @flash,
-  new?: true
+  new?: true,
+  all_roles: @all_roles,
+  selected_role_ids: @selected_role_ids,
+  show_roles?: @show_roles?
 )}

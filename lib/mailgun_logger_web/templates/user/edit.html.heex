@@ -3,7 +3,10 @@
   action: Routes.user_path(@conn, :update, @user),
   changeset: @changeset,
   new?: false,
-  flash: @flash
+  flash: @flash,
+  all_roles: @all_roles,
+  selected_role_ids: @selected_role_ids,
+  show_roles?: @show_roles?
 )}
 <br />
 <.link

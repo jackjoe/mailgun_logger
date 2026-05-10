@@ -1,5 +1,9 @@
 <h1>Users</h1>
 
+<div :if={Phoenix.Flash.get(@flash, :info)} class="alert alert-info">
+  {Phoenix.Flash.get(@flash, :info)}
+</div>
+
 <table cellspacing="0" class="table">
   <thead>
     <tr>
