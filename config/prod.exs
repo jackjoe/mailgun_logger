@@ -8,7 +8,6 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   code_reloader: false,
   version: Application.spec(:mailgun_logger, :vsn)
 
-
 config :logger,
   level: String.to_existing_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info,
   compile_time_purge_matching: [[application: :remote_ip]]

@@ -12,16 +12,16 @@
   </thead>
   <tbody>
     <%= for account <- @accounts do %>
-    <tr>
-      <td><%= account.domain %></td>
-      <td><%= account.api_key %></td>
-      <td><span :if={account.is_eu}>EU</span></td>
-      <td>
-        <pre :if={account.is_active} class="dot active">active</pre>
-        <pre :if={!account.is_active} class="dot inactive">inactive</pre>
-      </td>
-      <td><.link href={Routes.account_path(@conn, :edit, account)}>edit</.link></td>
-    </tr>
+      <tr>
+        <td>{account.domain}</td>
+        <td>{account.api_key}</td>
+        <td><span :if={account.is_eu}>EU</span></td>
+        <td>
+          <pre :if={account.is_active} class="dot active">active</pre>
+          <pre :if={!account.is_active} class="dot inactive">inactive</pre>
+        </td>
+        <td><.link href={Routes.account_path(@conn, :edit, account)}>edit</.link></td>
+      </tr>
     <% end %>
   </tbody>
 </table>

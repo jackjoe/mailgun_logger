@@ -16,7 +16,7 @@ defmodule MailgunLoggerWeb.EventView do
     assigns = %{name: name}
 
     ~H"""
-    <span class={"log-event log-event--#{@name}"}><%= @name %></span>
+    <span class={"log-event log-event--#{@name}"}>{@name}</span>
     """
   end
 
@@ -34,7 +34,7 @@ defmodule MailgunLoggerWeb.EventView do
     assigns = %{event_type: event_type}
 
     ~H"""
-    <span class="log-level log-level--error"><%= @event_type %></span>
+    <span class="log-level log-level--error">{@event_type}</span>
     """
   end
 
@@ -70,7 +70,7 @@ defmodule MailgunLoggerWeb.EventView do
 
     ~H"""
     <code style="white-space: break-spaces">
-      <%= @html %>
+      {@html}
     </code>
     """
   end
@@ -86,7 +86,7 @@ defmodule MailgunLoggerWeb.EventView do
     </div>
     <ul style="padding:0;">
       <%= for a <- @attachments do %>
-        <li><%= a %></li>
+        <li>{a}</li>
       <% end %>
     </ul>
     """

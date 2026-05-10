@@ -4,7 +4,6 @@ defmodule MailgunLogger.Users do
   alias MailgunLogger.Repo
   alias MailgunLogger.User
 
-
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
 
@@ -151,10 +150,26 @@ defmodule MailgunLogger.Users do
     |> Repo.insert()
   end
 
+  @spec create_user_with_roles(map, [MailgunLogger.Role.t()]) :: ecto_user()
+  def create_user_with_roles(params, roles) do
+    %User{}
+    |> User.changeset(params)
+    |> Ecto.Changeset.put_assoc(:roles, roles)
+    |> Repo.insert()
+  end
+
   @spec update_user(User.t(), map) :: ecto_user()
   def update_user(user, params) do
     user
     |> User.update_changeset(params)
+    |> Repo.update()
+  end
+
+  @spec update_user_with_roles(User.t(), map, [MailgunLogger.Role.t()]) :: ecto_user()
+  def update_user_with_roles(user, params, roles) do
+    user
+    |> User.update_changeset(params)
+    |> Ecto.Changeset.put_assoc(:roles, roles)
     |> Repo.update()
   end
 

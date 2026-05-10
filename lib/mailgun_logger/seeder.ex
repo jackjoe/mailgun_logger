@@ -6,7 +6,7 @@ defmodule MailgunLogger.Seeder do
 
   # alias MailgunLogger.UserRole
 
-  @roles [%Role{name: "superuser"}, %Role{name: "admin"}]
+  @roles [%Role{name: "superuser"}, %Role{name: "admin"}, %Role{name: "member"}]
 
   def run do
     Enum.each(@roles, &insert_if_new(&1))
