@@ -9,11 +9,8 @@ defmodule MailgunLoggerWeb.Plugs.RequirePermission do
   Enforces that the authenticated user has the required permission.
   This plug expects MailgunLoggerWeb.Plugs.Auth to have assigned :current_user.
   """
-
-  @spec init(atom()) :: atom()
   def init(permission), do: permission
 
-  @spec call(Plug.Conn.t(), atom()) :: Plug.Conn.t()
   def call(conn, permission) do
     user = conn.assigns[:current_user]
 

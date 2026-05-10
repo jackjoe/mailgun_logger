@@ -12,12 +12,9 @@ defmodule MailgunLogger.Roles do
   #########################################################
 
   @default_actions ~w()
-
-  @admin_actions ~w(do_stuff) ++ @default_actions ++ @member_actions
-
+  @member_actions ~w(view_events) ++ @default_actions
+  @admin_actions ~w(do_stuff) ++ @member_actions
   @superuser_actions ~w() ++ @admin_actions
-
-  @member_actions ~w() ++ @default_actions
 
   #########################################################
 
@@ -57,7 +54,6 @@ defmodule MailgunLogger.Roles do
   def can?(roles, action) when is_list(roles) do
     Enum.any?(roles, &can?(&1.name, action))
   end
-
 
   for action <- @member_actions do
     action = String.to_atom(action)
