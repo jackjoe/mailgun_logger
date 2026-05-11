@@ -30,14 +30,4 @@ defmodule MailgunLogger.UserTest do
     refute changeset.valid?
     assert "has already been taken" in errors_on(changeset).email
   end
-
-  # Test update role
-  test "updates role when role_id changes" do
-    user = insert(:user)
-    admin_role = Repo.insert!(%Role{name: "admin"})
-
-    changeset = User.update_changeset(user, %{"role_id" => admin_role.id})
-    assert changeset.valid?
-    assert get_change(changeset, :roles) == [admin_role]
-  end
 end

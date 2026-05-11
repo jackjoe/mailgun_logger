@@ -14,15 +14,13 @@ defmodule MailgunLogger.Roles do
   # Task 1:
   # Permissions for member is looking at the events + details on \events pages && Profile changes on /Profile
   # (Not: stats, Accounts, Users) interface & router off limits
-  #
-  # Update seeds to add the member role in database to use in the application []
+  # Update seeds to add the member role in database to use in the application
 
   # Task 2:
   # Admin and superuser roles need to have the permissions to edit user & create user
   # can add 1 or multiple roles to a user
-  # An user except from the superuser (owner or first to login) cannot downgrade himself!
+  # An user cannot downgrade himself!
   # Write an unit test (Phoenix/ExUnit) for these task and permissions
-  #
 
   #########################################################
 
