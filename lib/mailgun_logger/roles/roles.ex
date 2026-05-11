@@ -8,13 +8,35 @@ defmodule MailgunLogger.Roles do
   @superuser_role "superuser"
   @admin_role "admin"
 
+  # Create an new role
+  @member_role "member"
+
+  # Task 1:
+  # Permissions for member is looking at the events + details on \events pages && Profile changes on /Profile
+  # (Not: stats, Accounts, Users) interface & router off limits
+  # Update seeds to add the member role in database to use in the application
+
+  # Task 2:
+  # Admin and superuser roles need to have the permissions to edit user & create user
+  # can add 1 or multiple roles to a user
+  # An user cannot downgrade himself!
+  # Write an unit test (Phoenix/ExUnit) for these task and permissions
+
   #########################################################
 
-  @default_actions ~w()
+  @default_actions ~w(view_profile)
 
-  @admin_actions ~w(do_stuff) ++ @default_actions
+  @member_actions ~w(view_event view_stats view_graphs) ++ @default_actions
 
-  @superuser_actions ~w() ++ @admin_actions
+  @admin_actions ~w(
+    trigger_run view_users edit_user create_user
+    delete_user manage_accounts manage_admins
+    manage_members grant_admin_role grant_member_role
+  ) ++ @member_actions
+
+  @superuser_actions ~w(
+                     manage_superusers grant_superuser_role
+                   ) ++ @admin_actions
 
   #########################################################
 
@@ -55,6 +77,14 @@ defmodule MailgunLogger.Roles do
     Enum.any?(roles, &can?(&1.name, action))
   end
 
+  # Actions
+
+  # Add compile time permission
+  for action <- @member_actions do
+    action = String.to_atom(action)
+    def can?(@member_role, unquote(action)), do: true
+  end
+
   for action <- @admin_actions do
     action = String.to_atom(action)
     def can?(@admin_role, unquote(action)), do: true
@@ -67,16 +97,37 @@ defmodule MailgunLogger.Roles do
 
   def can?(_, _), do: false
 
+  # Include member in the helper functions
   def is?(%User{roles: roles}, :superuser), do: is(roles, "superuser")
   def is?(%User{roles: roles}, :admin), do: is(roles, "admin")
+  def is?(%User{roles: roles}, :member), do: is(roles, "member")
   def is?(_, _), do: raise("Roles.is/2 requires roles to be preloaded")
 
   defp is(roles, role) when is_binary(role), do: Enum.map(roles, & &1.name) |> Enum.member?(role)
 
   def abilities(%User{roles: []}), do: []
   def abilities(%User{roles: roles}), do: hd(roles) |> abilities()
+
+  def abilities(%Role{name: "member"}), do: @member_actions
   def abilities(%Role{name: "admin"}), do: @admin_actions
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
+
+  # Guards - hidden cameras permission levels what you can do with a given role
+  def can_manage?(actor, target) do
+    required_permission =
+      cond do
+        is?(target, :superuser) -> :manage_superusers
+        is?(target, :admin) -> :manage_admins
+        true -> :manage_members
+      end
+
+    can?(actor, required_permission)
+  end
+
+  def can_grant_role?(actor, role_name) do
+    required_permission = :"grant_#{role_name}_role"
+    can?(actor, required_permission)
+  end
 end

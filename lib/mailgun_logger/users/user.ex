@@ -35,6 +35,7 @@ defmodule MailgunLogger.User do
     field(:reset_token, :string, default: nil)
     field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
+    field(:role_ids, {:array, :integer}, virtual: true, default: [])
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
@@ -45,7 +46,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :role_ids])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -53,16 +54,18 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> put_roles_if_present(attrs)
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme, :role_ids])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    |> put_roles_if_present(attrs)
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -108,6 +111,18 @@ defmodule MailgunLogger.User do
     token = :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
     put_change(changeset, :token, token)
   end
+
+  # Replace the user's roles when role_ids is present in the params.
+  defp put_roles_if_present(changeset, %{"role_ids" => ids}) when is_list(ids) do
+    roles =
+      ids
+      |> Enum.reject(&(&1 in [nil, ""]))
+      |> Roles.get_roles_by_id()
+
+    Ecto.Changeset.put_assoc(changeset, :roles, roles)
+  end
+
+  defp put_roles_if_present(changeset, _), do: changeset
 
   @doc false
   def full_name(nil), do: ""

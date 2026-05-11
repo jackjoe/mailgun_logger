@@ -2,6 +2,7 @@ defmodule MailgunLogger.UserTest do
   use MailgunLogger.DataCase
 
   alias MailgunLogger.User
+  # alias MailgunLogger.Role
 
   @valid_attrs %{
     email: "john.doe@acme.com",

@@ -19,12 +19,16 @@ defmodule MailgunLoggerWeb do
 
   def static_paths(), do: ~w(assets css fonts images js favicon.ico robots.txt)
 
+  # Import the plug in controllers so that plug: :authorize_action can be used
   def controller do
     quote do
       use Phoenix.Controller, formats: [html: "View", json: "View"]
       import Plug.Conn
       use Gettext, backend: MailgunLoggerWeb.Gettext
       alias MailgunLoggerWeb.Router.Helpers, as: Routes
+
+      # import the plug in every controller as Plug
+      alias MailgunLoggerWeb.Plugs.Authorize
 
       unquote(verified_routes())
     end

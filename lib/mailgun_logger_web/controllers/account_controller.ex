@@ -4,6 +4,19 @@ defmodule MailgunLoggerWeb.AccountController do
   alias MailgunLogger.Accounts
   alias MailgunLogger.Account
 
+  plug Authorize
+
+  @action_permissions %{
+    index: :manage_accounts,
+    new: :manage_accounts,
+    create: :manage_accounts,
+    edit: :manage_accounts,
+    update: :manage_accounts,
+    delete: :manage_accounts
+  }
+
+  def action_permissions, do: @action_permissions
+
   def index(conn, _) do
     accounts = Accounts.list_accounts()
     render(conn, :index, accounts: accounts)

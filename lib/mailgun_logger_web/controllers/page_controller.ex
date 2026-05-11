@@ -1,6 +1,19 @@
 defmodule MailgunLoggerWeb.PageController do
   use MailgunLoggerWeb, :controller
 
+  plug Authorize
+
+  @action_permissions %{
+    index: :view_event,
+    stats: :view_stats,
+    graphs: :view_graphs,
+    # admin only
+    trigger_run: :trigger_run,
+    non_affiliation: :view_event
+  }
+
+  def action_permissions, do: @action_permissions
+
   alias MailgunLogger.Events
   alias MailgunLogger.Accounts
 

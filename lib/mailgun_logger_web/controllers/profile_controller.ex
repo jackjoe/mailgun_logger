@@ -1,6 +1,15 @@
 defmodule MailgunLoggerWeb.ProfileController do
   use MailgunLoggerWeb, :controller
 
+  plug Authorize
+
+  @action_permissions %{
+    edit: :view_profile,
+    update: :view_profile
+  }
+
+  def action_permissions, do: @action_permissions
+
   alias MailgunLogger.Users
   alias MailgunLogger.User
 
