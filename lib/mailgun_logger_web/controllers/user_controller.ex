@@ -44,18 +44,51 @@ defmodule MailgunLoggerWeb.UserController do
 
   def update(conn, %{"id" => id, "user" => params}) do
     user = Users.get_user!(id)
+    current_user = conn.assigns.current_user
 
-    roles =
+    param_role_ids =
       params
       |> Map.get("role_ids", [])
-      |> Roles.get_roles_by_id()
+      |> Enum.map(&String.to_integer/1)
 
-    case Users.update_user(user, params, roles) do
-      {:ok, _} ->
-        redirect(conn, to: Routes.user_path(conn, :index))
+    conn =
+      if current_user.id == user.id do
+        current_role_ids = Enum.map(current_user.roles, & &1.id)
+        current_highest_role = Enum.min(current_role_ids)
+        param_highest_role = Enum.min(param_role_ids)
 
-      {:error, changeset} ->
-        render(conn, :edit, changeset: changeset, user: user, roles: role_options())
+        cond do
+          param_highest_role < current_highest_role ->
+            conn
+            |> put_flash(:error, "You cannot promote yourself to a higher role.")
+            |> redirect(to: Routes.user_path(conn, :edit, user.id))
+            |> halt()
+
+          current_highest_role not in param_role_ids ->
+            conn
+            |> put_flash(:error, "You cannot remove your highest role.")
+            |> redirect(to: Routes.user_path(conn, :edit, user.id))
+            |> halt()
+
+          true ->
+            conn
+        end
+      else
+        conn
+      end
+
+    if conn.halted do
+      conn
+    else
+      roles = Roles.get_roles_by_id(param_role_ids)
+
+      case Users.update_user(user, params, roles) do
+        {:ok, _} ->
+          redirect(conn, to: Routes.user_path(conn, :index))
+
+        {:error, changeset} ->
+          render(conn, :edit, changeset: changeset, user: user, roles: role_options())
+      end
     end
   end
 
