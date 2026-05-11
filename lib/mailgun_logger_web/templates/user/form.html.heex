@@ -17,7 +17,13 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
-  <.input field={f[:role_id]} type="select" label="Role" options={@roles} />
+  <.input
+    :if={assigns[:roles]}
+    field={f[:role_id]}
+    type="select"
+    label="Role"
+    options={@roles}
+  />
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
