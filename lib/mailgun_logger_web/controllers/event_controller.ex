@@ -4,6 +4,17 @@ defmodule MailgunLoggerWeb.EventController do
   alias MailgunLogger.Events
   alias MailgunLogger.Accounts
 
+  # Set permissions for this controller
+  plug Authorize
+
+  @action_permissions %{
+    index: :view_event,
+    show: :view_event,
+    stored_message: :view_event
+  }
+
+  def action_permissions, do: @action_permissions
+
   def index(conn, params) do
     accounts = Accounts.list_accounts()
 

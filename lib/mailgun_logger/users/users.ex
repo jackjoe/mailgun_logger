@@ -4,9 +4,19 @@ defmodule MailgunLogger.Users do
   alias MailgunLogger.Repo
   alias MailgunLogger.User
 
-
   @type ecto_user() :: {:ok, User.t()} | {:error, Ecto.Changeset.t()}
   @type maybe_user() :: User.t() | nil
+
+  # Get count of the superusers to keep check that there is at least one superuser
+  @spec count_superusers() :: non_neg_integer()
+  def count_superusers do
+    from(u in User,
+      join: r in assoc(u, :roles),
+      where: r.name == "superuser",
+      select: count(u.id)
+    )
+    |> Repo.one()
+  end
 
   @spec list_users() :: [User.t()]
   def list_users() do

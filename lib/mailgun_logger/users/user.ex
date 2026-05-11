@@ -35,6 +35,7 @@ defmodule MailgunLogger.User do
     field(:reset_token, :string, default: nil)
     field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
+    field(:role_id, :integer, virtual: true)
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
@@ -45,7 +46,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :role_id])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -53,16 +54,18 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
+    |> put_roles_if_present(attrs)
   end
 
   @doc false
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :theme])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme, :role_id])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
+    |> put_roles_if_present(attrs)
   end
 
   @doc "Used when creating an admin, e.g. from the setup flow"
@@ -108,6 +111,16 @@ defmodule MailgunLogger.User do
     token = :crypto.strong_rand_bytes(length) |> Base.url_encode64() |> binary_part(0, length)
     put_change(changeset, :token, token)
   end
+
+  # Add Roles in the existing alias list with an helper function
+  defp put_roles_if_present(changeset, %{"role_id" => id}) when id not in [nil, ""] do
+    case Roles.get_roles_by_id([id]) do
+      [] -> changeset
+      roles -> Ecto.Changeset.put_assoc(changeset, :roles, roles)
+    end
+  end
+
+  defp put_roles_if_present(changeset, _), do: changeset
 
   @doc false
   def full_name(nil), do: ""
