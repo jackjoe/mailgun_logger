@@ -17,6 +17,12 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
+  <.input
+    field={f[:role]}
+    type="select"
+    label="Role"
+    options={assigns[:roles]}
+  />
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
