@@ -37,7 +37,9 @@ defmodule MailgunLoggerWeb.UserController do
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
     changeset = User.changeset(user)
-    render(conn, :edit, changeset: changeset, user: user, roles: role_options())
+    current_user = conn.assigns.current_user
+    is_self = current_user.id == user.id
+    render(conn, :edit, changeset: changeset, user: user, roles: role_options(), is_self: is_self)
   end
 
   def update(conn, %{"id" => id, "user" => params}) do
