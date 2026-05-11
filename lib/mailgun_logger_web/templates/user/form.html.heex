@@ -17,6 +17,16 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
+  <%= if MailgunLogger.Roles.can?(@current_user, :manage_roles) do %>
+    <.input
+      field={f[:role_ids]}
+      multiple
+      type="select"
+      label="Role {Ctrl + click to select multiple}"
+      options={@roles}
+      value={@selected_role_ids}
+    />
+  <% end %>
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
