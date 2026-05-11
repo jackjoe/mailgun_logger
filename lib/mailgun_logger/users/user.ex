@@ -53,7 +53,6 @@ defmodule MailgunLogger.User do
     |> unique_constraint(:email)
     |> hash_password()
     |> generate_token()
-    |> put_assoc(:roles, [Roles.get_role_by_name("member")])
   end
 
   @doc false

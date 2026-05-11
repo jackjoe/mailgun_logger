@@ -18,7 +18,8 @@
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
   <.input
-    field={f[:role]}
+    field={f[:role_ids]}
+    multiple
     type="select"
     label="Role"
     options={assigns[:roles]}

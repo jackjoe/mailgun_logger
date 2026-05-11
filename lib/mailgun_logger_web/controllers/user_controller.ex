@@ -3,6 +3,7 @@ defmodule MailgunLoggerWeb.UserController do
 
   alias MailgunLogger.Users
   alias MailgunLogger.User
+  alias MailgunLogger.Roles
 
   defp role_options do
     MailgunLogger.Roles.list_roles()
@@ -22,7 +23,12 @@ defmodule MailgunLoggerWeb.UserController do
   end
 
   def create(conn, %{"user" => params}) do
-    case Users.create_user(params) do
+    roles =
+      params
+      |> Map.get("role_ids", [])
+      |> Roles.get_roles_by_id()
+
+    case Users.create_user(params, roles) do
       {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
       {:error, changeset} -> render(conn, :new, changeset: changeset)
     end
@@ -37,12 +43,17 @@ defmodule MailgunLoggerWeb.UserController do
   def update(conn, %{"id" => id, "user" => params}) do
     user = Users.get_user!(id)
 
-    case Users.update_user(user, params) do
+    roles =
+      params
+      |> Map.get("role_ids", [])
+      |> Roles.get_roles_by_id()
+
+    case Users.update_user(user, params, roles) do
       {:ok, _} ->
         redirect(conn, to: Routes.user_path(conn, :index))
 
       {:error, changeset} ->
-        render(conn, :edit, changeset: changeset, user: user)
+        render(conn, :edit, changeset: changeset, user: user, roles: role_options())
     end
   end
 
