@@ -19,7 +19,8 @@ defmodule MailgunLoggerWeb.UserController do
 
   def new(conn, _) do
     changeset = User.changeset(%User{})
-    render(conn, :new, changeset: changeset, roles: role_options())
+    selected_role_ids = []
+    render(conn, :new, changeset: changeset, roles: role_options(), selected_role_ids: selected_role_ids)
   end
 
   def create(conn, %{"user" => params}) do
@@ -37,7 +38,8 @@ defmodule MailgunLoggerWeb.UserController do
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
     changeset = User.changeset(user)
-    render(conn, :edit, changeset: changeset, user: user, roles: role_options())
+    selected_role_ids = Enum.map(user.roles, & &1.id)
+    render(conn, :edit, changeset: changeset, user: user, roles: role_options(), selected_role_ids: selected_role_ids)
   end
 
   def update(conn, %{"id" => id, "user" => params}) do
