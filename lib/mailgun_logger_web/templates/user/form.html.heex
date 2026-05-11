@@ -17,15 +17,13 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
-  <%= if !@is_self do %>
-    <.input
-      field={f[:role_ids]}
-      multiple
-      type="select"
-      label="Role"
-      options={@roles}
-    />
-  <% end %>
+  <.input
+    field={f[:role_ids]}
+    multiple
+    type="select"
+    label="Role"
+    options={@roles}
+  />
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}
