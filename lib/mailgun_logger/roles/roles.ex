@@ -15,7 +15,7 @@ defmodule MailgunLogger.Roles do
 
   @member_actions ~w() ++ @default_actions
 
-  @admin_actions ~w(admin_access do_stuff) ++ @member_actions
+  @admin_actions ~w(admin_access manage_roles do_stuff) ++ @member_actions
 
   @superuser_actions ~w() ++ @admin_actions
 
