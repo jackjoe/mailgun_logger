@@ -35,7 +35,7 @@ defmodule MailgunLogger.User do
     field(:reset_token, :string, default: nil)
     field(:theme, :string, default: "system")
     field(:password, :string, virtual: true)
-    field(:role_id, :integer, virtual: true)
+    field(:role_ids, {:array, :integer}, virtual: true, default: [])
 
     many_to_many(:roles, Role, join_through: UserRole, on_replace: :delete)
 
@@ -46,7 +46,7 @@ defmodule MailgunLogger.User do
   @spec changeset(User.t(), map()) :: Ecto.Changeset.t()
   def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :role_id])
+    |> cast(attrs, [:firstname, :lastname, :email, :password, :theme, :role_ids])
     |> validate_required([:email, :password])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
@@ -61,7 +61,7 @@ defmodule MailgunLogger.User do
   @spec update_changeset(User.t(), map()) :: Ecto.Changeset.t()
   def update_changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [:firstname, :lastname, :email, :theme, :role_id])
+    |> cast(attrs, [:firstname, :lastname, :email, :theme, :role_ids])
     |> update_change(:email, &String.downcase/1)
     |> validate_format(:email, @email_format)
     |> unique_constraint(:email)
@@ -112,12 +112,14 @@ defmodule MailgunLogger.User do
     put_change(changeset, :token, token)
   end
 
-  # Add Roles in the existing alias list with an helper function
-  defp put_roles_if_present(changeset, %{"role_id" => id}) when id not in [nil, ""] do
-    case Roles.get_roles_by_id([id]) do
-      [] -> changeset
-      roles -> Ecto.Changeset.put_assoc(changeset, :roles, roles)
-    end
+  # Replace the user's roles when role_ids is present in the params.
+  defp put_roles_if_present(changeset, %{"role_ids" => ids}) when is_list(ids) do
+    roles =
+      ids
+      |> Enum.reject(&(&1 in [nil, ""]))
+      |> Roles.get_roles_by_id()
+
+    Ecto.Changeset.put_assoc(changeset, :roles, roles)
   end
 
   defp put_roles_if_present(changeset, _), do: changeset

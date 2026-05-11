@@ -30,9 +30,15 @@ defmodule MailgunLogger.Roles do
 
   @member_actions ~w(view_event view_stats view_graphs) ++ @default_actions
 
-  @admin_actions ~w(trigger_run view_users edit_user create_user delete_user) ++ @member_actions
+  @admin_actions ~w(
+    trigger_run view_users edit_user create_user
+    delete_user manage_accounts manage_admins
+    manage_members grant_admin_role grant_member_role
+  ) ++ @member_actions
 
-  @superuser_actions ~w() ++ @admin_actions
+  @superuser_actions ~w(
+                     manage_superusers grant_superuser_role
+                   ) ++ @admin_actions
 
   #########################################################
 
@@ -109,4 +115,21 @@ defmodule MailgunLogger.Roles do
   def abilities(%Role{name: "superuser"}), do: @superuser_actions
 
   def roles(%User{roles: roles}), do: Enum.map(roles, & &1.name)
+
+  # Guards - hidden cameras permission levels what you can do with a given role
+  def can_manage?(actor, target) do
+    required_permission =
+      cond do
+        is?(target, :superuser) -> :manage_superusers
+        is?(target, :admin) -> :manage_admins
+        true -> :manage_members
+      end
+
+    can?(actor, required_permission)
+  end
+
+  def can_grant_role?(actor, role_name) do
+    required_permission = :"grant_#{role_name}_role"
+    can?(actor, required_permission)
+  end
 end

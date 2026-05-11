@@ -26,6 +26,7 @@ defmodule MailgunLoggerWeb do
       import Plug.Conn
       use Gettext, backend: MailgunLoggerWeb.Gettext
       alias MailgunLoggerWeb.Router.Helpers, as: Routes
+
       # import the plug in every controller as Plug
       alias MailgunLoggerWeb.Plugs.Authorize
 

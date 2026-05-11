@@ -17,13 +17,22 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
-  <.input
-    :if={assigns[:roles]}
-    field={f[:role_id]}
-    type="select"
-    label="Role"
-    options={@roles}
-  />
+  <%= if assigns[:roles] do %>
+    <% selected = Ecto.Changeset.get_field(@changeset, :role_ids) || [] %>
+    <% slot_count = min(length(selected) + 1, length(@roles)) %>
+
+    <%= for slot <- 0..(slot_count - 1) do %>
+      <.input
+        type="select"
+        name="user[role_ids][]"
+        id={"user_role_id_#{slot}"}
+        label={if slot == 0, do: "Primary role", else: "Additional role"}
+        value={Enum.at(selected, slot)}
+        options={@roles}
+        prompt="Select a role"
+      />
+    <% end %>
+  <% end %>
 
   <div class="form-group mt-5">
     {submit("submit", class: "btn btn-primary")}

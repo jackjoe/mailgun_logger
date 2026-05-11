@@ -29,6 +29,7 @@ defmodule MailgunLoggerWeb.UserController do
   end
 
   def create(conn, %{"user" => params}) do
+    # Check if the users has the permission to grant specific role
     params = sanitize_role_params(conn.assigns.current_user, params)
 
     case Users.create_user(params) do
@@ -44,18 +45,16 @@ defmodule MailgunLoggerWeb.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Users.get_user!(id)
+    actor = conn.assigns.current_user
 
-    if can_manage?(conn.assigns.current_user, user) do
-      current_role_id =
-        case user.roles do
-          [%{id: id} | _] -> id
-          _ -> nil
-        end
+    # Check if the current user can manage the target user same rank of permissions
+    if Roles.can_manage?(actor, user) do
+      current_role_ids = Enum.map(user.roles, & &1.id)
 
       changeset =
         user
         |> User.changeset()
-        |> Ecto.Changeset.put_change(:role_id, current_role_id)
+        |> Ecto.Changeset.put_change(:role_ids, current_role_ids)
 
       render(conn, :edit, changeset: changeset, user: user, roles: role_options())
     else
@@ -70,7 +69,7 @@ defmodule MailgunLoggerWeb.UserController do
     actor = conn.assigns.current_user
 
     cond do
-      not can_manage?(actor, user) ->
+      not Roles.can_manage?(actor, user) ->
         conn
         |> put_flash(:error, "You cannot edit this user.")
         |> redirect(to: Routes.user_path(conn, :index))
@@ -110,7 +109,7 @@ defmodule MailgunLoggerWeb.UserController do
         |> put_flash(:error, "You cannot delete your own account.")
         |> redirect(to: Routes.user_path(conn, :index))
 
-      not can_manage?(actor, user) ->
+      not Roles.can_manage?(actor, user) ->
         conn
         |> put_flash(:error, "You cannot delete this user.")
         |> redirect(to: Routes.user_path(conn, :index))
@@ -134,33 +133,25 @@ defmodule MailgunLoggerWeb.UserController do
     Roles.list_roles() |> Enum.map(&{&1.name, &1.id})
   end
 
-  # Only superusers can manage other superusers. Admins can manage admins/members.
-  defp can_manage?(actor, target) do
-    Roles.is?(actor, :superuser) or not Roles.is?(target, :superuser)
-  end
+  # Keep only the role IDs the actor is allowed to grant.
+  defp sanitize_role_params(actor, %{"role_ids" => ids} = params) when is_list(ids) do
+    allowed_ids =
+      ids
+      |> Enum.reject(&(&1 in [nil, ""]))
+      |> Roles.get_roles_by_id()
+      |> Enum.filter(&Roles.can_grant_role?(actor, &1.name))
+      |> Enum.map(&to_string(&1.id))
 
-  # Admins cannot grant the `superuser` role; drop it from incoming params.
-  defp sanitize_role_params(actor, %{"role_id" => id} = params) when id not in [nil, ""] do
-    if Roles.is?(actor, :superuser) do
-      params
-    else
-      superuser_id = to_string(Roles.get_role_by_name("superuser").id)
-
-      if to_string(id) == superuser_id do
-        Map.delete(params, "role_id")
-      else
-        params
-      end
-    end
+    Map.put(params, "role_ids", allowed_ids)
   end
 
   defp sanitize_role_params(_actor, params), do: params
 
-  defp changing_own_role?(actor, target, %{"role_id" => new_id})
-       when new_id not in [nil, ""] do
+  defp changing_own_role?(actor, target, %{"role_ids" => ids}) when is_list(ids) do
     if actor.id == target.id do
-      current_ids = Enum.map(target.roles, &to_string(&1.id))
-      to_string(new_id) not in current_ids
+      current = target.roles |> Enum.map(&to_string(&1.id)) |> Enum.sort()
+      incoming = ids |> Enum.reject(&(&1 in [nil, ""])) |> Enum.sort()
+      current != incoming
     else
       false
     end
@@ -168,11 +159,10 @@ defmodule MailgunLoggerWeb.UserController do
 
   defp changing_own_role?(_actor, _target, _params), do: false
 
-  defp demoting_last_superuser?(target, %{"role_id" => new_id})
-       when new_id not in [nil, ""] do
+  defp demoting_last_superuser?(target, %{"role_ids" => ids}) when is_list(ids) do
     target_is_superuser = Enum.any?(target.roles, &(&1.name == "superuser"))
     superuser_id = to_string(Roles.get_role_by_name("superuser").id)
-    still_superuser = to_string(new_id) == superuser_id
+    still_superuser = superuser_id in ids
 
     target_is_superuser and not still_superuser and Users.count_superusers() <= 1
   end
