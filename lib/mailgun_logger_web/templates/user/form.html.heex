@@ -17,7 +17,7 @@
     label="Theme"
     options={[{"System", "system"}, {"Light", "light"}, {"Dark", "dark"}]}
   />
-  <%= if MailgunLogger.Roles.can?(@user, :manage_roles) do %>
+  <%= if MailgunLogger.Roles.can?(@current_user, :manage_roles) do %>
     <.input
       field={f[:role_ids]}
       multiple

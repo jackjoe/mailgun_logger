@@ -13,20 +13,22 @@ defmodule MailgunLoggerWeb.ProfileController do
 
   def edit(conn, _) do
     user = conn.assigns.current_user
+    current_user = conn.assigns.current_user
     changeset = User.changeset(user)
     selected_role_ids = Enum.map(user.roles, & &1.id)
 
     conn
     |> put_view(MailgunLoggerWeb.UserView)
-    |> render(:profile, changeset: changeset, user: user, roles: role_options(), selected_role_ids: selected_role_ids)
+    |> render(:profile, changeset: changeset, user: user, current_user: current_user, roles: role_options(), selected_role_ids: selected_role_ids)
   end
 
   def update(conn, %{"user" => params}) do
     user = conn.assigns.current_user
+    current_user = conn.assigns.current_user
     selected_role_ids = Enum.map(user.roles, & &1.id)
 
     params =
-      if MailgunLogger.Roles.can?(user, :manage_roles) do
+      if MailgunLogger.Roles.can?(current_user, :manage_roles) do
         params
       else
         Map.delete(params, "role_ids")
@@ -41,7 +43,7 @@ defmodule MailgunLoggerWeb.ProfileController do
       {:error, changeset} ->
         conn
         |> put_view(MailgunLoggerWeb.UserView)
-        |> render(:profile, changeset: changeset, user: user, roles: role_options(), selected_role_ids: selected_role_ids)
+        |> render(:profile, changeset: changeset, user: user, current_user: current_user, roles: role_options(), selected_role_ids: selected_role_ids)
     end
   end
 end
