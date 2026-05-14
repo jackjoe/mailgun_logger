@@ -23,6 +23,14 @@ defmodule MailgunLoggerWeb.Router do
     plug(MailgunLoggerWeb.Plugs.Auth)
   end
 
+  pipeline :can_view_events do
+    plug(MailgunLoggerWeb.Plugs.RoleCheck, :view_events)
+  end
+
+  pipeline :can_admin_actions do
+    plug(MailgunLoggerWeb.Plugs.RoleCheck, :admin_actions)
+  end
+
   # Always except in prod
   if Application.compile_env(:mailgun_logger, :env) == :dev do
     forward("/sent_emails", Bamboo.SentEmailViewerPlug)
@@ -69,22 +77,53 @@ defmodule MailgunLoggerWeb.Router do
     post("/", SetupController, :create_root)
   end
 
+  # scope "/", MailgunLoggerWeb do
+  #   pipe_through([:browser, :auth])
+
+  #   get("/logout", AuthController, :logout)
+
+  #   resources("/events", EventController, only: [:index, :show])
+  #   get("/events/:id/stored_message", EventController, :stored_message)
+  #   resources("/accounts", AccountController, except: [:show])
+  #   get("/profile", ProfileController, :edit)
+  #   put("/profile", ProfileController, :update)
+  #   resources("/users", UserController, except: [:show])
+
+  #   get("/", PageController, :index)
+  #   post("/trigger-run", PageController, :trigger_run)
+  #   get("/stats", PageController, :stats)
+  #   get("/graphs", PageController, :graphs)
+  #   get("/non-affiliation", PageController, :non_affiliation)
+  # end
+
   scope "/", MailgunLoggerWeb do
     pipe_through([:browser, :auth])
 
     get("/logout", AuthController, :logout)
+    get("/non-affiliation", PageController, :non_affiliation)
+
+    get("/profile", ProfileController, :edit)
+    put("/profile", ProfileController, :update)
+
+    get("/", PageController, :index)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_view_events])
 
     resources("/events", EventController, only: [:index, :show])
     get("/events/:id/stored_message", EventController, :stored_message)
-    resources("/accounts", AccountController, except: [:show])
-    get("/profile", ProfileController, :edit)
-    put("/profile", ProfileController, :update)
-    resources("/users", UserController, except: [:show])
 
-    get("/", PageController, :index)
+  end
+
+  scope "/", MailgunLoggerWeb do
+    pipe_through([:browser, :auth, :can_admin_actions])
+
     post("/trigger-run", PageController, :trigger_run)
     get("/stats", PageController, :stats)
     get("/graphs", PageController, :graphs)
-    get("/non-affiliation", PageController, :non_affiliation)
+    resources("/accounts", AccountController, except: [:show])
+    resources("/users", UserController, except: [:show])
   end
+
 end

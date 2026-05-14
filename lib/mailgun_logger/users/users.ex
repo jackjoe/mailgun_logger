@@ -162,4 +162,22 @@ defmodule MailgunLogger.Users do
   def delete_user(%User{} = user) do
     Repo.delete(user)
   end
+
+  @spec create_user_with_role(map(), String.t()) :: ecto_user()
+  def create_user_with_role(params, role_name) do
+    role = MailgunLogger.Roles.get_role_by_name(role_name)
+    %User{}
+    |> User.changeset(params)
+    |> Ecto.Changeset.put_assoc(:roles, [role])
+    |> Repo.insert()
+  end
+
+  @spec update_user_role(User.t(), String.t()) :: ecto_user()
+  def update_user_role(%User{} = user, role_name) do
+    role = MailgunLogger.Roles.get_role_by_name(role_name)
+    user
+    |> Ecto.Changeset.change()
+    |> Ecto.Changeset.put_assoc(:roles, [role])
+    |> Repo.update()
+  end
 end

@@ -11,6 +11,28 @@
   <.input field={f[:lastname]} label="Lastname" />
   <.input field={f[:email]} label="Email" />
   <.input :if={@new?} field={f[:password]} type="password" label="Password" />
+
+  <%= if Roles.can?(@current_user, :manage_users) && !String.contains?(@action, "profile") && (assigns[:user] == nil || @current_user.id != assigns[:user].id) do %>
+    
+    <%= if @new? do %>
+      <.input
+        field={f[:role]}
+        type="select"
+        label="Role"
+        options={[{"Member", "member"}, {"Admin", "admin"}, {"Superuser", "superuser"}]}
+      />
+    <% else %>
+      <.input
+        field={f[:role]}
+        type="select"
+        label="Role"
+        options={[{"Member", "member"}, {"Admin", "admin"}, {"Superuser", "superuser"}]}
+        value={if @changeset.data.roles != [], do: hd(@changeset.data.roles).name, else: "member"}
+      />
+    <% end %>
+
+  <% end %>
+
   <.input
     field={f[:theme]}
     type="select"
