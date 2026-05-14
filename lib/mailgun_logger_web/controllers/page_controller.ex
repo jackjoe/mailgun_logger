@@ -5,7 +5,13 @@ defmodule MailgunLoggerWeb.PageController do
   alias MailgunLogger.Accounts
 
   def index(conn, _) do
-    redirect(conn, to: Routes.event_path(conn, :index))
+    # redirect(conn, to: Routes.event_path(conn, :index))
+    user = conn.assigns[:current_user]
+    if MailgunLogger.Roles.can?(user, :view_events) do
+      redirect(conn, to: Routes.event_path(conn, :index))
+    else
+      redirect(conn, to: Routes.profile_path(conn, :edit))
+    end
   end
 
   def trigger_run(conn, _) do
