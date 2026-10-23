@@ -26,6 +26,18 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     refute html =~ delivered.recipient
   end
 
+  test "the account filter defaults to all accounts", %{conn: conn} do
+    html = conn |> get(~p"/events") |> html_response(200)
+
+    options =
+      html
+      |> LazyHTML.from_document()
+      |> LazyHTML.query(~s(select[name="filters[4][value]"] option))
+      |> Enum.map(&(&1 |> LazyHTML.text() |> String.trim()))
+
+    assert hd(options) == "all"
+  end
+
   test "shows an event", %{conn: conn} do
     event = insert(:event, raw: %{"event" => "delivered"})
     conn = get(conn, ~p"/events/#{event}")
