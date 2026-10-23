@@ -40,11 +40,14 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
     put_session(conn, :current_user_id, user.id)
   end
 
-  @doc "Sign out a user"
+  @doc """
+  Sign out a user. Renews the session instead of dropping it, so a flash
+  message set after the sign out still reaches the next page.
+  """
   @spec sign_out(Plug.Conn.t()) :: Plug.Conn.t()
   def sign_out(conn) do
     conn
+    |> configure_session(renew: true)
     |> clear_session()
-    |> configure_session(drop: true)
   end
 end

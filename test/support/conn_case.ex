@@ -19,6 +19,7 @@ defmodule MailgunLoggerWeb.ConnCase do
       import Plug.Conn
       import Phoenix.ConnTest
       import MailgunLogger.Factory
+      import MailgunLoggerWeb.ConnCase
     end
   end
 
@@ -30,5 +31,23 @@ defmodule MailgunLoggerWeb.ConnCase do
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  @doc """
+  Setup helper that inserts a user and signs the user in.
+  """
+  def log_in_user(%{conn: conn}) do
+    user = MailgunLogger.Factory.insert(:user)
+    %{conn: Phoenix.ConnTest.init_test_session(conn, current_user_id: user.id), user: user}
+  end
+
+  @doc """
+  Returns the text of the `h1` and `h2` headings in the given HTML.
+  """
+  def headings(html) do
+    html
+    |> LazyHTML.from_document()
+    |> LazyHTML.query("h1, h2")
+    |> Enum.map(&(&1 |> LazyHTML.text() |> String.trim()))
   end
 end

@@ -1,6 +1,5 @@
 defmodule MailgunLoggerWeb.Router do
   use MailgunLoggerWeb, :router
-  use Plug.ErrorHandler
   @moduledoc false
 
   pipeline :browser do

@@ -1,0 +1,43 @@
+defmodule MailgunLoggerWeb.EventControllerTest do
+  use MailgunLoggerWeb.ConnCase
+
+  setup :log_in_user
+
+  test "lists the events", %{conn: conn} do
+    event = insert(:event)
+    conn = get(conn, ~p"/events")
+    html = html_response(conn, 200)
+    assert headings(html) == ["Events"]
+    assert html =~ event.recipient
+    assert html =~ ~s(href="/events/#{event.id}")
+  end
+
+  test "filters the events", %{conn: conn} do
+    delivered = insert(:event, event: "delivered")
+    failed = insert(:event, event: "failed")
+
+    conn =
+      get(conn, ~p"/events", %{
+        "filters" => %{"0" => %{"field" => "event", "op" => "==", "value" => "failed"}}
+      })
+
+    html = html_response(conn, 200)
+    assert html =~ failed.recipient
+    refute html =~ delivered.recipient
+  end
+
+  test "shows an event", %{conn: conn} do
+    event = insert(:event, raw: %{"event" => "delivered"})
+    conn = get(conn, ~p"/events/#{event}")
+    html = html_response(conn, 200)
+    assert html =~ "<dt>Recipient</dt>"
+    assert html =~ event.recipient
+    assert html =~ event.account.domain
+  end
+
+  test "redirects when the event has no stored message", %{conn: conn} do
+    event = insert(:event)
+    conn = get(conn, ~p"/events/#{event}/stored_message")
+    assert redirected_to(conn) == ~p"/events"
+  end
+end

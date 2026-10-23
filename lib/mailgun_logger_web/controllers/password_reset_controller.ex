@@ -40,7 +40,7 @@ defmodule MailgunLoggerWeb.PasswordResetController do
   def reset_create(conn, %{"reset_token" => reset_token, "user" => user_params}) do
     case Users.get_user_by_reset_token(reset_token) do
       nil ->
-        redirect(conn, to: Routes.password_reset_path(conn, :reset_error, reset_token))
+        redirect(conn, to: Routes.password_reset_path(conn, :reset_error))
 
       user ->
         case Users.reset_password(user, user_params) do
