@@ -38,6 +38,34 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     assert hd(options) == "all"
   end
 
+  describe "pagination" do
+    test "links to the next and previous page without empty parameters", %{conn: conn} do
+      account = insert(:account)
+      insert_list(51, :event, account: account)
+
+      next = conn |> get(~p"/events") |> html_response(200) |> pagination_href("Next")
+      assert %{"after" => _} = query = decode_query(next)
+      refute Enum.any?(query, fn {_key, value} -> value == "" end), "empty parameter in #{next}"
+
+      previous = conn |> get(next) |> html_response(200) |> pagination_href("Previous")
+      assert %{"before" => _} = query = decode_query(previous)
+
+      refute Enum.any?(query, fn {_key, value} -> value == "" end),
+             "empty parameter in #{previous}"
+    end
+  end
+
+  defp decode_query(href), do: href |> URI.parse() |> Map.fetch!(:query) |> URI.decode_query()
+
+  defp pagination_href(html, label) do
+    html
+    |> LazyHTML.from_document()
+    |> LazyHTML.query(".pagination-wrapper a")
+    |> Enum.find(&(LazyHTML.text(&1) =~ label))
+    |> LazyHTML.attribute("href")
+    |> hd()
+  end
+
   test "shows an event", %{conn: conn} do
     event = insert(:event, raw: %{"event" => "delivered"})
     conn = get(conn, ~p"/events/#{event}")

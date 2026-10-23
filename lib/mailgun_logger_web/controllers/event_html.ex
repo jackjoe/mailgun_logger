@@ -87,4 +87,13 @@ defmodule MailgunLoggerWeb.EventHTML do
   def list_attachments(_), do: "none"
 
   def cbo_accounts(accounts), do: Enum.map(accounts, &{&1.domain, &1.id})
+
+  @doc """
+  Builds the events path for the pagination links. Flop.Phoenix sets
+  `first` or `last` to nil when the page size is the default, and a
+  nil value would end up as an empty query parameter.
+  """
+  def events_path(params) do
+    ~p"/events?#{Enum.reject(params, fn {_key, value} -> is_nil(value) end)}"
+  end
 end
