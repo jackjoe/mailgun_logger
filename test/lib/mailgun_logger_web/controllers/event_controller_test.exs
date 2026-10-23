@@ -35,6 +35,11 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     assert html =~ event.account.domain
   end
 
+  test "highlights the events link in the navigation", %{conn: conn} do
+    conn = get(conn, ~p"/events")
+    assert html_response(conn, 200) =~ ~s(<a href="/events" class="is-active">Events</a>)
+  end
+
   test "redirects when the event has no stored message", %{conn: conn} do
     event = insert(:event)
     conn = get(conn, ~p"/events/#{event}/stored_message")

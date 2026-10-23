@@ -1,0 +1,25 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <div class="mx-auto panel">
+    <.form for={%{}} action={~p"/password-reset/request"}>
+      <h2 class="h2">{gettext("Password forgot")}</h2>
+      <p class="mb-4">
+        {gettext(
+          "Enter the email address you registered with and we will send you an email with instructions on how to reset your password"
+        )}
+      </p>
+
+      <div class="form-group">
+        <label for="password_reset_email">{gettext("Email")}</label>
+        <input
+          type="email"
+          name="password_reset[email]"
+          id="password_reset_email"
+          required
+          class="form-control"
+        />
+      </div>
+
+      <.button type="submit" class="btn btn-primary">{gettext("Send")}</.button>
+    </.form>
+  </div>
+</Layouts.app>

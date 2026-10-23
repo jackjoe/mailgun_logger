@@ -17,7 +17,10 @@ defmodule MailgunLoggerWeb.AuthControllerTest do
   test "shows an error with invalid credentials", %{conn: conn} do
     user = insert(:user)
     conn = post(conn, ~p"/login", %{"user" => %{"email" => user.email, "password" => "wrong"}})
-    assert html_response(conn, 200) =~ "Invalid user name or password"
+    html = html_response(conn, 200)
+    assert html =~ "Invalid user name or password"
+    assert html =~ ~s(value="#{user.email}")
+    refute html =~ ~s(value="wrong")
     refute get_session(conn, :current_user_id)
   end
 

@@ -2,7 +2,8 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias MailgunLoggerWeb.Router.Helpers, as: Routes
+  use MailgunLoggerWeb, :verified_routes
+
   alias MailgunLogger.Users
 
   @moduledoc """
@@ -26,7 +27,7 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
         conn
         |> assign(:current_user, nil)
         |> assign(:signed_in?, false)
-        |> redirect(to: Routes.auth_path(conn, :new))
+        |> redirect(to: ~p"/login")
         |> halt()
     end
   end

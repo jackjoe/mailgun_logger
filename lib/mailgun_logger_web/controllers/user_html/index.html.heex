@@ -1,0 +1,25 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <h1>Users</h1>
+
+  <table cellspacing="0" class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Roles</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr :for={user <- @users}>
+        <td>{"#{user.firstname || ""} #{user.lastname || ""}" |> String.trim()}</td>
+        <td>{user.email}</td>
+        <td>{Enum.map(user.roles, & &1.name)}</td>
+        <td><.link href={~p"/users/#{user}/edit"}>edit</.link></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="mt-5">
+    <.link href={~p"/users/new"} class="btn">+ Add user</.link>
+  </div>
+</Layouts.app>

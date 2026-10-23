@@ -2,7 +2,8 @@ defmodule MailgunLoggerWeb.Plugs.SetupCheck do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias MailgunLoggerWeb.Router.Helpers, as: Routes
+  use MailgunLoggerWeb, :verified_routes
+
   alias MailgunLogger.Users
 
   @moduledoc """
@@ -16,7 +17,7 @@ defmodule MailgunLoggerWeb.Plugs.SetupCheck do
   def call(conn, _) do
     case Users.any_users?() do
       true -> conn
-      false -> conn |> redirect(to: Routes.setup_path(conn, :index)) |> halt()
+      false -> conn |> redirect(to: ~p"/setup") |> halt()
     end
   end
 end

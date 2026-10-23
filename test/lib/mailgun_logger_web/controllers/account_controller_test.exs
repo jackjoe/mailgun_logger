@@ -52,5 +52,8 @@ defmodule MailgunLoggerWeb.AccountControllerTest do
     conn = delete(conn, ~p"/accounts/#{account}")
     assert redirected_to(conn) == ~p"/accounts"
     assert Accounts.list_accounts() == []
+
+    conn = conn |> recycle() |> get(~p"/accounts")
+    assert html_response(conn, 200) =~ "Account deleted successfully."
   end
 end

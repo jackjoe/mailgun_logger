@@ -42,6 +42,4 @@ defmodule MailgunLoggerWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug(Plug.Session, @session_options)
   plug(MailgunLoggerWeb.Router)
-
-  def build_conn(), do: %Plug.Conn{private: %{phoenix_endpoint: MailgunLoggerWeb.Endpoint}}
 end

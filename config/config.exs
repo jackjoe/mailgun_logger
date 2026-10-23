@@ -15,7 +15,10 @@ config :mailgun_logger,
 # Configures the endpoint
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: MailgunLoggerWeb.ErrorView, accepts: ~w(html json)],
+  render_errors: [
+    formats: [html: MailgunLoggerWeb.ErrorHTML, json: MailgunLoggerWeb.ErrorJSON],
+    layout: false
+  ],
   live_view: [signing_salt: "ML_LV_Salt"],
   pubsub_server: MailgunLogger.PubSub
 

@@ -1,14 +1,12 @@
 defmodule MailgunLogger.Emails do
   import Swoosh.Email
   require Logger
-  # import MailgunLoggerWeb.Gettext
+  use MailgunLoggerWeb, :verified_routes
 
   alias MailgunLogger.User
-  alias MailgunLoggerWeb.Endpoint
-  alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
   def reset_password(user) do
-    reset_url = Routes.password_reset_url(Endpoint.build_conn(), :reset_new, user.reset_token)
+    reset_url = url(~p"/password-reset/reset/#{user.reset_token}")
 
     content = """
     Reset your password

@@ -31,11 +31,9 @@ defmodule MailgunLoggerWeb.EventController do
       content = Mailgun.Events.get_stored_message_content(event)
       content = String.replace(content, "bgcolor", "_bgcolor")
 
-      conn
-      |> put_layout(false)
-      |> render(:stored_message, html: content)
+      html(conn, content)
     else
-      redirect(conn, to: Routes.event_path(conn, :index))
+      redirect(conn, to: ~p"/events")
     end
   end
 end

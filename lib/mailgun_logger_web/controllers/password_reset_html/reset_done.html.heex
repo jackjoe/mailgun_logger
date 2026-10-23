@@ -1,0 +1,7 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <div class="mx-auto panel">
+    <h2 class="h2">{gettext("Password forgot")}</h2>
+    <p class="mb-4">{gettext("Your password was reset.")}</p>
+    <.link href={~p"/login"} class="btn btn-primary">{gettext("Login")}</.link>
+  </div>
+</Layouts.app>

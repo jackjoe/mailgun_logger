@@ -52,5 +52,8 @@ defmodule MailgunLoggerWeb.UserControllerTest do
     conn = delete(conn, ~p"/users/#{other}")
     assert redirected_to(conn) == ~p"/users"
     refute Users.get_user(other.id)
+
+    conn = conn |> recycle() |> get(~p"/users")
+    assert html_response(conn, 200) =~ "user deleted successfully."
   end
 end
