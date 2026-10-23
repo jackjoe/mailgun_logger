@@ -11,6 +11,7 @@ defmodule MailgunLogger.Application do
     children = [
       {Phoenix.PubSub, name: MailgunLogger.PubSub},
       {MailgunLogger.Repo, []},
+      {Task.Supervisor, name: MailgunLogger.TaskSupervisor},
       {MailgunLoggerWeb.Endpoint, []}
     ]
 

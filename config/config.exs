@@ -59,12 +59,14 @@ config :ex_aws,
   ]
 
 config :mailgun_logger, MailgunLogger.Mailer,
-  adapter: Bamboo.MailgunAdapter,
+  adapter: Swoosh.Adapters.Mailgun,
   api_key: System.get_env("MAILGUN_API_KEY"),
   domain: System.get_env("MAILGUN_DOMAIN"),
   from: System.get_env("MAILGUN_FROM") || "no-reply@jackjoe.be",
   reply_to: System.get_env("MAILGUN_REPLY_TO") || "no-reply@jackjoe.be",
-  base_uri: "https://api.eu.mailgun.net/v3"
+  base_url: "https://api.eu.mailgun.net/v3"
+
+config :swoosh, :api_client, Swoosh.ApiClient.Req
 
 config :mailgun_logger, MailgunLogger.Repo,
   username: System.get_env("ML_DB_USER") || "root",

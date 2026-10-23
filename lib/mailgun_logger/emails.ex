@@ -1,5 +1,5 @@
 defmodule MailgunLogger.Emails do
-  use Bamboo.Phoenix, view: MailgunLoggerWeb.EmailView
+  import Swoosh.Email
   require Logger
   # import MailgunLoggerWeb.Gettext
 
@@ -34,28 +34,16 @@ defmodule MailgunLogger.Emails do
   defp base_email do
     conf = Application.get_env(:mailgun_logger, MailgunLogger.Mailer)
 
-    new_email()
+    new()
     |> from(conf[:from])
   end
 
   @doc "Email has to be returned as a result!"
   def log(
-        %Bamboo.Email{from: from, to: to, subject: subject} = email,
+        %Swoosh.Email{from: {_from_name, from}, to: to, subject: subject} = email,
         caller \\ :anonymous
       ) do
-    to =
-      case to do
-        {_name, email} -> email
-        emails when is_list(emails) -> "#{inspect(emails)}"
-        email when is_binary(email) -> email
-        other -> "error_parsing_email (#{inspect(other)})"
-      end
-
-    from =
-      case from do
-        {_name, email} -> email
-        email -> email
-      end
+    to = Enum.map_join(to, ", ", fn {_name, address} -> address end)
 
     Logger.info("Email sent: from #{from}, to: #{to}, subject: #{subject}, caller: #{caller}")
 

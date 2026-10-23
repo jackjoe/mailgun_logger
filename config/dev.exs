@@ -34,7 +34,10 @@ config :ex_aws,
   raw_path: "_dev_mailgun_logger/messages"
 
 config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
-# config :mailgun_logger, MailgunLogger.Mailer, adapter: Bamboo.LocalAdapter
+
+# Store sent emails in memory, see them at /sent_emails
+config :mailgun_logger, MailgunLogger.Mailer, adapter: Swoosh.Adapters.Local
+config :swoosh, :api_client, false
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

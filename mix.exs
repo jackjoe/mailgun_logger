@@ -61,8 +61,6 @@ defmodule MailgunLogger.Mixfile do
   defp deps do
     [
       {:argon2_elixir, "~> 4.0"},
-      {:bamboo, "~> 2.0"},
-      {:bamboo_phoenix, "~> 1.0"},
       {:ecto_sql, "~> 3.13"},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false},
       {:ex_machina, "~> 2.3", only: :test},
@@ -88,8 +86,11 @@ defmodule MailgunLogger.Mixfile do
       {:floki, ">= 0.30.0", only: :test},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix_live_reload, "~> 1.5", only: :dev},
+      {:multipart, "~> 0.4"},
       {:plug, "~> 1.8"},
-      {:quantum, "~> 3.4"}
+      {:quantum, "~> 3.4"},
+      {:req, "~> 0.7"},
+      {:swoosh, "~> 1.29"}
     ]
   end
 
