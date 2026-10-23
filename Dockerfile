@@ -1,8 +1,6 @@
 FROM registry.gitlab.com/jack-joe-open-source/docker-images/elixir-phx AS builder
 
 ARG MIX_ENV=prod
-ENV PORT ${PORT:-5050}
-ENV HOST ${HOST:-localhost}
 
 # Create and set home directory
 ENV HOME /opt/app

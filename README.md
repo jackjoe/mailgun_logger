@@ -74,7 +74,7 @@ MailgunLogger is available as a Docker image at [Docker](https://hub.docker.com/
 
 ### Variables
 
-Following variables are available:
+The application reads the following variables at boot, see `config/runtime.exs`:
 
 [Required]
 
@@ -199,14 +199,16 @@ To run on your local machine, you need to setup shop first.
 Mailgun Logger requires a PostgreSQL database using the following environment variables along with their defaults:
 
 ```elixir
-# config/config.exs
+# config/dev.exs
 config :mailgun_logger, MailgunLogger.Repo,
-  username: System.get_env("ML_DB_USER") || "root",
-  password: System.get_env("ML_DB_PASSWORD"),
-  database: System.get_env("ML_DB_NAME") || "mailgun_logger_dev",
-  hostname: System.get_env("ML_DB_HOST") || "localhost",
-  port: System.get_env("ML_DB_PORT") || 5432
+  username: System.get_env("ML_DB_USER", "postgres"),
+  password: System.get_env("ML_DB_PASSWORD", "postgres"),
+  database: System.get_env("ML_DB_NAME", "mailgun_logger_dev"),
+  hostname: System.get_env("ML_DB_HOST", "localhost"),
+  port: String.to_integer(System.get_env("ML_DB_PORT", "5432"))
 ```
+
+The tests use the same variables, except `ML_DB_NAME`: the test database is always `mailgun_logger_test`.
 
 Either export your own enviroment variables or adhere to the defaults. Then, for convenience, run:
 
@@ -238,7 +240,7 @@ All of the make targets are convenience wrappers around `mix`, feel free to run 
 $ . .env && make run
 ```
 
-Then head over to [https://0.0.0.0:7070](https://0.0.0.0:7070).
+Then head over to [https://localhost:7070](https://localhost:7070).
 
 ## TODO
 

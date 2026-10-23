@@ -1,17 +1,15 @@
 import Config
 
+# The port, host and secrets come from the environment at boot,
+# see config/runtime.exs.
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
-  http: [port: System.fetch_env!("PORT"), compress: true],
-  url: [host: System.fetch_env!("HOST"), port: 80],
+  http: [compress: true],
   cache_static_manifest: "priv/static/cache_manifest.json",
   debug_errors: false,
   code_reloader: false,
   version: Application.spec(:mailgun_logger, :vsn)
 
-
-config :logger,
-  level: String.to_existing_atom(System.get_env("ML_LOG_LEVEL", "info")) || :info,
-  compile_time_purge_matching: [[application: :remote_ip]]
+config :logger, compile_time_purge_matching: [[application: :remote_ip]]
 
 config :ex_aws, debug_requests: false
 

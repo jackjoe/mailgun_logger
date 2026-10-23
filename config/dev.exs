@@ -1,10 +1,17 @@
 import Config
 
-port = System.get_env("PORT") || "7070"
+config :mailgun_logger, MailgunLogger.Repo,
+  username: System.get_env("ML_DB_USER", "postgres"),
+  password: System.get_env("ML_DB_PASSWORD", "postgres"),
+  database: System.get_env("ML_DB_NAME", "mailgun_logger_dev"),
+  hostname: System.get_env("ML_DB_HOST", "localhost"),
+  port: String.to_integer(System.get_env("ML_DB_PORT", "5432"))
+
+port = String.to_integer(System.get_env("PORT", "7070"))
 
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [
-    host: System.get_env("HOST", "0.0.0.0"),
+    host: System.get_env("HOST", "localhost"),
     scheme: "https",
     port: port
   ],
@@ -28,10 +35,7 @@ config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
   ],
-  secret_key_base: "rnd"
-
-config :ex_aws,
-  raw_path: "_dev_mailgun_logger/messages"
+  secret_key_base: "xdqH3oUTBrhInZokQilYoQssKjar1v8WDa430ROaKGRwDvdUGQdYSs0A4NydiKfZ"
 
 config :mailgun_logger, MailgunLogger.Scheduler, jobs: []
 

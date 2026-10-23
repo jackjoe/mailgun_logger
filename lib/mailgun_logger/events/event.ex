@@ -66,8 +66,7 @@ defmodule MailgunLogger.Event do
       order_directions: [:desc, :asc]
     },
     default_pagination_type: :first,
-    pagination_types: [:first, :last],
-    default_limit: Application.compile_env(:mailgun_logger, :page_size, 50)
+    pagination_types: [:first, :last]
   ]
 
   @type t :: %__MODULE__{
