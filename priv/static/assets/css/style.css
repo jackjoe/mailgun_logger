@@ -924,8 +924,10 @@ footer a:hover {
 .log-col-ts    { width: 160px; flex-shrink: 0; color: var(--c-text-dim); font-variant-numeric: tabular-nums; }
 .log-col-from  { width: 180px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .log-col-to    { width: 180px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.log-col-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--c-text-bright); }
+.log-col-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .log-col-actions { width: 80px; flex-shrink: 0; text-align: right; white-space: nowrap; }
+
+.log-row .log-col-subject { color: var(--c-text-bright); }
 
 .log-col-actions a {
   color: var(--c-text-dim);
