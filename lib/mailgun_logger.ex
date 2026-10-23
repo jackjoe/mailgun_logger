@@ -47,9 +47,8 @@ defmodule MailgunLogger do
     ],
     debug_requests: true,
     json_codec: Jason,
-    hackney_opts: [
-      recv_timeout: 60_000
-    ]
+    http_client: ExAws.Request.Req,
+    req_opts: [receive_timeout: 60_000]
   ```
 
   """
