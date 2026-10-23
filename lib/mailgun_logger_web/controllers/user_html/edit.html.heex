@@ -1,0 +1,13 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <h1>Edit user</h1>
+  <.user_form action={~p"/users/#{@user}"} changeset={@changeset} />
+  <br />
+  <.link
+    href={~p"/users/#{@user}"}
+    method="delete"
+    data-confirm="Are you sure?"
+    class="btn btn-danger btn-sm"
+  >
+    delete
+  </.link>
+</Layouts.app>

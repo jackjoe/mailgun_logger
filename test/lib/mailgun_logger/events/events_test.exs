@@ -3,6 +3,24 @@ defmodule MailgunLogger.EventsTest do
 
   alias MailgunLogger.Events
 
+  describe "search_events/2 page size" do
+    setup do
+      page_size = Application.get_env(:mailgun_logger, :page_size)
+      on_exit(fn -> Application.put_env(:mailgun_logger, :page_size, page_size) end)
+    end
+
+    test "uses the page size from the application environment at runtime" do
+      account = insert(:account)
+      insert_list(5, :event, account: account)
+
+      Application.put_env(:mailgun_logger, :page_size, 3)
+
+      {:ok, {page, meta}} = Events.search_events(%{})
+      assert length(page) == 3
+      assert meta.has_next_page?
+    end
+  end
+
   describe "search_events/2 cursor pagination" do
     test "next page returns rows that are not on the previous page" do
       account = insert(:account)

@@ -1,0 +1,41 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <dl :if={@event.event == "failed"} class="dl-error">
+    <dt>Error detail</dt>
+    <dd>{error_msg(@event)}</dd>
+  </dl>
+  <dl>
+    <dt>Recipient</dt>
+    <dd>{@event.recipient}</dd>
+    <dt>Message subject</dt>
+    <dd>{@event.message_subject}</dd>
+    <dt>Account</dt>
+    <dd>{@event.account.domain}</dd>
+    <dt>Event</dt>
+    <dd>{event_name(@event.event)}</dd>
+    <dt>Method</dt>
+    <dd>{@event.method}</dd>
+    <dt>Attachments</dt>
+    <dd>{list_attachments(@event.raw)}</dd>
+    <dt>Timestamp</dt>
+    <dd>{@event.timestamp}</dd>
+    <dt>From</dt>
+    <dd>{@event.message_from}</dd>
+    <dt>Linked events</dt>
+    <dd>
+      <span :if={@event.linked_events == []}>none</span>
+      <ul :if={@event.linked_events != []} class="linked-events">
+        <li :for={linked <- @event.linked_events}>
+          <a href={~p"/events/#{linked}"}>{linked.event} ({linked.timestamp})</a>
+        </li>
+      </ul>
+    </dd>
+    <%= if Application.get_env(:mailgun_logger, :store_messages) and @event.has_stored_message do %>
+      <dt>Raw Stored Message data</dt>
+      <dd><a href={stored_message_url(@event.api_id)}>view json file on S3</a></dd>
+      <dt>Actual sent email</dt>
+      <dd><a href={~p"/events/#{@event}/stored_message"} target="_blank">view</a></dd>
+    <% end %>
+    <dt>Dev Stuff</dt>
+    <dd>{pretty_raw(@event.raw)}</dd>
+  </dl>
+</Layouts.app>

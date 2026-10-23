@@ -1,0 +1,11 @@
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
+  <div class="mx-auto panel">
+    <h2 class="h2">{gettext("Check your email")}</h2>
+    <.flash_group flash={@flash} />
+    <p>
+      {gettext(
+        "If an account exists for this email address, you will receive a link to reset your password."
+      )}
+    </p>
+  </div>
+</Layouts.app>

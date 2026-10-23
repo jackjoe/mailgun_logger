@@ -5,7 +5,7 @@ defmodule MailgunLoggerWeb.AuthController do
   alias MailgunLoggerWeb.Plugs.Auth
 
   def new(conn, _params) do
-    render(conn, :new)
+    render(conn, :new, form: Phoenix.Component.to_form(%{}, as: "user"))
   end
 
   def create(conn, %{"user" => %{"email" => email, "password" => password}}) do
@@ -13,12 +13,12 @@ defmodule MailgunLoggerWeb.AuthController do
       {:ok, user} ->
         conn
         |> Auth.sign_in(user)
-        |> redirect(to: Routes.event_path(conn, :index))
+        |> redirect(to: ~p"/events")
 
       {:error, _reason} ->
         conn
-        |> put_flash(:error, gettext("Invalid user name or password"))
-        |> render(:new)
+        |> put_flash(:error, gettext("Invalid email or password"))
+        |> render(:new, form: Phoenix.Component.to_form(%{"email" => email}, as: "user"))
     end
   end
 
@@ -26,6 +26,6 @@ defmodule MailgunLoggerWeb.AuthController do
     conn
     |> Auth.sign_out()
     |> put_flash(:info, gettext("Signed out"))
-    |> redirect(to: Routes.page_path(conn, :index))
+    |> redirect(to: ~p"/")
   end
 end

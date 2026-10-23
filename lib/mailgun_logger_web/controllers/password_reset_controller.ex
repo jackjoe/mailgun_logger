@@ -21,7 +21,7 @@ defmodule MailgunLoggerWeb.PasswordResetController do
         {:error}
     end
 
-    redirect(conn, to: Routes.password_reset_path(conn, :request_done))
+    redirect(conn, to: ~p"/password-reset/request/done")
   end
 
   def request_done(conn, _params) do
@@ -32,7 +32,7 @@ defmodule MailgunLoggerWeb.PasswordResetController do
     changeset = User.password_forgot_changeset(%User{}, %{reset_token: reset_token})
 
     case Users.get_user_by_reset_token(reset_token) do
-      nil -> redirect(conn, to: Routes.password_reset_path(conn, :reset_error))
+      nil -> redirect(conn, to: ~p"/password-reset/reset/error")
       _ -> render(conn, :reset_new, changeset: changeset, reset_token: reset_token)
     end
   end
@@ -40,12 +40,12 @@ defmodule MailgunLoggerWeb.PasswordResetController do
   def reset_create(conn, %{"reset_token" => reset_token, "user" => user_params}) do
     case Users.get_user_by_reset_token(reset_token) do
       nil ->
-        redirect(conn, to: Routes.password_reset_path(conn, :reset_error, reset_token))
+        redirect(conn, to: ~p"/password-reset/reset/error")
 
       user ->
         case Users.reset_password(user, user_params) do
           {:ok, _user} ->
-            redirect(conn, to: Routes.password_reset_path(conn, :reset_done))
+            redirect(conn, to: ~p"/password-reset/reset/done")
 
           {:error, changeset} ->
             conn

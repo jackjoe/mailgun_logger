@@ -19,7 +19,10 @@ defmodule MailgunLogger.Events do
 
     Event
     |> select([e], ^fields)
-    |> Flop.validate_and_run(params, for: Event)
+    |> Flop.validate_and_run(params,
+      for: Event,
+      default_limit: Application.get_env(:mailgun_logger, :page_size)
+    )
   end
 
   def init_filters(%{"filters" => filters} = params) do

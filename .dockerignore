@@ -14,7 +14,9 @@ erl_crash.dump
 tmp/
 Dockerfile
 test/
-elixir_ls
+.elixir_ls
+.env
+.env.*
 
 # Tmp
 deps

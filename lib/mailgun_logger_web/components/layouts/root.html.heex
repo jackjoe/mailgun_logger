@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme={theme_preference(assigns)} data-user-theme={theme_preference(assigns)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Jack + Joe" />
+    <meta name="version" content={Application.spec(:mailgun_logger, :vsn)} />
+    <meta name="env" content={to_string(Application.get_env(:mailgun_logger, :env))} />
+    <title>Mailgun Logger v{Application.spec(:mailgun_logger, :vsn)}</title>
+    <link rel="icon" type="image/png" href={~p"/assets/images/favicon.png"} />
+    <link rel="stylesheet" href={~p"/assets/css/style.css"} />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <script>
+      (function() {
+        var html = document.documentElement;
+        var theme = html.getAttribute("data-theme");
+        if (theme === "system") {
+          html.setAttribute("data-theme",
+            window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"
+          );
+        }
+        window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function(e) {
+          if (html.dataset.userTheme === "system") {
+            html.setAttribute("data-theme", e.matches ? "light" : "dark");
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    {@inner_content}
+    <script defer phx-track-static src={~p"/assets/js/app.js"}>
+    </script>
+    <script src={~p"/assets/js/util.js"}>
+    </script>
+  </body>
+</html>

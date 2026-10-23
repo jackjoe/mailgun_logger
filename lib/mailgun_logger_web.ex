@@ -1,12 +1,12 @@
 defmodule MailgunLoggerWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
-  as controllers, views, channels and so on.
+  as controllers, components, channels and so on.
 
   This can be used in your application as:
 
       use MailgunLoggerWeb, :controller
-      use MailgunLoggerWeb, :view
+      use MailgunLoggerWeb, :html
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -21,33 +21,19 @@ defmodule MailgunLoggerWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, formats: [html: "View", json: "View"]
-      import Plug.Conn
+      use Phoenix.Controller, formats: [:html, :json]
+
       use Gettext, backend: MailgunLoggerWeb.Gettext
-      alias MailgunLoggerWeb.Router.Helpers, as: Routes
+
+      import Plug.Conn
 
       unquote(verified_routes())
     end
   end
 
-  def view do
-    quote do
-      use Phoenix.Component
-
-      use Phoenix.View,
-        root: "lib/mailgun_logger_web/templates",
-        namespace: MailgunLoggerWeb
-
-      # Import convenience functions from controllers
-      import Phoenix.Controller, only: [view_module: 1]
-
-      unquote(html_helpers())
-    end
-  end
-
   def router do
     quote do
-      use Phoenix.Router
+      use Phoenix.Router, helpers: false
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
@@ -61,29 +47,37 @@ defmodule MailgunLoggerWeb do
     end
   end
 
+  def html do
+    quote do
+      use Phoenix.Component
+
+      # Import convenience functions from controllers
+      import Phoenix.Controller,
+        only: [get_csrf_token: 0, view_module: 1, view_template: 1]
+
+      # Include general helpers for rendering HTML
+      unquote(html_helpers())
+    end
+  end
+
   defp html_helpers do
     quote do
-      # Use all HTML functionality (forms, tags, etc)
-      import Phoenix.HTML
-      import Phoenix.HTML.Form
-      use PhoenixHTMLHelpers
-
-      # Import basic rendering functionality (render, render_layout, etc)
-      import Phoenix.View
-
+      # Translation
       use Gettext, backend: MailgunLoggerWeb.Gettext
-      import MailgunLoggerWeb.ErrorHelpers
-      import MailgunLoggerWeb.ViewHelpers
-      alias MailgunLoggerWeb.Router.Helpers, as: Routes
 
-      # Routes generation with the ~p sigil
-      unquote(verified_routes())
+      # HTML escaping functionality
+      import Phoenix.HTML
 
+      # Core UI components
       import MailgunLoggerWeb.CoreComponents
       import MailgunLoggerWeb.Components.Flop
 
-      # Shortcut for generating JS commands
+      # Common modules used in templates
       alias Phoenix.LiveView.JS
+      alias MailgunLoggerWeb.Layouts
+
+      # Routes generation with the ~p sigil
+      unquote(verified_routes())
     end
   end
 

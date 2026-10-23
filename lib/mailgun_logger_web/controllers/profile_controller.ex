@@ -9,7 +9,7 @@ defmodule MailgunLoggerWeb.ProfileController do
     changeset = User.changeset(user)
 
     conn
-    |> put_view(MailgunLoggerWeb.UserView)
+    |> put_view(html: MailgunLoggerWeb.UserHTML)
     |> render(:profile, changeset: changeset, user: user)
   end
 
@@ -20,11 +20,11 @@ defmodule MailgunLoggerWeb.ProfileController do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Profile updated.")
-        |> redirect(to: Routes.profile_path(conn, :edit))
+        |> redirect(to: ~p"/profile")
 
       {:error, changeset} ->
         conn
-        |> put_view(MailgunLoggerWeb.UserView)
+        |> put_view(html: MailgunLoggerWeb.UserHTML)
         |> render(:profile, changeset: changeset, user: user)
     end
   end

@@ -1,0 +1,4 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <h1>New user</h1>
+  <.user_form action={~p"/users"} changeset={@changeset} new?={true} />
+</Layouts.app>

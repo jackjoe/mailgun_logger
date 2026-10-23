@@ -1,13 +1,12 @@
 defmodule MailgunLoggerWeb.Router do
   use MailgunLoggerWeb, :router
-  use Plug.ErrorHandler
   @moduledoc false
 
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_live_flash)
-    plug(:put_layout, {MailgunLoggerWeb.LayoutView, :app})
+    plug(:put_root_layout, html: {MailgunLoggerWeb.Layouts, :root})
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Plug.Logger)
@@ -25,7 +24,7 @@ defmodule MailgunLoggerWeb.Router do
 
   # Always except in prod
   if Application.compile_env(:mailgun_logger, :env) == :dev do
-    forward("/sent_emails", Bamboo.SentEmailViewerPlug)
+    forward("/sent_emails", Plug.Swoosh.MailboxPreview)
   end
 
   scope "/ping", MailgunLoggerWeb do

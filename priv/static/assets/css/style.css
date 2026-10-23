@@ -323,6 +323,11 @@ select:focus {
   border-color: var(--c-accent);
 }
 
+/* A select ignores line-height, so match the height of a text input */
+select.form-control {
+  height: calc(1.5em + 14px);
+}
+
 input[type="checkbox"] {
   accent-color: var(--c-accent);
   width: 14px;
@@ -436,6 +441,10 @@ dl > dd:last-of-type {
 
 /* ---- Code / Pre ---- */
 
+dd > :last-child {
+  margin-bottom: 0;
+}
+
 pre,
 code {
   font-family: var(--font);
@@ -518,6 +527,16 @@ code {
 
 .pagination-next {
   margin-left: 2px;
+}
+
+.form-check-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-check-label input[type="checkbox"] {
+  margin: 0;
 }
 
 /* ---- Alerts / Messages ---- */
@@ -686,6 +705,10 @@ code {
   padding: 24px;
   max-width: 440px;
   margin: 48px auto;
+}
+
+.panel > :last-child {
+  margin-bottom: 0;
 }
 
 .mb-4 {
@@ -924,8 +947,10 @@ footer a:hover {
 .log-col-ts    { width: 160px; flex-shrink: 0; color: var(--c-text-dim); font-variant-numeric: tabular-nums; }
 .log-col-from  { width: 180px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .log-col-to    { width: 180px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.log-col-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--c-text-bright); }
+.log-col-subject { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .log-col-actions { width: 80px; flex-shrink: 0; text-align: right; white-space: nowrap; }
+
+.log-row .log-col-subject { color: var(--c-text-bright); }
 
 .log-col-actions a {
   color: var(--c-text-dim);

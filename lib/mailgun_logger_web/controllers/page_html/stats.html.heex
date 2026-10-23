@@ -1,0 +1,27 @@
+<Layouts.app flash={@flash} conn={@conn}>
+  <h1>Main dashboard</h1>
+
+  <div>
+    <div :if={@total_accounts == 0} class="warn">
+      <strong>Note:</strong>
+      no accounts found... <.link href={~p"/accounts/new"}>create an account</.link>
+      to start receiving logs.
+    </div>
+    <h2>Some stats</h2>
+    <h3>Event counts by type (all time)</h3>
+    <dl>
+      <dt>Failed:</dt>
+      <dd>{Map.get(@event_counts.by_type, "failed", 0)}</dd>
+      <dt>Accepted:</dt>
+      <dd>{Map.get(@event_counts.by_type, "accepted", 0)}</dd>
+      <dt>Delivered:</dt>
+      <dd>{Map.get(@event_counts.by_type, "delivered", 0)}</dd>
+      <dt>Clicked:</dt>
+      <dd>{Map.get(@event_counts.by_type, "clicked", 0)}</dd>
+      <dt>Opened:</dt>
+      <dd>{Map.get(@event_counts.by_type, "opened", 0)}</dd>
+      <dt>Stored:</dt>
+      <dd>{Map.get(@event_counts.by_type, "stored", 0)}</dd>
+    </dl>
+  </div>
+</Layouts.app>

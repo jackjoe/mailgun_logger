@@ -2,7 +2,8 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias MailgunLoggerWeb.Router.Helpers, as: Routes
+  use MailgunLoggerWeb, :verified_routes
+
   alias MailgunLogger.Users
 
   @moduledoc """
@@ -26,7 +27,7 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
         conn
         |> assign(:current_user, nil)
         |> assign(:signed_in?, false)
-        |> redirect(to: Routes.auth_path(conn, :new))
+        |> redirect(to: ~p"/login")
         |> halt()
     end
   end
@@ -40,11 +41,14 @@ defmodule MailgunLoggerWeb.Plugs.Auth do
     put_session(conn, :current_user_id, user.id)
   end
 
-  @doc "Sign out a user"
+  @doc """
+  Sign out a user. Renews the session instead of dropping it, so a flash
+  message set after the sign out still reaches the next page.
+  """
   @spec sign_out(Plug.Conn.t()) :: Plug.Conn.t()
   def sign_out(conn) do
     conn
+    |> configure_session(renew: true)
     |> clear_session()
-    |> configure_session(drop: true)
   end
 end

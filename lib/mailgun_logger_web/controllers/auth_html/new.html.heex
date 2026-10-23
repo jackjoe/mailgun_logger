@@ -1,0 +1,20 @@
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
+  <div class="login-wrapper">
+    <div class="login-panel">
+      <h2>{gettext("Log in")}</h2>
+
+      <.flash_group flash={@flash} />
+
+      <.form :let={f} for={@form} action={~p"/login"} novalidate>
+        <.input field={f[:email]} type="email" label={gettext("Email")} required autofocus />
+        <.input field={f[:password]} type="password" label={gettext("Password")} required />
+
+        <.button type="submit" class="btn btn-primary">{gettext("Log in")}</.button>
+      </.form>
+
+      <hr />
+
+      <.link href={~p"/password-reset/request"}>{gettext("Forgot password?")}</.link>
+    </div>
+  </div>
+</Layouts.app>

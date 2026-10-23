@@ -16,7 +16,7 @@ defmodule MailgunLoggerWeb.UserController do
 
   def create(conn, %{"user" => params}) do
     case Users.create_user(params) do
-      {:ok, _} -> redirect(conn, to: Routes.user_path(conn, :index))
+      {:ok, _} -> redirect(conn, to: ~p"/users")
       {:error, changeset} -> render(conn, :new, changeset: changeset)
     end
   end
@@ -32,7 +32,7 @@ defmodule MailgunLoggerWeb.UserController do
 
     case Users.update_user(user, params) do
       {:ok, _} ->
-        redirect(conn, to: Routes.user_path(conn, :index))
+        redirect(conn, to: ~p"/users")
 
       {:error, changeset} ->
         render(conn, :edit, changeset: changeset, user: user)
@@ -46,7 +46,7 @@ defmodule MailgunLoggerWeb.UserController do
       |> Users.delete_user()
 
     conn
-    |> put_flash(:info, "user deleted successfully.")
-    |> redirect(to: Routes.user_path(conn, :index))
+    |> put_flash(:info, "User deleted successfully.")
+    |> redirect(to: ~p"/users")
   end
 end

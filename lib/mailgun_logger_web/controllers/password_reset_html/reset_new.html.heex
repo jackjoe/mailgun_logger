@@ -1,0 +1,24 @@
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
+  <div class="mx-auto panel">
+    <.form
+      :let={f}
+      for={@changeset}
+      action={~p"/password-reset/reset/#{@reset_token}"}
+      method="post"
+    >
+      <h2 class="h2">{gettext("Set a new password")}</h2>
+      <.flash_group flash={@flash} />
+      <p class="mb-4">{gettext("Enter and confirm your new password.")}</p>
+
+      <.input field={f[:password]} type="password" label={gettext("Password")} required />
+      <.input
+        field={f[:password_confirmation]}
+        type="password"
+        label={gettext("Confirm password")}
+        required
+      />
+
+      <.button type="submit" class="btn btn-primary">{gettext("Set password")}</.button>
+    </.form>
+  </div>
+</Layouts.app>

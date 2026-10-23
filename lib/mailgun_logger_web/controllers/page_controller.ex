@@ -5,7 +5,7 @@ defmodule MailgunLoggerWeb.PageController do
   alias MailgunLogger.Accounts
 
   def index(conn, _) do
-    redirect(conn, to: Routes.event_path(conn, :index))
+    redirect(conn, to: ~p"/events")
   end
 
   def trigger_run(conn, _) do
@@ -18,7 +18,7 @@ defmodule MailgunLoggerWeb.PageController do
         redirect(conn, external: path)
 
       _ ->
-        redirect(conn, to: Routes.event_path(conn, :index))
+        redirect(conn, to: ~p"/events")
     end
   end
 
