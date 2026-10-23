@@ -73,6 +73,8 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     assert html =~ "<dt>Recipient</dt>"
     assert html =~ event.recipient
     assert html =~ event.account.domain
+    assert html =~ ~s(<code style="white-space: break-spaces">{\n)
+    assert html =~ ~r{<dt>Linked events</dt>\s*<dd>\s*<span>none</span>}
   end
 
   test "highlights the events link in the navigation", %{conn: conn} do

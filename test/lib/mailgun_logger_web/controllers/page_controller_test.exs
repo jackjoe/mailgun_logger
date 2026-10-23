@@ -13,7 +13,8 @@ defmodule MailgunLoggerWeb.PageControllerTest do
     conn = get(conn, ~p"/stats")
     html = html_response(conn, 200)
     assert headings(html) == ["Main dashboard", "Some stats"]
-    assert html =~ "<dt>Failed:</dt>"
+    assert html =~ ~r{<dt>Failed:</dt>\s*<dd>1</dd>}
+    assert html =~ ~r{<dt>Clicked:</dt>\s*<dd>0</dd>}
     assert html =~ ~r{<a href="/stats" class="is-active">\s*Stats\s*</a>}
   end
 

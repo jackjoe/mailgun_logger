@@ -6,10 +6,12 @@ defmodule MailgunLoggerWeb.UserControllerTest do
   setup :log_in_user
 
   test "lists the users", %{conn: conn, user: user} do
+    insert(:user, roles: [build(:role, name: "admin"), build(:role, name: "superuser")])
     conn = get(conn, ~p"/users")
     html = html_response(conn, 200)
     assert headings(html) == ["Users"]
     assert html =~ user.email
+    assert html =~ "<td>admin, superuser</td>"
     assert html =~ ~s(href="/users/#{user.id}/edit")
   end
 
@@ -56,6 +58,6 @@ defmodule MailgunLoggerWeb.UserControllerTest do
     refute Users.get_user(other.id)
 
     conn = conn |> recycle() |> get(~p"/users")
-    assert html_response(conn, 200) =~ "user deleted successfully."
+    assert html_response(conn, 200) =~ "User deleted successfully."
   end
 end

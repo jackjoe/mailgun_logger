@@ -182,6 +182,13 @@ defmodule MailgunLoggerWeb.CoreComponents do
     """
   end
 
+  # A password is never rendered back into the page.
+  def input(%{type: "password", value: value} = assigns) when not is_nil(value) do
+    assigns
+    |> assign(:value, nil)
+    |> input()
+  end
+
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""

@@ -1,7 +1,9 @@
-<Layouts.app flash={@flash} conn={@conn}>
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
   <div class="login-wrapper">
     <div class="login-panel">
       <h2>{gettext("Log in")}</h2>
+
+      <.flash_group flash={@flash} />
 
       <.form :let={f} for={@form} action={~p"/login"} novalidate>
         <.input field={f[:email]} type="email" label={gettext("Email")} required autofocus />

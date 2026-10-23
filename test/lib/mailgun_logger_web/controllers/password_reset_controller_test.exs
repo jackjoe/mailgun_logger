@@ -69,6 +69,9 @@ defmodule MailgunLoggerWeb.PasswordResetControllerTest do
       html = html_response(conn, 200)
       assert html =~ "We could not reset your password."
       assert html =~ "does not match confirmation"
+      refute html =~ "new-password"
+      refute html =~ "other-password"
+      refute html =~ ~s(name="_method")
     end
 
     test "redirects to the error page for an unknown token", %{conn: conn} do

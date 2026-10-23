@@ -17,7 +17,7 @@ defmodule MailgunLoggerWeb.AuthController do
 
       {:error, _reason} ->
         conn
-        |> put_flash(:error, gettext("Invalid user name or password"))
+        |> put_flash(:error, gettext("Invalid email or password"))
         |> render(:new, form: Phoenix.Component.to_form(%{"email" => email}, as: "user"))
     end
   end

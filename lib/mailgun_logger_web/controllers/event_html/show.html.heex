@@ -22,7 +22,8 @@
     <dd>{@event.message_from}</dd>
     <dt>Linked events</dt>
     <dd>
-      <ul class="linked-events">
+      <span :if={@event.linked_events == []}>none</span>
+      <ul :if={@event.linked_events != []} class="linked-events">
         <li :for={linked <- @event.linked_events}>
           <a href={~p"/events/#{linked}"}>{linked.event} ({linked.timestamp})</a>
         </li>

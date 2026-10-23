@@ -20,7 +20,7 @@ defmodule MailgunLoggerWeb.AuthControllerTest do
     user = insert(:user)
     conn = post(conn, ~p"/login", %{"user" => %{"email" => user.email, "password" => "wrong"}})
     html = html_response(conn, 200)
-    assert html =~ "Invalid user name or password"
+    assert html =~ "Invalid email or password"
     assert html =~ ~s(value="#{user.email}")
     refute html =~ ~s(value="wrong")
     refute get_session(conn, :current_user_id)
@@ -33,7 +33,10 @@ defmodule MailgunLoggerWeb.AuthControllerTest do
     refute get_session(conn, :current_user_id)
 
     conn = conn |> recycle() |> get(~p"/login")
-    assert html_response(conn, 200) =~ "Signed out"
+    flash = conn |> html_response(200) |> LazyHTML.from_document() |> LazyHTML.query(".alert")
+    assert Enum.count(flash) == 1
+    assert flash |> LazyHTML.text() |> String.trim() == "Signed out"
+    assert LazyHTML.attribute(flash, "class") == ["alert alert-info"]
   end
 
   test "redirects to the login form without a session", %{conn: conn} do

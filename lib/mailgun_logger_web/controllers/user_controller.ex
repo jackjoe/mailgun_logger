@@ -46,7 +46,7 @@ defmodule MailgunLoggerWeb.UserController do
       |> Users.delete_user()
 
     conn
-    |> put_flash(:info, "user deleted successfully.")
+    |> put_flash(:info, "User deleted successfully.")
     |> redirect(to: ~p"/users")
   end
 end

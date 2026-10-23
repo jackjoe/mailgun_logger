@@ -1,4 +1,4 @@
-<Layouts.app flash={@flash} conn={@conn}>
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
   <div class="mx-auto panel">
     <.form
       :let={f}
@@ -7,6 +7,7 @@
       method="post"
     >
       <h2 class="h2">{gettext("Set a new password")}</h2>
+      <.flash_group flash={@flash} />
       <p class="mb-4">{gettext("Enter and confirm your new password.")}</p>
 
       <.input field={f[:password]} type="password" label={gettext("Password")} required />

@@ -61,9 +61,7 @@ defmodule MailgunLoggerWeb.EventHTML do
     assigns = %{html: html}
 
     ~H"""
-    <code style="white-space: break-spaces">
-      {@html}
-    </code>
+    <code style="white-space: break-spaces">{@html}</code>
     """
   end
 

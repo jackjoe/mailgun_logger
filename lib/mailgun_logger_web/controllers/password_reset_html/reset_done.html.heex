@@ -1,6 +1,7 @@
-<Layouts.app flash={@flash} conn={@conn}>
+<Layouts.app flash={@flash} conn={@conn} show_flash={false}>
   <div class="mx-auto panel">
     <h2 class="h2">{gettext("Password changed")}</h2>
+    <.flash_group flash={@flash} />
     <p class="mb-4">{gettext("You can now log in with your new password.")}</p>
     <.link href={~p"/login"} class="btn btn-primary">{gettext("Log in")}</.link>
   </div>

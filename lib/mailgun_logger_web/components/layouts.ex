@@ -30,6 +30,11 @@ defmodule MailgunLoggerWeb.Layouts do
   attr(:flash, :map, required: true, doc: "the map of flash messages")
   attr(:conn, Plug.Conn, required: true, doc: "the conn, to find the user and the active page")
 
+  attr(:show_flash, :boolean,
+    default: true,
+    doc: "false when the page renders the flash itself, for example inside a panel"
+  )
+
   slot(:inner_block, required: true)
 
   def app(assigns) do
@@ -88,7 +93,7 @@ defmodule MailgunLoggerWeb.Layouts do
       </div>
     </header>
     <main>
-      <.flash_group flash={@flash} />
+      <.flash_group :if={@show_flash} flash={@flash} />
       {render_slot(@inner_block)}
     </main>
     <footer>

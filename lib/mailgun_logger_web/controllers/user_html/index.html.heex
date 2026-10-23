@@ -14,7 +14,7 @@
       <tr :for={user <- @users}>
         <td>{"#{user.firstname || ""} #{user.lastname || ""}" |> String.trim()}</td>
         <td>{user.email}</td>
-        <td>{Enum.map(user.roles, & &1.name)}</td>
+        <td>{Enum.map_join(user.roles, ", ", & &1.name)}</td>
         <td><.link href={~p"/users/#{user}/edit"}>edit</.link></td>
       </tr>
     </tbody>

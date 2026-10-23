@@ -1,6 +1,6 @@
 <.form :let={f} for={@changeset} action={@action}>
   <div :if={@changeset.action} class="alert alert-danger">
-    <p>Oops, something went wrong! Please check the errors below.</p>
+    Oops, something went wrong! Please check the errors below.
   </div>
 
   <.input field={f[:firstname]} label="First name" />
