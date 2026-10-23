@@ -40,7 +40,6 @@ defmodule Mailgun.Events do
         event
 
       url ->
-        url = build_stored_message_url(client, url)
         stored_message = Client.get(client, url)
 
         if Application.get_env(:mailgun_logger, :store_messages) do
@@ -93,7 +92,4 @@ defmodule Mailgun.Events do
   def file_name(api_id), do: "#{api_id}.json"
   def base_dir(), do: Application.get_env(:ex_aws, :raw_path)
   def bucket(), do: Application.get_env(:ex_aws, :bucket)
-
-  defp build_stored_message_url(client, "https://" <> r), do: "https://api:#{client.api_key}@#{r}"
-  defp build_stored_message_url(_, url), do: url
 end

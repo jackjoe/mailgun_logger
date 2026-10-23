@@ -42,9 +42,8 @@ config :flop, repo: MailgunLogger.Repo
 config :ex_aws,
   debug_requests: true,
   json_codec: Jason,
-  hackney_opts: [
-    recv_timeout: 60_000
-  ]
+  http_client: ExAws.Request.Req,
+  req_opts: [receive_timeout: 60_000]
 
 config :mailgun_logger, MailgunLogger.Mailer,
   adapter: Swoosh.Adapters.Mailgun,

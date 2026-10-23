@@ -47,9 +47,8 @@ defmodule MailgunLogger do
     ],
     debug_requests: true,
     json_codec: Jason,
-    hackney_opts: [
-      recv_timeout: 60_000
-    ]
+    http_client: ExAws.Request.Req,
+    req_opts: [receive_timeout: 60_000]
   ```
 
   """
@@ -90,6 +89,9 @@ defmodule MailgunLogger do
     case Mailgun.Events.get_events(client, gen_range()) do
       {:error, status, msg} ->
         {:error, status, msg}
+
+      {:error, reason} ->
+        {:error, reason}
 
       events ->
         events

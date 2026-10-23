@@ -72,8 +72,6 @@ defmodule MailgunLogger.Mixfile do
       {:flop, "~> 0.29.1"},
       {:flop_phoenix, "~> 0.27.0"},
       {:gettext, "~> 1.0"},
-      {:hackney, "~> 1.12"},
-      {:httpoison, "~> 2.1"},
       {:jason, "~> 1.3"},
       {:lazy_html, "~> 0.1.13", only: :test},
       {:multipart, "~> 0.6.1"},
