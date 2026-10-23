@@ -61,6 +61,7 @@ defmodule MailgunLogger.Mixfile do
   defp deps do
     [
       {:argon2_elixir, "~> 4.0"},
+      {:bandit, "~> 1.13"},
       {:ecto_sql, "~> 3.13"},
       {:esbuild, "~> 0.10.1", runtime: Mix.env() == :dev},
       {:ex_aws, "~> 2.1"},
@@ -83,7 +84,6 @@ defmodule MailgunLogger.Mixfile do
       {:phoenix_live_view, "~> 1.1"},
       {:phoenix_pubsub, "~> 2.0"},
       {:plug, "~> 1.8"},
-      {:plug_cowboy, "~> 2.7"},
       {:postgrex, "~> 0.22.4"},
       {:quantum, "~> 3.4"},
       {:req, "~> 0.7.5"},

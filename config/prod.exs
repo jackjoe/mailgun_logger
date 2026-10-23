@@ -1,9 +1,8 @@
 import Config
 
 # The port, host and secrets come from the environment at boot,
-# see config/runtime.exs.
+# see config/runtime.exs. Bandit compresses responses by default.
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
-  http: [compress: true],
   cache_static_manifest: "priv/static/cache_manifest.json",
   debug_errors: false,
   code_reloader: false,

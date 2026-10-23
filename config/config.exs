@@ -15,6 +15,7 @@ config :mailgun_logger,
 # Configures the endpoint
 config :mailgun_logger, MailgunLoggerWeb.Endpoint,
   url: [host: "localhost"],
+  adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: MailgunLoggerWeb.ErrorHTML, json: MailgunLoggerWeb.ErrorJSON],
     layout: false
