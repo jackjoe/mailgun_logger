@@ -18,6 +18,8 @@ defmodule MailgunLoggerWeb.UserControllerTest do
     html = html_response(conn, 200)
     assert headings(html) == ["New user"]
     assert html =~ ~s(name="user[password]")
+    assert html =~ "First name"
+    assert html =~ "Last name"
   end
 
   test "creates a user", %{conn: conn} do

@@ -4,7 +4,9 @@ defmodule MailgunLoggerWeb.AuthControllerTest do
   test "shows the login form", %{conn: conn} do
     insert(:user)
     conn = get(conn, ~p"/login")
-    assert headings(html_response(conn, 200)) == ["Inloggen"]
+    html = html_response(conn, 200)
+    assert headings(html) == ["Log in"]
+    assert html =~ ~r{<button[^>]*>\s*Log in\s*</button>}
   end
 
   test "signs in with valid credentials", %{conn: conn} do

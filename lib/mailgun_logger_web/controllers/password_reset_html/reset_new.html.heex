@@ -6,18 +6,18 @@
       action={~p"/password-reset/reset/#{@reset_token}"}
       method="post"
     >
-      <h2 class="h2">{gettext("Password forgot")}</h2>
-      <p class="mb-4">{gettext("Enter and confirm your new password")}</p>
+      <h2 class="h2">{gettext("Set a new password")}</h2>
+      <p class="mb-4">{gettext("Enter and confirm your new password.")}</p>
 
-      <.input field={f[:password]} type="password" label={gettext("Wachtwoord")} required />
+      <.input field={f[:password]} type="password" label={gettext("Password")} required />
       <.input
         field={f[:password_confirmation]}
         type="password"
-        label={gettext("Wachtwoord bevestigen")}
+        label={gettext("Confirm password")}
         required
       />
 
-      <.button type="submit" class="btn btn-primary">{gettext("Reset password")}</.button>
+      <.button type="submit" class="btn btn-primary">{gettext("Set password")}</.button>
     </.form>
   </div>
 </Layouts.app>

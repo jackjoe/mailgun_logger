@@ -8,26 +8,28 @@ defmodule MailgunLoggerWeb.PasswordResetControllerTest do
   test "shows the request form", %{conn: conn} do
     conn = get(conn, ~p"/password-reset/request")
     html = html_response(conn, 200)
-    assert headings(html) == ["Password forgot"]
+    assert headings(html) == ["Forgot your password?"]
     assert html =~ ~s(name="password_reset[email]")
   end
 
   test "shows the request done page", %{conn: conn} do
     conn = get(conn, ~p"/password-reset/request/done")
-    assert headings(html_response(conn, 200)) == ["Password forgot"]
+    html = html_response(conn, 200)
+    assert headings(html) == ["Check your email"]
+    assert html =~ "If an account exists for this email address"
   end
 
   test "shows the reset done page", %{conn: conn} do
     conn = get(conn, ~p"/password-reset/reset/done")
-    assert headings(html_response(conn, 200)) == ["Password forgot"]
+    assert headings(html_response(conn, 200)) == ["Password changed"]
   end
 
   test "shows the reset error page", %{conn: conn} do
     conn = get(conn, ~p"/password-reset/reset/error")
     html = html_response(conn, 200)
-    assert headings(html) == ["Password forgot"]
-    assert html =~ ~s(href="/password-reset/request")
-    assert html =~ ~s(href="/login")
+    assert headings(html) == ["Invalid reset link"]
+    assert html =~ ~s(<a href="/password-reset/request">request a new link</a>)
+    assert html =~ ~s(<a href="/login">login page</a>)
   end
 
   describe "reset_new" do
@@ -35,8 +37,9 @@ defmodule MailgunLoggerWeb.PasswordResetControllerTest do
       user = insert(:user, reset_token: "valid-token")
       conn = get(conn, ~p"/password-reset/reset/#{user.reset_token}")
       html = html_response(conn, 200)
-      assert headings(html) == ["Password forgot"]
+      assert headings(html) == ["Set a new password"]
       assert html =~ ~s(action="/password-reset/reset/valid-token")
+      assert html =~ "Confirm password"
     end
 
     test "redirects to the error page for an unknown token", %{conn: conn} do

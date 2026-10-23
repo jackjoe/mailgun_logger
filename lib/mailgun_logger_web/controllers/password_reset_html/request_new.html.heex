@@ -1,10 +1,10 @@
 <Layouts.app flash={@flash} conn={@conn}>
   <div class="mx-auto panel">
     <.form for={%{}} action={~p"/password-reset/request"}>
-      <h2 class="h2">{gettext("Password forgot")}</h2>
+      <h2 class="h2">{gettext("Forgot your password?")}</h2>
       <p class="mb-4">
         {gettext(
-          "Enter the email address you registered with and we will send you an email with instructions on how to reset your password"
+          "Enter the email address of your account. We will send you a link to reset your password."
         )}
       </p>
 
@@ -19,7 +19,7 @@
         />
       </div>
 
-      <.button type="submit" class="btn btn-primary">{gettext("Send")}</.button>
+      <.button type="submit" class="btn btn-primary">{gettext("Send reset link")}</.button>
     </.form>
   </div>
 </Layouts.app>
