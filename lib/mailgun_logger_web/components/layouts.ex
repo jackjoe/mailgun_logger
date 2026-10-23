@@ -93,8 +93,7 @@ defmodule MailgunLoggerWeb.Layouts do
     </main>
     <footer>
       <.link href={~p"/non-affiliation"}>Mailgun</.link>
-      Logger v{Application.spec(:mailgun_logger, :vsn)}
-      | created by Jack + Joe |
+      Logger v{Application.spec(:mailgun_logger, :vsn)} | created by Jack + Joe |
       <a href="https://raw.githubusercontent.com/jackjoe/mailgun_logger/master/LICENSE">
         MIT License
       </a>

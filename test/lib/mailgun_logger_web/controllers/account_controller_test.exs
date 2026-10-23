@@ -21,7 +21,9 @@ defmodule MailgunLoggerWeb.AccountControllerTest do
 
   test "creates an account", %{conn: conn} do
     conn =
-      post(conn, ~p"/accounts", %{"account" => %{"domain" => "mg.example.com", "api_key" => "key"}})
+      post(conn, ~p"/accounts", %{
+        "account" => %{"domain" => "mg.example.com", "api_key" => "key"}
+      })
 
     assert redirected_to(conn) == ~p"/accounts"
     assert [%{domain: "mg.example.com"}] = Accounts.list_accounts()

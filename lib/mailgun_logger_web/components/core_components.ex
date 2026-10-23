@@ -141,9 +141,9 @@ defmodule MailgunLoggerWeb.CoreComponents do
           checked={@checked}
           {@rest}
         />
-        <%= @label %>
+        {@label}
       </label>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -151,7 +151,7 @@ defmodule MailgunLoggerWeb.CoreComponents do
   def input(%{type: "select"} = assigns) do
     ~H"""
     <div class="form-group">
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <select
         id={@id}
         name={@name}
@@ -159,10 +159,10 @@ defmodule MailgunLoggerWeb.CoreComponents do
         multiple={@multiple}
         {@rest}
       >
-        <option :if={@prompt} value=""><%= @prompt %></option>
-        <%= Phoenix.HTML.Form.options_for_select(@options, @value) %>
+        <option :if={@prompt} value="">{@prompt}</option>
+        {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -170,14 +170,14 @@ defmodule MailgunLoggerWeb.CoreComponents do
   def input(%{type: "textarea"} = assigns) do
     ~H"""
     <div class="form-group">
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <textarea
         id={@id}
         name={@name}
         class="form-control"
         {@rest}
       ><%= Phoenix.HTML.Form.normalize_value("textarea", @value) %></textarea>
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -186,7 +186,7 @@ defmodule MailgunLoggerWeb.CoreComponents do
   def input(assigns) do
     ~H"""
     <div class="form-group">
-      <.label for={@id}><%= @label %></.label>
+      <.label for={@id}>{@label}</.label>
       <input
         type={@type}
         name={@name}
@@ -196,7 +196,7 @@ defmodule MailgunLoggerWeb.CoreComponents do
         class="form-control"
         {@rest}
       />
-      <.error :for={msg <- @errors}><%= msg %></.error>
+      <.error :for={msg <- @errors}>{msg}</.error>
     </div>
     """
   end
@@ -210,7 +210,7 @@ defmodule MailgunLoggerWeb.CoreComponents do
   def label(assigns) do
     ~H"""
     <label for={@for} class="control-label">
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </label>
     """
   end
@@ -223,7 +223,7 @@ defmodule MailgunLoggerWeb.CoreComponents do
   def error(assigns) do
     ~H"""
     <p class="validation-error">
-      <%= render_slot(@inner_block) %>
+      {render_slot(@inner_block)}
     </p>
     """
   end
