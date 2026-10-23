@@ -45,13 +45,13 @@ defmodule MailgunLogger.Event do
   """
 
   use Ecto.Schema
+  use Flop.Schema
   import Ecto.Changeset
 
   alias MailgunLogger.Event
   alias MailgunLogger.Account
 
-  @derive {
-    Flop.Schema,
+  @flop_options [
     filterable: [
       :event,
       :recipient,
@@ -68,7 +68,7 @@ defmodule MailgunLogger.Event do
     default_pagination_type: :first,
     pagination_types: [:first, :last],
     default_limit: Application.compile_env(:mailgun_logger, :page_size, 50)
-  }
+  ]
 
   @type t :: %__MODULE__{
           api_id: String.t(),
