@@ -91,6 +91,9 @@ defmodule MailgunLogger do
       {:error, status, msg} ->
         {:error, status, msg}
 
+      {:error, reason} ->
+        {:error, reason}
+
       events ->
         events
         |> MailgunLogger.Events.save_events(account)

@@ -24,3 +24,7 @@ config :mailgun_logger, MailgunLogger.Repo,
   port: String.to_integer(System.get_env("ML_DB_PORT", "5432")),
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
+
+# Mailgun API requests go to a Req.Test stub
+config :mailgun_logger, Mailgun.Client,
+  req_options: [plug: {Req.Test, Mailgun.Client}, retry: false]

@@ -17,7 +17,6 @@ defmodule Mailgun.Client do
   @base_eu_url "https://api.eu.mailgun.net/v3"
 
   @ttl 60_000
-  @request_opts [recv_timeout: @ttl, timeout: @ttl]
 
   @spec new(MailgunLogger.Account.t()) :: Client.t()
   def new(%MailgunLogger.Account{} = account),
@@ -29,31 +28,44 @@ defmodule Mailgun.Client do
   def get(client, path), do: _request(:get, client, url(client, path))
 
   defp get_page(client, url, acc \\ []) do
-    # Logger.info "Mailgun client :: get_page :: #{url}"
     Logger.debug("get" <> " - " <> url)
 
-    :get
-    |> HTTPoison.request!(url, "", [], request_opts(client))
+    client
+    |> request(:get, url)
     |> handle_response(client, acc)
   end
 
-  defp _request(method, client, url, body \\ "") do
+  defp _request(method, client, url) do
     Logger.debug("#{method} - #{url}")
 
-    method
-    |> HTTPoison.request!(url, body, [], request_opts(client))
+    client
+    |> request(method, url)
     |> handle_response(client)
   end
 
-  @spec request_opts(Client.t()) :: Keyword.t()
-  def request_opts(%Client{} = client),
-    do: @request_opts ++ [hackney: [basic_auth: {"api", client.api_key}]]
+  # The body is decoded in process_body/2, which also accepts text/javascript.
+  defp request(client, method, url) do
+    [
+      method: method,
+      url: url,
+      auth: {:basic, "api:" <> client.api_key},
+      receive_timeout: @ttl,
+      decode_body: false
+    ]
+    |> Keyword.merge(Application.get_env(:mailgun_logger, Client, [])[:req_options] || [])
+    |> Req.request()
+  end
 
-  @spec handle_response(HTTPoison.Response.t(), Client.t(), map()) :: binary
+  @spec handle_response(
+          {:ok, Req.Response.t()} | {:error, Exception.t()} | term,
+          Client.t(),
+          list
+        ) ::
+          term
   def handle_response(response, client, acc \\ [])
 
   def handle_response(
-        %HTTPoison.Response{status_code: 200, body: body, headers: headers},
+        {:ok, %Req.Response{status: 200, body: body, headers: headers}},
         client,
         acc
       ) do
@@ -62,7 +74,7 @@ defmodule Mailgun.Client do
     |> handle_paging(client, acc)
   end
 
-  def handle_response(%HTTPoison.Response{status_code: 400, body: body}, _, _) do
+  def handle_response({:ok, %Req.Response{status: 400, body: body}}, _, _) do
     case Jason.decode!(body) do
       %{"error" => %{"message" => message}} ->
         Logger.error(message)
@@ -75,12 +87,12 @@ defmodule Mailgun.Client do
     end
   end
 
-  def handle_response(%HTTPoison.Response{status_code: status_code, body: body}, _, _),
-    do: {:error, status_code, body}
+  def handle_response({:ok, %Req.Response{status: status, body: body}}, _, _),
+    do: {:error, status, body}
 
-  def handle_response(%HTTPoison.Error{reason: reason}, _, _) do
-    Logger.error(reason)
-    {:error, reason}
+  def handle_response({:error, %{__exception__: true} = exception}, _, _) do
+    Logger.error("Mailgun request failed: " <> Exception.message(exception))
+    {:error, exception}
   end
 
   def handle_response({:ok, %{"paging" => %{"next" => next}, "items" => items}}, client, acc) do
@@ -126,5 +138,7 @@ defmodule Mailgun.Client do
     end
   end
 
-  defp get_header(headers, header), do: Map.new(headers) |> Map.get(header)
+  # Req gives the headers as a map of lowercase names to lists of values.
+  defp get_header(headers, header),
+    do: headers |> Map.get(String.downcase(header), []) |> Enum.join(", ")
 end
