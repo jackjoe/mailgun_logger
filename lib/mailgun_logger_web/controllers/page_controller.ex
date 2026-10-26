@@ -23,20 +23,33 @@ defmodule MailgunLoggerWeb.PageController do
     end
   end
 
-  def stats(conn, _) do
-    total_accounts = Accounts.count_accounts()
+  @ranges ~w(24h 7d 30d)
 
-    event_counts = %{
-      total: Events.get_total_events(),
-      by_type: Events.get_event_counts_by_type()
-    }
+  def stats(conn, params) do
+    range = if params["range"] in @ranges, do: params["range"], else: "24h"
+    accounts = Accounts.list_accounts()
+    account_id = Enum.find_value(accounts, &(to_string(&1.id) == params["account_id"] && &1.id))
 
-    render(conn, :stats, total_accounts: total_accounts, event_counts: event_counts)
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    period = Events.stats_period(range, now)
+    %{from: from, to: to} = period
+
+    render(conn, :stats,
+      ranges: @ranges,
+      range: range,
+      accounts: accounts,
+      account_id: account_id,
+      period: period,
+      counts: Events.count_events_by_type(from, to, account_id),
+      previous: Events.count_events_by_type(period.previous_from, from, account_id),
+      volume: Events.event_volume(from, to, period.bucket, account_id),
+      reasons: Events.top_failure_reasons(from, to, account_id, 10),
+      domains: Events.top_failing_domains(from, to, account_id, 10)
+    )
   end
 
   def graphs(conn, _) do
-    stats = Events.get_stats(24)
-    render(conn, :graphs, stats: stats)
+    redirect(conn, to: ~p"/stats")
   end
 
   def non_affiliation(conn, _) do
