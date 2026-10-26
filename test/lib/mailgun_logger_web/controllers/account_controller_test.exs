@@ -14,6 +14,43 @@ defmodule MailgunLoggerWeb.AccountControllerTest do
     assert html =~ ~s(href="/accounts/#{account.id}/edit")
   end
 
+  test "shows only the end of the API key", %{conn: conn} do
+    insert(:account, api_key: "key-0123456789abcd")
+    html = conn |> get(~p"/accounts") |> html_response(200)
+    assert html =~ "••••abcd"
+    refute html =~ "key-0123456789abcd"
+  end
+
+  test "shows the result of the last run", %{conn: conn} do
+    insert(:account,
+      domain: "ok.example.com",
+      last_run_at: DateTime.add(DateTime.utc_now(), -180, :second),
+      last_run_status: "ok",
+      last_run_event_count: 12
+    )
+
+    insert(:account,
+      domain: "error.example.com",
+      last_run_at: DateTime.add(DateTime.utc_now(), -7200, :second),
+      last_run_status: "error",
+      last_run_error: "401: unauthorized"
+    )
+
+    insert(:account, domain: "never.example.com")
+
+    rows =
+      conn
+      |> get(~p"/accounts")
+      |> html_response(200)
+      |> LazyHTML.from_document()
+      |> LazyHTML.query("tbody tr")
+      |> Enum.map(&(&1 |> LazyHTML.text() |> String.split() |> Enum.join(" ")))
+
+    assert Enum.find(rows, &(&1 =~ "ok.example.com")) =~ "3 min ago ok, 12 events"
+    assert Enum.find(rows, &(&1 =~ "error.example.com")) =~ "2 hours ago 401: unauthorized"
+    assert Enum.find(rows, &(&1 =~ "never.example.com")) =~ "never"
+  end
+
   test "shows the new account form", %{conn: conn} do
     conn = get(conn, ~p"/accounts/new")
     assert headings(html_response(conn, 200)) == ["New account"]

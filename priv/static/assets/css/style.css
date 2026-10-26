@@ -164,6 +164,18 @@ main {
 
 /* ---- Typography ---- */
 
+.text-dim {
+  color: var(--c-text-dim);
+}
+
+.text-success {
+  color: var(--c-success);
+}
+
+.text-danger {
+  color: var(--c-danger);
+}
+
 h1 {
   font-family: var(--font);
   font-size: 1.25rem;
@@ -753,6 +765,16 @@ footer a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.run-status {
+  font-size: 12px;
 }
 
 /* ---- Nav utilities ---- */

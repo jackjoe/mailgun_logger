@@ -8,6 +8,12 @@ defmodule MailgunLoggerWeb.PageControllerTest do
     assert redirected_to(conn) == ~p"/events"
   end
 
+  test "starts a run and says so", %{conn: conn} do
+    conn = post(conn, ~p"/trigger-run")
+    assert redirected_to(conn) == ~p"/events"
+    assert Phoenix.Flash.get(conn.assigns.flash, :info) == "Run started"
+  end
+
   test "shows the stats", %{conn: conn} do
     insert(:event, event: "failed")
     conn = get(conn, ~p"/stats")

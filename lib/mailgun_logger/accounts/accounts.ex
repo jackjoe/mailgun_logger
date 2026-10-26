@@ -44,6 +44,49 @@ defmodule MailgunLogger.Accounts do
     Repo.delete(account)
   end
 
+  @doc """
+  Saves the result of a run for the account: `{:ok, event_count}` or
+  `{:error, message}`.
+  """
+  @spec record_run(Account.t(), {:ok, non_neg_integer()} | {:error, String.t()}) ::
+          {:ok, Account.t()} | {:error, Ecto.Changeset.t()}
+  def record_run(%Account{} = account, result) do
+    attrs =
+      case result do
+        {:ok, count} ->
+          %{last_run_status: "ok", last_run_error: nil, last_run_event_count: count}
+
+        {:error, message} ->
+          %{last_run_status: "error", last_run_error: message, last_run_event_count: nil}
+      end
+
+    account
+    |> Account.run_changeset(Map.put(attrs, :last_run_at, DateTime.utc_now()))
+    |> Repo.update()
+  end
+
+  @doc """
+  Summarizes the last run over all accounts: the time of the most recent run
+  and the number of accounts per result. Returns nil before the first run.
+  """
+  @spec last_run_summary() ::
+          %{at: DateTime.t(), ok: non_neg_integer(), error: non_neg_integer()} | nil
+  def last_run_summary() do
+    from(a in Account,
+      where: not is_nil(a.last_run_at),
+      select: %{
+        at: max(a.last_run_at),
+        ok: filter(count(a.id), a.last_run_status == "ok"),
+        error: filter(count(a.id), a.last_run_status == "error")
+      }
+    )
+    |> Repo.one()
+    |> case do
+      %{at: nil} -> nil
+      summary -> summary
+    end
+  end
+
   @spec count_accounts() :: non_neg_integer()
   def count_accounts do
     Repo.aggregate(Account, :count)

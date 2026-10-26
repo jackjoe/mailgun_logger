@@ -11,6 +11,7 @@ defmodule MailgunLoggerWeb.PageController do
   def trigger_run(conn, _) do
     # run the task to fetch new emails
     MailgunLogger.run_async_if_not_running()
+    conn = put_flash(conn, :info, "Run started")
 
     # redirect to the current page to preserve the search query parameters
     case List.keyfind(conn.req_headers, "referer", 0) do

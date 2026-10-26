@@ -3,8 +3,8 @@ name: Elixir CI
 on:
   push:
     branches: [master]
+  # Every pull request, also one that targets another branch in a stack
   pull_request:
-    branches: [master]
 
 jobs:
   build:
@@ -31,10 +31,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Only Erlang and Elixir come from .tool-versions. The prebuilt rebar3
+      # 3.22.1 that setup-beam downloads does not load on OTP 28, and mix
+      # installs its own rebar3.
+      - name: Read the Erlang and Elixir versions
+        id: versions
+        run: |
+          echo "otp=$(awk '/^erlang /{print $2}' .tool-versions)" >> "$GITHUB_OUTPUT"
+          echo "elixir=$(awk '/^elixir /{print $2}' .tool-versions)" >> "$GITHUB_OUTPUT"
+
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:
-          version-file: .tool-versions
+          otp-version: ${{ steps.versions.outputs.otp }}
+          elixir-version: ${{ steps.versions.outputs.elixir }}
           version-type: strict
 
       - name: Restore dependencies and build cache

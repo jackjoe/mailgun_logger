@@ -1,9 +1,21 @@
 <Layouts.app flash={@flash} conn={@conn}>
   <div class="page-header">
     <h1>Events</h1>
-    <.form for={%{}} action={~p"/trigger-run"}>
-      <.button type="submit">Trigger Run</.button>
-    </.form>
+    <div class="page-header-actions">
+      <span class="run-status text-dim">
+        <%= cond do %>
+          <% @running? -> %>
+            Run in progress
+          <% @last_run -> %>
+            Last run
+            <.relative_time at={@last_run.at} />: {@last_run.ok} ok, {@last_run.error} error
+          <% true -> %>
+        <% end %>
+      </span>
+      <.form for={%{}} action={~p"/trigger-run"}>
+        <.button type="submit">Trigger Run</.button>
+      </.form>
+    </div>
   </div>
 
   <.events_filter_form meta={@meta} accounts={cbo_accounts(@accounts)} id="events-filter" />
