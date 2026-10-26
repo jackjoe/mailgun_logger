@@ -116,17 +116,6 @@ defmodule MailgunLogger.Events do
     |> DateTime.from_unix!()
   end
 
-  def get_total_events(), do: Repo.aggregate(from(p in Event), :count, :id)
-
-  def get_event_counts_by_type() do
-    from(p in Event,
-      group_by: p.event,
-      select: {p.event, count(p.id)}
-    )
-    |> Repo.all()
-    |> Enum.into(%{})
-  end
-
   @spec has_stored_message(Event.t()) :: Event.t()
   def has_stored_message(event) do
     event
@@ -134,64 +123,99 @@ defmodule MailgunLogger.Events do
     |> Repo.update()
   end
 
-  def get_stats(n_hours) do
-    now = DateTime.utc_now()
-    cutoff = DateTime.add(now, -n_hours * 3600)
+  @stats_ranges %{
+    "24h" => {86_400, "hour"},
+    "7d" => {7 * 86_400, "day"},
+    "30d" => {30 * 86_400, "day"}
+  }
 
-    stats =
-      from(e in Event,
-        where: e.timestamp >= ^cutoff,
-        group_by: [
-          e.event,
-          fragment("CONCAT(to_char(?, 'yyyy-mm-dd hh24:mi:ss'), ?)", e.timestamp, ":00")
-        ],
-        select: %{
-          count: count(e.id),
-          event: e.event,
-          date: fragment("CONCAT(to_char(?, 'yyyy-mm-dd hh24:mi:ss'), ?)", e.timestamp, ":00")
-        }
-      )
+  @doc """
+  The period for a stats range ("24h", "7d" or "30d") that ends at `now`, the
+  start of the period before it, and the size of a chart bucket.
+  """
+  def stats_period(range, now) do
+    {seconds, bucket} = Map.get(@stats_ranges, range, @stats_ranges["24h"])
+    from = NaiveDateTime.add(now, -seconds)
+
+    %{from: from, to: now, previous_from: NaiveDateTime.add(from, -seconds), bucket: bucket}
+  end
+
+  @doc "Counts the events per type from `from` (inclusive) until `to` (exclusive)."
+  def count_events_by_type(from, to, account_id) do
+    from
+    |> period_query(to, account_id)
+    |> group_by([e], e.event)
+    |> select([e], {e.event, count(e.id)})
+    |> Repo.all()
+    |> Map.new()
+  end
+
+  @doc """
+  Counts the events per type for each hour or day bucket in the period. Buckets
+  without events have empty counts.
+  """
+  def event_volume(from, to, bucket, account_id) when bucket in ["hour", "day"] do
+    events =
+      from
+      |> period_query(to, account_id)
+      |> select([e], %{at: fragment("date_trunc(?, ?)", ^bucket, e.timestamp), event: e.event})
+
+    counts =
+      from(e in subquery(events), group_by: [e.at, e.event], select: {e.at, e.event, count()})
       |> Repo.all()
+      |> Enum.group_by(
+        fn {at, _event, _count} -> NaiveDateTime.truncate(at, :second) end,
+        fn {_at, event, count} -> {event, count} end
+      )
 
-    now =
-      DateTime.utc_now()
-      |> Map.put(:minute, 0)
-      |> Map.put(:second, 0)
-      |> DateTime.truncate(:second)
-
-    last_n_hours = Enum.map(0..n_hours, &DateTime.add(now, &1 * -1 * 3600)) |> Enum.reverse()
-
-    {failed, accepted, delivered, clicked, opened, stored} =
-      Enum.reduce(last_n_hours, {[], [], [], [], [], []}, fn date,
-                                                             {failed, accepted, delivered,
-                                                              clicked, opened, stored} ->
-        failed = failed ++ [get_items(stats, "failed", date)]
-        accepted = accepted ++ [get_items(stats, "accepted", date)]
-        delivered = delivered ++ [get_items(stats, "delivered", date)]
-        clicked = clicked ++ [get_items(stats, "clicked", date)]
-        opened = opened ++ [get_items(stats, "opened", date)]
-        stored = stored ++ [get_items(stats, "stored", date)]
-
-        {failed, accepted, delivered, clicked, opened, stored}
-      end)
-
-    %{
-      failed: failed,
-      accepted: accepted,
-      delivered: delivered,
-      clicked: clicked,
-      opened: opened,
-      stored: stored,
-      last_n_hours: last_n_hours
-    }
+    from
+    |> truncate(bucket)
+    |> Stream.iterate(&NaiveDateTime.add(&1, bucket_seconds(bucket)))
+    |> Enum.take_while(&(NaiveDateTime.compare(&1, to) == :lt))
+    |> Enum.map(&%{at: &1, counts: Map.new(Map.get(counts, &1, []))})
   end
 
-  defp get_items(stats, event, date) do
-    date = Calendar.strftime(date, "%Y-%m-%d %H:%M")
+  @doc "The most common delivery status messages of failed events."
+  def top_failure_reasons(from, to, account_id, limit) do
+    reason =
+      dynamic(
+        [e],
+        fragment("coalesce(? -> 'delivery-status' ->> 'message', '(no reason)')", e.raw)
+      )
 
-    case Enum.find(stats, &(&1.event == event && &1.date == date)) do
-      nil -> 0
-      %{count: count} -> count
-    end
+    top_failed_by(from, to, account_id, limit, reason)
   end
+
+  @doc "The recipient domains with the most failed events."
+  def top_failing_domains(from, to, account_id, limit) do
+    domain = dynamic([e], fragment("lower(split_part(?, '@', 2))", e.recipient))
+    top_failed_by(from, to, account_id, limit, domain)
+  end
+
+  defp top_failed_by(from, to, account_id, limit, key) do
+    failed =
+      from
+      |> period_query(to, account_id)
+      |> where([e], e.event == "failed")
+      |> select(^%{key: key})
+
+    from(f in subquery(failed),
+      group_by: f.key,
+      select: {f.key, count()},
+      order_by: [desc: count(), asc: f.key],
+      limit: ^limit
+    )
+    |> Repo.all()
+  end
+
+  defp period_query(from, to, account_id) do
+    query = where(Event, [e], e.timestamp >= ^from and e.timestamp < ^to)
+    if account_id, do: where(query, [e], e.account_id == ^account_id), else: query
+  end
+
+  defp truncate(at, "hour"), do: %{at | minute: 0, second: 0, microsecond: {0, 0}}
+  defp truncate(at, "day"), do: %{at | hour: 0, minute: 0, second: 0, microsecond: {0, 0}}
+
+  defp bucket_seconds("hour"), do: 3600
+  defp bucket_seconds("day"), do: 86_400
 end

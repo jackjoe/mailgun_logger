@@ -21,6 +21,46 @@ defmodule MailgunLogger.EventsTest do
     end
   end
 
+  describe "search_events/2 time range" do
+    setup do
+      account = insert(:account)
+
+      for {hour, subject} <- [{8, "early"}, {10, "middle"}, {12, "late"}] do
+        insert(:event,
+          account: account,
+          message_subject: subject,
+          timestamp: NaiveDateTime.new!(~D[2026-10-26], Time.new!(hour, 0, 0))
+        )
+      end
+
+      :ok
+    end
+
+    defp subjects(filters) do
+      {:ok, {events, _meta}} = Events.search_events(%{"filters" => filters})
+      events |> Enum.map(& &1.message_subject) |> Enum.sort()
+    end
+
+    test "from a time" do
+      filters = %{"0" => %{"field" => "timestamp", "op" => ">=", "value" => "2026-10-26T10:00"}}
+      assert subjects(filters) == ["late", "middle"]
+    end
+
+    test "until a time" do
+      filters = %{"0" => %{"field" => "timestamp", "op" => "<=", "value" => "2026-10-26T10:00"}}
+      assert subjects(filters) == ["early", "middle"]
+    end
+
+    test "between two times" do
+      filters = %{
+        "0" => %{"field" => "timestamp", "op" => ">=", "value" => "2026-10-26T09:00"},
+        "1" => %{"field" => "timestamp", "op" => "<=", "value" => "2026-10-26T11:00"}
+      }
+
+      assert subjects(filters) == ["middle"]
+    end
+  end
+
   describe "search_events/2 cursor pagination" do
     test "next page returns rows that are not on the previous page" do
       account = insert(:account)

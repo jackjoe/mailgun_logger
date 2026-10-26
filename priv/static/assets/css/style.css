@@ -618,6 +618,18 @@ code {
   display: none;
 }
 
+/* The time range inputs look the same, so they keep a visible label */
+#events-filter .form-group:has(input[type="datetime-local"]) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#events-filter .form-group:has(input[type="datetime-local"]) label {
+  display: block;
+  margin: 0;
+}
+
 #events-filter input,
 #events-filter select,
 #events-filter button {
@@ -630,6 +642,14 @@ code {
 
 #events-filter .form-group {
   margin-bottom: 0;
+}
+
+#events-filter input[type="text"] {
+  width: 160px;
+}
+
+#events-filter input[type="datetime-local"] {
+  width: 190px;
 }
 
 #events-filter label + input {
@@ -1036,4 +1056,178 @@ tr {
 ::selection {
   background: var(--c-accent);
   color: #000;
+}
+
+/* ---- Stats ---- */
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--c-border);
+}
+
+.segmented a {
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--c-text-dim);
+}
+
+.segmented a + a {
+  border-left: 1px solid var(--c-border);
+}
+
+.segmented a.is-active {
+  color: var(--c-accent);
+  background: var(--c-accent-bg);
+}
+
+.stats-account select {
+  height: 30px;
+  padding: 0 8px;
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 24px;
+}
+
+.stat-tile a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  padding: 14px 16px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+}
+
+.stat-tile a:hover {
+  border-color: var(--c-border-strong);
+  color: var(--c-text);
+}
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--c-text-dim);
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-rate,
+.stat-change {
+  font-size: 12px;
+}
+
+.stats-section {
+  margin-bottom: 24px;
+}
+
+.stats-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+}
+
+.stats-section > p:last-child {
+  margin-bottom: 0;
+}
+
+.table td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.chart-scroll {
+  overflow-x: auto;
+}
+
+.volume-chart {
+  display: block;
+  width: 100%;
+  min-width: 1000px;
+  height: auto;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.volume-chart .grid {
+  stroke: var(--c-border);
+  stroke-dasharray: 2 4;
+}
+
+.volume-chart .axis {
+  stroke: var(--c-border-strong);
+}
+
+.volume-chart .tick {
+  fill: var(--c-text-dim);
+  font-family: var(--font);
+  font-size: 11px;
+}
+
+.chart-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--c-text-dim);
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.volume-chart .hit {
+  fill: transparent;
+}
+
+.volume-chart .bar:hover .hit {
+  fill: var(--c-surface-raised);
+}
+
+.segment-delivered { fill: var(--c-success); background: var(--c-success); }
+.segment-accepted { fill: var(--c-accent); background: var(--c-accent); }
+.segment-opened { fill: #5b9fd6; background: #5b9fd6; }
+.segment-clicked { fill: #9b7fd6; background: #9b7fd6; }
+.segment-failed { fill: var(--c-danger); background: var(--c-danger); }
+.segment-other { fill: var(--c-text-dim); background: var(--c-text-dim); }
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--c-text-dim);
+}
+
+.chart-legend .swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+}
+
+@media (max-width: 800px) {
+  .stat-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 }
