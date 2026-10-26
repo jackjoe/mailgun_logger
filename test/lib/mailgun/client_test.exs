@@ -1,6 +1,9 @@
 defmodule Mailgun.ClientTest do
   use ExUnit.Case, async: true
 
+  # The error paths log on purpose; keep that out of the test output.
+  @moduletag :capture_log
+
   alias Mailgun.Client
 
   @client Client.new("key-test", "mg.example.com", true)
