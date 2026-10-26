@@ -43,7 +43,9 @@ defmodule MailgunLoggerWeb.Components.Flop do
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
           message_subject: [op: :ilike, placeholder: "Subject"],
-          account_id: [type: "select", options: [{"all", ""}] ++ @accounts]
+          account_id: [type: "select", options: [{"all", ""}] ++ @accounts],
+          timestamp: [op: :>=, type: "datetime-local", label: "Since", title: "Since (UTC)"],
+          timestamp: [op: :<=, type: "datetime-local", label: "Until", title: "Until (UTC)"]
         ]}
       >
         <CoreComponents.input

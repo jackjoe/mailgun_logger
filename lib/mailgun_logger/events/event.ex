@@ -58,7 +58,8 @@ defmodule MailgunLogger.Event do
       :message_from,
       :message_to,
       :message_subject,
-      :account_id
+      :account_id,
+      :timestamp
     ],
     sortable: [:timestamp, :id],
     default_order: %{

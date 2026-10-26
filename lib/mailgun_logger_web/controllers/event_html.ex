@@ -92,6 +92,15 @@ defmodule MailgunLoggerWeb.EventHTML do
   nil value would end up as an empty query parameter.
   """
   def events_path(params) do
-    ~p"/events?#{Enum.reject(params, fn {_key, value} -> is_nil(value) end)}"
+    query =
+      params
+      |> Enum.reject(fn {_key, value} -> is_nil(value) end)
+      |> Plug.Conn.Query.encode(&query_value/1)
+
+    ~p"/events" <> "?" <> query
   end
+
+  # A time filter value is a NaiveDateTime; write it like the datetime-local input does.
+  defp query_value(%NaiveDateTime{} = value), do: NaiveDateTime.to_iso8601(value)
+  defp query_value(value), do: to_string(value)
 end

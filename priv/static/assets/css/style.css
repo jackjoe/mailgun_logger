@@ -618,6 +618,18 @@ code {
   display: none;
 }
 
+/* The time range inputs look the same, so they keep a visible label */
+#events-filter .form-group:has(input[type="datetime-local"]) {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#events-filter .form-group:has(input[type="datetime-local"]) label {
+  display: block;
+  margin: 0;
+}
+
 #events-filter input,
 #events-filter select,
 #events-filter button {
@@ -630,6 +642,14 @@ code {
 
 #events-filter .form-group {
   margin-bottom: 0;
+}
+
+#events-filter input[type="text"] {
+  width: 160px;
+}
+
+#events-filter input[type="datetime-local"] {
+  width: 190px;
 }
 
 #events-filter label + input {

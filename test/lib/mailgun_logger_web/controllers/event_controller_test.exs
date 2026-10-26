@@ -78,6 +78,36 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     assert hd(options) == "all"
   end
 
+  test "has since and until inputs in UTC", %{conn: conn} do
+    html = conn |> get(~p"/events") |> html_response(200)
+    doc = LazyHTML.from_document(html)
+
+    inputs =
+      doc
+      |> LazyHTML.query(~s(#events-filter input[type="datetime-local"]))
+      |> Enum.map(&{LazyHTML.attribute(&1, "title"), LazyHTML.attribute(&1, "name")})
+
+    assert [{["Since (UTC)"], [_]}, {["Until (UTC)"], [_]}] = inputs
+  end
+
+  test "keeps the time range in the pagination links", %{conn: conn} do
+    insert_list(51, :event, timestamp: ~N[2026-10-26 10:00:00])
+
+    filters = %{"0" => %{"field" => "timestamp", "op" => ">=", "value" => "2026-10-26T09:00"}}
+
+    next =
+      conn
+      |> get(~p"/events", %{"filters" => filters})
+      |> html_response(200)
+      |> pagination_href("Next")
+
+    assert %{
+             "filters[0][field]" => "timestamp",
+             "filters[0][op]" => ">=",
+             "filters[0][value]" => "2026-10-26T09:00:00"
+           } = decode_query(next)
+  end
+
   describe "pagination" do
     test "links to the next and previous page without empty parameters", %{conn: conn} do
       account = insert(:account)
