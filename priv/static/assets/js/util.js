@@ -127,3 +127,22 @@
     }
   });
 })();
+
+// A button with data-copy="#id" copies the text of that element.
+(function () {
+  document.addEventListener("click", function (e) {
+    var button = e.target.closest("[data-copy]");
+    if (!button || !navigator.clipboard) return;
+
+    var target = document.querySelector(button.getAttribute("data-copy"));
+    if (!target) return;
+
+    navigator.clipboard.writeText(target.textContent.trim()).then(function () {
+      var label = button.textContent;
+      button.textContent = "Copied";
+      setTimeout(function () {
+        button.textContent = label;
+      }, 1500);
+    });
+  });
+})();

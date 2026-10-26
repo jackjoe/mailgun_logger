@@ -368,13 +368,54 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     assert html =~ "<dt>Recipient</dt>"
     assert html =~ event.recipient
     assert html =~ event.account.domain
-    assert html =~ ~s(<code style="white-space: break-spaces">{\n)
-    assert html =~ ~r{<dt>Linked events</dt>\s*<dd>\s*<span>none</span>}
+    assert html =~ ~s(<code id="raw-json" style="white-space: break-spaces">{\n)
   end
 
   test "highlights the events link in the navigation", %{conn: conn} do
     conn = get(conn, ~p"/events")
     assert html_response(conn, 200) =~ ~s(<a href="/events" class="is-active">Events</a>)
+  end
+
+  describe "detail page" do
+    test "shows the events of the message as a timeline, oldest first", %{conn: conn} do
+      account = insert(:account)
+      attrs = [account: account, message_id: "m1@example.com"]
+      insert(:event, attrs ++ [event: "opened", timestamp: ~N[2026-10-01 02:30:00]])
+      event = insert(:event, attrs ++ [event: "delivered", timestamp: ~N[2026-10-01 02:10:00]])
+      insert(:event, attrs ++ [event: "accepted", timestamp: ~N[2026-10-01 02:00:00]])
+
+      items =
+        conn
+        |> get(~p"/events/#{event}")
+        |> html_response(200)
+        |> LazyHTML.from_document()
+        |> LazyHTML.query(".timeline li")
+        |> Enum.map(&(&1 |> LazyHTML.text() |> String.split() |> Enum.join(" ")))
+
+      assert items == [
+               "2026-10-01 02:00:00 accepted",
+               "2026-10-01 02:10:00 delivered this event",
+               "2026-10-01 02:30:00 opened"
+             ]
+    end
+
+    test "works for an event without a message ID", %{conn: conn} do
+      event = insert(:event, message_id: nil)
+      html = conn |> get(~p"/events/#{event}") |> html_response(200)
+      assert html =~ "this event"
+    end
+
+    test "shows the raw event folded, with a copy button", %{conn: conn} do
+      event = insert(:event, raw: %{"event" => "delivered"})
+
+      doc = conn |> get(~p"/events/#{event}") |> html_response(200) |> LazyHTML.from_document()
+
+      assert doc |> LazyHTML.query("details.raw-event code#raw-json") |> LazyHTML.text() =~
+               ~s("event": "delivered")
+
+      assert doc |> LazyHTML.query("details.raw-event button") |> LazyHTML.attribute("data-copy") ==
+               ["#raw-json"]
+    end
   end
 
   test "redirects when the event has no stored message", %{conn: conn} do

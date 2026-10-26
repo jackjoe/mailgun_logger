@@ -1116,14 +1116,62 @@ kbd {
 
 /* ---- Linked events list ---- */
 
-.linked-events {
-  padding: 0;
+.timeline {
+  position: relative;
   margin: 0;
+  padding: 0 0 0 16px;
   list-style: none;
+  border-left: 1px solid var(--c-border-strong);
 }
 
-.linked-events li + li {
-  margin-top: 3px;
+.timeline li {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.timeline li + li {
+  margin-top: 6px;
+}
+
+/* A dot on the line for each event */
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--c-border-strong);
+}
+
+.timeline li.is-current::before {
+  background: var(--c-accent);
+}
+
+.timeline-time {
+  color: var(--c-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.raw-event summary {
+  color: var(--c-link);
+}
+
+.raw-event[open] summary {
+  margin-bottom: 8px;
+}
+
+.raw-json {
+  position: relative;
+}
+
+.raw-json button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 
 /* ---- Misc ---- */
