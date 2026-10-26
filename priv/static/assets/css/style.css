@@ -430,6 +430,8 @@ dt {
   font-family: var(--font);
   font-weight: 500;
   font-size: 11px;
+  /* The line box of the dd (13px x 1.5), so the baselines align */
+  line-height: 19.5px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--c-text-dim);
@@ -1121,7 +1123,6 @@ kbd {
   margin: 0;
   padding: 0 0 0 16px;
   list-style: none;
-  border-left: 1px solid var(--c-border-strong);
 }
 
 .timeline li {
@@ -1144,6 +1145,17 @@ kbd {
   width: 7px;
   height: 7px;
   border-radius: 50%;
+  background: var(--c-border-strong);
+}
+
+/* A line from each dot to the next dot */
+.timeline li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: -17px;
+  top: calc(0.5em + 3.5px);
+  bottom: calc(-6px - 0.5em - 3.5px);
+  width: 1px;
   background: var(--c-border-strong);
 }
 
