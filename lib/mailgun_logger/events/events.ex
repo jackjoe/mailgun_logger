@@ -131,10 +131,11 @@ defmodule MailgunLogger.Events do
   defp put_linked_events(event), do: Map.put(event, :linked_events, get_linked_events(event))
 
   @spec get_linked_events(Event.t()) :: [Event.t()]
+  def get_linked_events(%Event{message_id: nil}), do: []
+
   def get_linked_events(event) do
     from(
       e in Event,
-      # where: e.recipient == ^event.recipient,
       where: e.message_id == ^event.message_id,
       where: e.id != ^event.id,
       order_by: [desc: e.timestamp]

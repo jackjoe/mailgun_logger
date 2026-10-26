@@ -74,6 +74,16 @@ defmodule MailgunLoggerWeb.PasswordResetControllerTest do
       refute html =~ ~s(name="_method")
     end
 
+    test "rejects a password shorter than 8 characters", %{conn: conn} do
+      user = insert(:user, reset_token: "valid-token")
+      params = %{"password" => "short", "password_confirmation" => "short"}
+
+      conn = post(conn, ~p"/password-reset/reset/valid-token", %{"user" => params})
+
+      assert html_response(conn, 200) =~ "should be at least 8 character(s)"
+      assert {:error, _} = Users.authenticate(user.email, "short")
+    end
+
     test "redirects to the error page for an unknown token", %{conn: conn} do
       params = %{"password" => "new-password", "password_confirmation" => "new-password"}
       conn = post(conn, ~p"/password-reset/reset/unknown-token", %{"user" => params})

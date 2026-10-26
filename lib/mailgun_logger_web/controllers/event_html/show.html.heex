@@ -32,14 +32,16 @@
     </dd>
     <dt>From</dt>
     <dd>{@event.message_from}</dd>
-    <dt>Linked events</dt>
+    <dt>Timeline</dt>
     <dd>
-      <span :if={@event.linked_events == []}>none</span>
-      <ul :if={@event.linked_events != []} class="linked-events">
-        <li :for={linked <- @event.linked_events}>
-          <a href={~p"/events/#{linked}"}>{linked.event} ({linked.timestamp})</a>
+      <ol class="timeline">
+        <li :for={item <- timeline(@event)} class={item.id == @event.id && "is-current"}>
+          <span class="timeline-time">{event_time(item.timestamp)}</span>
+          <.link :if={item.id != @event.id} href={~p"/events/#{item}"}>{event_name(item.event)}</.link>
+          <span :if={item.id == @event.id}>{event_name(item.event)}</span>
+          <span :if={item.id == @event.id} class="text-dim">this event</span>
         </li>
-      </ul>
+      </ol>
     </dd>
     <%= if Application.get_env(:mailgun_logger, :store_messages) and @event.has_stored_message do %>
       <dt>Raw Stored Message data</dt>
@@ -47,7 +49,15 @@
       <dt>Actual sent email</dt>
       <dd><a href={~p"/events/#{@event}/stored_message"} target="_blank">view</a></dd>
     <% end %>
-    <dt>Dev Stuff</dt>
-    <dd>{pretty_raw(@event.raw)}</dd>
+    <dt>Raw event</dt>
+    <dd>
+      <details class="raw-event">
+        <summary>Show the JSON from Mailgun</summary>
+        <div class="raw-json">
+          <button type="button" class="btn btn-sm" data-copy="#raw-json">Copy</button>
+          {pretty_raw(@event.raw)}
+        </div>
+      </details>
+    </dd>
   </dl>
 </Layouts.app>

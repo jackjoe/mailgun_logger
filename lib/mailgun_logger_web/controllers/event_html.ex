@@ -14,6 +14,10 @@ defmodule MailgunLoggerWeb.EventHTML do
 
   def event_name(event_name), do: event_name
 
+  @doc "The event and its linked events, oldest first."
+  def timeline(event),
+    do: Enum.sort_by([event | event.linked_events], & &1.timestamp, NaiveDateTime)
+
   @doc "A timestamp as 2026-10-01 02:10:00, with the relative time as tooltip."
   def event_time(timestamp) do
     assigns = %{
@@ -74,7 +78,7 @@ defmodule MailgunLoggerWeb.EventHTML do
     assigns = %{html: html}
 
     ~H"""
-    <code style="white-space: break-spaces">{@html}</code>
+    <code id="raw-json" style="white-space: break-spaces">{@html}</code>
     """
   end
 

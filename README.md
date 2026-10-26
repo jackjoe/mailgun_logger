@@ -24,6 +24,14 @@ An AWS bucket can be configured to store the raw messages on S3.
 
 See the docs for implementation details.
 
+## Features
+
+- **Events**: filter on event type, sender, recipient, subject, account, time range (UTC) and message ID. Click an event type, sender or recipient in the list to filter on it. Failed events show the failure reason. Choose 50, 100 or 250 events per page, and export the current filters as CSV (at most 100 000 rows).
+- **Keyboard**: `/` focuses the search, `j` and `k` move between events, `Enter` opens the selected event and `Esc` leaves a field.
+- **Event detail**: the timeline of all events of the message and the raw JSON from Mailgun, with a copy button.
+- **Stats**: counts and rates (delivered, failed and opened) for the last 24 hours, 7 days or 30 days, compared with the period before. A chart per hour or day, the top failure reasons and the top failing recipient domains. Every number links to the matching events.
+- **Account health**: each account shows when the last run was and its result, for example `401: unauthorized` for a wrong API key. "Trigger Run" starts a run immediately.
+
 _**IMPORTANT**_
 
 _This application is not affiliated, associated, authorized, endorsed by, or in any way officially connected with Mailgun, or any of its subsidiaries or its affiliates. The official Mailgun website can be found at [Mailgun](https://mailgun.com)._
@@ -241,6 +249,8 @@ $ . .env && make run
 ```
 
 Then head over to [https://localhost:7070](https://localhost:7070).
+
+In development, esbuild builds `priv/static/assets/js/app.js` and rebuilds it on every change. That file is not in git: the Docker build runs `mix assets.deploy`, which builds a minified bundle and digests the static files.
 
 ## TODO
 
