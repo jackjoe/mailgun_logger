@@ -399,10 +399,50 @@ defmodule MailgunLoggerWeb.EventControllerTest do
              ]
     end
 
+    test "hides the timeline when the message has no other events", %{conn: conn} do
+      event = insert(:event, message_id: "m1@example.com")
+      doc = conn |> get(~p"/events/#{event}") |> html_response(200) |> LazyHTML.from_document()
+      assert doc |> LazyHTML.query(".timeline") |> Enum.empty?()
+    end
+
     test "works for an event without a message ID", %{conn: conn} do
       event = insert(:event, message_id: nil)
-      html = conn |> get(~p"/events/#{event}") |> html_response(200)
-      assert html =~ "this event"
+      doc = conn |> get(~p"/events/#{event}") |> html_response(200) |> LazyHTML.from_document()
+      assert doc |> LazyHTML.query(".timeline") |> Enum.empty?()
+    end
+
+    test "shows the delivery status message as error detail", %{conn: conn} do
+      raw = %{
+        "reason" => "generic",
+        "delivery-status" => %{"message" => "mailbox full", "description" => "quota"}
+      }
+
+      event = insert(:event, event: "failed", raw: raw)
+      assert error_detail(conn, event) == ["mailbox full"]
+    end
+
+    test "falls back to the delivery status description as error detail", %{conn: conn} do
+      raw = %{
+        "reason" => "suppress-bounce",
+        "delivery-status" => %{
+          "message" => "",
+          "description" => "Not delivering to bounced address"
+        }
+      }
+
+      event = insert(:event, event: "failed", raw: raw)
+      assert error_detail(conn, event) == ["Not delivering to bounced address"]
+    end
+
+    test "falls back to the reason as error detail", %{conn: conn} do
+      raw = %{"reason" => "suppress-bounce", "delivery-status" => %{"message" => ""}}
+      event = insert(:event, event: "failed", raw: raw)
+      assert error_detail(conn, event) == ["suppress-bounce"]
+    end
+
+    test "hides the error detail when the failed event has no reason", %{conn: conn} do
+      event = insert(:event, event: "failed", raw: %{"delivery-status" => %{"message" => ""}})
+      assert error_detail(conn, event) == []
     end
 
     test "shows the raw event folded, with a copy button", %{conn: conn} do
@@ -422,5 +462,14 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     event = insert(:event)
     conn = get(conn, ~p"/events/#{event}/stored_message")
     assert redirected_to(conn) == ~p"/events"
+  end
+
+  defp error_detail(conn, event) do
+    conn
+    |> get(~p"/events/#{event}")
+    |> html_response(200)
+    |> LazyHTML.from_document()
+    |> LazyHTML.query(".dl-error dd")
+    |> Enum.map(&LazyHTML.text/1)
   end
 end

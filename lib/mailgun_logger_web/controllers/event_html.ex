@@ -52,8 +52,17 @@ defmodule MailgunLoggerWeb.EventHTML do
   def send_recv("SMTP"), do: "<-"
   def send_recv(_), do: "->"
 
-  def error_msg(%{raw: %{"delivery-status" => %{"message" => msg}}}), do: msg
-  def error_msg(_), do: "-"
+  @doc "The first non-empty failure text of the event, or nil."
+  def error_msg(%{raw: raw}) when is_map(raw) do
+    [
+      get_in(raw, ["delivery-status", "message"]),
+      get_in(raw, ["delivery-status", "description"]),
+      raw["reason"]
+    ]
+    |> Enum.find(&(is_binary(&1) and String.trim(&1) != ""))
+  end
+
+  def error_msg(_), do: nil
 
   def stored_message_url(message_id) do
     config = ExAws.Config.new(:s3)

@@ -1,5 +1,5 @@
 <Layouts.app flash={@flash} conn={@conn}>
-  <dl :if={@event.event == "failed"} class="dl-error">
+  <dl :if={@event.event == "failed" && error_msg(@event)} class="dl-error">
     <dt>Error detail</dt>
     <dd>{error_msg(@event)}</dd>
   </dl>
@@ -32,8 +32,8 @@
     </dd>
     <dt>From</dt>
     <dd>{@event.message_from}</dd>
-    <dt>Timeline</dt>
-    <dd>
+    <dt :if={@event.linked_events != []}>Timeline</dt>
+    <dd :if={@event.linked_events != []}>
       <ol class="timeline">
         <li :for={item <- timeline(@event)} class={item.id == @event.id && "is-current"}>
           <span class="timeline-time">{event_time(item.timestamp)}</span>
