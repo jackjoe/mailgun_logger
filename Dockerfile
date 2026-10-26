@@ -9,10 +9,10 @@ WORKDIR $HOME
 # Copy all application files
 COPY . ./
 
-# Install all production dependencies + digest
+# Install all production dependencies, build the JS bundle and digest the assets
 RUN mix deps.get --only prod && \
     mix deps.compile --include-children && \
-    mix phx.digest
+    mix assets.deploy
 
 RUN mix release production
 
