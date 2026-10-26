@@ -3,16 +3,16 @@ FROM registry.gitlab.com/jack-joe-open-source/docker-images/elixir-phx AS builde
 ARG MIX_ENV=prod
 
 # Create and set home directory
-ENV HOME /opt/app
+ENV HOME=/opt/app
 WORKDIR $HOME
 
 # Copy all application files
 COPY . ./
 
-# Install all production dependencies + digest
+# Install all production dependencies, build the JS bundle and digest the assets
 RUN mix deps.get --only prod && \
     mix deps.compile --include-children && \
-    mix phx.digest
+    mix assets.deploy
 
 RUN mix release production
 
@@ -26,9 +26,9 @@ ARG MIX_ENV=prod
 
 # Env vars
 # Create and set home directory
-ENV HOME /opt/app
-ENV APP_NAME $APP_NAME
-ENV PORT ${PORT:-5050}
+ENV HOME=/opt/app
+ENV APP_NAME=$APP_NAME
+ENV PORT=5050
 
 WORKDIR $HOME
 EXPOSE $PORT

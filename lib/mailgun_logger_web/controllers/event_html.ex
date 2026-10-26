@@ -14,6 +14,23 @@ defmodule MailgunLoggerWeb.EventHTML do
 
   def event_name(event_name), do: event_name
 
+  @doc "The event and its linked events, oldest first."
+  def timeline(event),
+    do: Enum.sort_by([event | event.linked_events], & &1.timestamp, NaiveDateTime)
+
+  @doc "A timestamp as 2026-10-01 02:10:00, with the relative time as tooltip."
+  def event_time(timestamp) do
+    assigns = %{
+      iso: NaiveDateTime.to_iso8601(timestamp) <> "Z",
+      ago: time_ago(timestamp),
+      label: Calendar.strftime(timestamp, "%Y-%m-%d %H:%M:%S")
+    }
+
+    ~H"""
+    <time datetime={@iso} title={@ago}>{@label}</time>
+    """
+  end
+
   def event_type("warn") do
     assigns = %{}
 
@@ -61,7 +78,7 @@ defmodule MailgunLoggerWeb.EventHTML do
     assigns = %{html: html}
 
     ~H"""
-    <code style="white-space: break-spaces">{@html}</code>
+    <code id="raw-json" style="white-space: break-spaces">{@html}</code>
     """
   end
 
@@ -87,11 +104,81 @@ defmodule MailgunLoggerWeb.EventHTML do
   def cbo_accounts(accounts), do: Enum.map(accounts, &{&1.domain, &1.id})
 
   @doc """
+  The path to the events with one more filter. It keeps the other filters of
+  the current page and replaces a filter on the same field.
+  """
+  def filter_path(%Flop.Meta{flop: flop}, field, op, value) do
+    filters =
+      flop.filters
+      |> Enum.reject(&(&1.field == field))
+      |> Enum.map(&{&1.field, &1.op, &1.value})
+      |> Kernel.++([{field, op, value}])
+
+    events_path(filters: filter_params(filters), first: flop.first, last: flop.last)
+  end
+
+  @doc "The path to the events with the current filters, without the filters on `field`."
+  def remove_filter_path(%Flop.Meta{flop: flop}, field) do
+    filters =
+      flop.filters
+      |> Enum.reject(&(&1.field == field))
+      |> Enum.map(&{&1.field, &1.op, &1.value})
+
+    events_path(filters: filter_params(filters), first: flop.first, last: flop.last)
+  end
+
+  @doc "The value of the filter on `field`, or nil."
+  def filter_value(%Flop.Meta{flop: flop}, field),
+    do: Enum.find_value(flop.filters, &(&1.field == field && &1.value))
+
+  @doc "The path to all events of one message."
+  def message_events_path(message_id),
+    do: events_path(filters: filter_params([{:message_id, :==, message_id}]))
+
+  @page_sizes [50, 100, 250]
+
+  def page_sizes(), do: @page_sizes
+
+  @doc "The path to the first page with another page size, with the same filters."
+  def page_size_path(%Flop.Meta{flop: flop}, page_size) do
+    filters = Enum.map(flop.filters, &{&1.field, &1.op, &1.value})
+    events_path(filters: filter_params(filters), first: page_size)
+  end
+
+  @doc "The path to the CSV export of the events with the current filters."
+  def export_path(%Flop.Meta{flop: flop}) do
+    filters = Enum.map(flop.filters, &{&1.field, &1.op, &1.value})
+    query = Plug.Conn.Query.encode([filters: filter_params(filters)], &query_value/1)
+    ~p"/events/export.csv" <> "?" <> query
+  end
+
+  @doc "The page size of the current page."
+  def page_size(%Flop.Meta{flop: flop}),
+    do: flop.first || flop.last || Application.get_env(:mailgun_logger, :page_size)
+
+  defp filter_params(filters) do
+    filters
+    |> Enum.with_index()
+    |> Map.new(fn {{field, op, value}, index} ->
+      {to_string(index), %{field: field, op: op, value: value}}
+    end)
+  end
+
+  @doc """
   Builds the events path for the pagination links. Flop.Phoenix sets
   `first` or `last` to nil when the page size is the default, and a
   nil value would end up as an empty query parameter.
   """
   def events_path(params) do
-    ~p"/events?#{Enum.reject(params, fn {_key, value} -> is_nil(value) end)}"
+    query =
+      params
+      |> Enum.reject(fn {_key, value} -> is_nil(value) end)
+      |> Plug.Conn.Query.encode(&query_value/1)
+
+    ~p"/events" <> "?" <> query
   end
+
+  # A time filter value is a NaiveDateTime; write it like the datetime-local input does.
+  defp query_value(%NaiveDateTime{} = value), do: NaiveDateTime.to_iso8601(value)
+  defp query_value(value), do: to_string(value)
 end

@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     env:
       MIX_ENV: test
@@ -29,7 +29,7 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Only Erlang and Elixir come from .tool-versions. The prebuilt rebar3
       # 3.22.1 that setup-beam downloads does not load on OTP 28, and mix
@@ -48,7 +48,7 @@ jobs:
           version-type: strict
 
       - name: Restore dependencies and build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             deps

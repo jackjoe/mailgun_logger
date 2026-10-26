@@ -23,6 +23,30 @@ defmodule MailgunLoggerWeb.EventController do
     [running?: MailgunLogger.running?(), last_run: Accounts.last_run_summary()]
   end
 
+  @export_limit 100_000
+
+  def export(conn, params) do
+    conn =
+      conn
+      |> put_resp_content_type("text/csv")
+      |> put_resp_header("content-disposition", ~s(attachment; filename="events.csv"))
+      |> send_chunked(200)
+
+    {:ok, conn} =
+      Events.export_csv(params, @export_limit, fn lines ->
+        lines
+        |> Stream.chunk_every(500)
+        |> Enum.reduce_while(conn, fn chunk, conn ->
+          case chunk(conn, chunk) do
+            {:ok, conn} -> {:cont, conn}
+            {:error, :closed} -> {:halt, conn}
+          end
+        end)
+      end)
+
+    conn
+  end
+
   def show(conn, %{"id" => event_id}) do
     event = event_id |> Events.get_event() |> Events.preload(:account)
     render(conn, :show, event: event)
