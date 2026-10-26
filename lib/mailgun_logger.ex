@@ -65,6 +65,9 @@ defmodule MailgunLogger do
     |> List.flatten()
   end
 
+  @doc "True while a run that `run_async_if_not_running/0` started is busy."
+  def running?(), do: Process.whereis(:run_task) != nil
+
   @doc """
   Spawns a task to fetch new e-mails. If the task is already running, it will not be started again.
   """
@@ -87,18 +90,38 @@ defmodule MailgunLogger do
     client = Mailgun.Client.new(account)
 
     case Mailgun.Events.get_events(client, gen_range()) do
-      {:error, status, msg} ->
-        {:error, status, msg}
+      {:error, status, body} ->
+        Accounts.record_run(account, {:error, describe_error(status, body)})
+        {:error, status, body}
 
       {:error, reason} ->
+        Accounts.record_run(account, {:error, describe_error(reason)})
         {:error, reason}
 
       events ->
+        Accounts.record_run(account, {:ok, length(events)})
+
         events
         |> MailgunLogger.Events.save_events(account)
         |> get_stored_messages(client)
     end
   end
+
+  # A short message for the accounts page, for example "401: unauthorized".
+  defp describe_error(status, body) do
+    message =
+      case Jason.decode(body) do
+        {:ok, %{"message" => message}} -> message
+        {:ok, %{"Error" => message}} -> message
+        _ -> String.slice(body, 0, 200)
+      end
+
+    "#{status}: #{message}"
+  end
+
+  defp describe_error(%{__exception__: true} = exception), do: Exception.message(exception)
+  defp describe_error(message) when is_binary(message), do: message
+  defp describe_error(reason), do: inspect(reason)
 
   @doc """
   Generate a timerange from yesterday until today.

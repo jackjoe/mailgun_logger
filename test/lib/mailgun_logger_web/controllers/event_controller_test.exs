@@ -26,6 +26,46 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     refute html =~ delivered.recipient
   end
 
+  describe "run status" do
+    defp run_status(conn) do
+      conn
+      |> get(~p"/events")
+      |> html_response(200)
+      |> LazyHTML.from_document()
+      |> LazyHTML.query(".run-status")
+      |> LazyHTML.text()
+      |> String.split()
+      |> Enum.join(" ")
+    end
+
+    test "shows a run in progress", %{conn: conn} do
+      pid = spawn(fn -> Process.sleep(:infinity) end)
+      Process.register(pid, :run_task)
+      on_exit(fn -> Process.exit(pid, :kill) end)
+
+      assert run_status(conn) == "Run in progress"
+    end
+
+    test "shows a summary of the last run", %{conn: conn} do
+      insert(:account,
+        last_run_at: DateTime.add(DateTime.utc_now(), -600, :second),
+        last_run_status: "ok"
+      )
+
+      insert(:account,
+        last_run_at: DateTime.add(DateTime.utc_now(), -180, :second),
+        last_run_status: "error"
+      )
+
+      assert run_status(conn) == "Last run 3 min ago: 1 ok, 1 error"
+    end
+
+    test "shows nothing before the first run", %{conn: conn} do
+      insert(:account)
+      assert run_status(conn) == ""
+    end
+  end
+
   test "the account filter defaults to all accounts", %{conn: conn} do
     html = conn |> get(~p"/events") |> html_response(200)
 

@@ -8,17 +8,31 @@
         <th>API key</th>
         <th>EU</th>
         <th>Active</th>
+        <th>Last run</th>
+        <th>Result</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
       <tr :for={account <- @accounts}>
         <td>{account.domain}</td>
-        <td>{account.api_key}</td>
+        <td>{mask_key(account.api_key)}</td>
         <td><span :if={account.is_eu}>EU</span></td>
         <td>
           <pre :if={account.is_active} class="dot active">active</pre>
           <pre :if={!account.is_active} class="dot inactive">inactive</pre>
+        </td>
+        <td>
+          <.relative_time :if={account.last_run_at} at={account.last_run_at} />
+          <span :if={!account.last_run_at} class="text-dim">never</span>
+        </td>
+        <td>
+          <span :if={account.last_run_status == "ok"} class="text-success">
+            ok, {account.last_run_event_count} events
+          </span>
+          <span :if={account.last_run_status == "error"} class="text-danger">
+            {account.last_run_error}
+          </span>
         </td>
         <td><.link href={~p"/accounts/#{account}/edit"}>edit</.link></td>
       </tr>

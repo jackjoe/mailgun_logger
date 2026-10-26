@@ -9,14 +9,18 @@ defmodule MailgunLoggerWeb.EventController do
 
     case Events.search_events(params) do
       {:ok, {events, meta}} ->
-        render(conn, :index, meta: meta, events: events, accounts: accounts)
+        render(conn, :index, [meta: meta, events: events, accounts: accounts] ++ run_status())
 
       {:error, %Flop.Meta{} = meta} ->
         conn
         |> put_flash(:error, "Something went wrong")
         |> put_status(500)
-        |> render(:index, meta: meta, events: [], accounts: accounts)
+        |> render(:index, [meta: meta, events: [], accounts: accounts] ++ run_status())
     end
+  end
+
+  defp run_status() do
+    [running?: MailgunLogger.running?(), last_run: Accounts.last_run_summary()]
   end
 
   def show(conn, %{"id" => event_id}) do

@@ -236,6 +236,53 @@ defmodule MailgunLoggerWeb.CoreComponents do
   end
 
   @doc """
+  Renders a UTC timestamp as relative time, with the full UTC time as a tooltip.
+
+  ## Examples
+
+      <.relative_time at={@account.last_run_at} />
+  """
+  attr(:at, :any, required: true, doc: "a DateTime or a NaiveDateTime in UTC")
+
+  def relative_time(assigns) do
+    ~H"""
+    <time datetime={DateTime.to_iso8601(to_utc(@at))} title={utc_label(@at)}>{time_ago(@at)}</time>
+    """
+  end
+
+  @doc """
+  Returns the time between the timestamp and now in words, for example "3 min ago".
+  """
+  def time_ago(at, now \\ DateTime.utc_now()) do
+    seconds = DateTime.diff(now, to_utc(at))
+
+    cond do
+      seconds < 60 -> "just now"
+      seconds < 3600 -> "#{div(seconds, 60)} min ago"
+      seconds < 86_400 -> plural(div(seconds, 3600), "hour") <> " ago"
+      true -> plural(div(seconds, 86_400), "day") <> " ago"
+    end
+  end
+
+  @doc """
+  Formats a UTC timestamp as "2026-10-26 12:00:00 UTC".
+  """
+  def utc_label(at), do: Calendar.strftime(to_utc(at), "%Y-%m-%d %H:%M:%S UTC")
+
+  defp to_utc(%DateTime{} = at), do: at
+  defp to_utc(%NaiveDateTime{} = at), do: DateTime.from_naive!(at, "Etc/UTC")
+
+  defp plural(1, unit), do: "1 #{unit}"
+  defp plural(n, unit), do: "#{n} #{unit}s"
+
+  @doc """
+  Shows only the last four characters of an API key.
+  """
+  def mask_key(nil), do: ""
+  def mask_key(key) when byte_size(key) <= 4, do: "••••"
+  def mask_key(key), do: "••••" <> String.slice(key, -4, 4)
+
+  @doc """
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do
