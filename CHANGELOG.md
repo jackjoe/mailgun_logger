@@ -1,3 +1,60 @@
+## 2026.10.0 (2026-10-26)
+
+**BREAKING**
+
+`config/runtime.exs` now reads all environment variables at boot. A release stops at boot with the variable name when a required value is missing. Required in prod: `ML_DB_USER`, `ML_DB_PASSWORD`, `ML_DB_NAME`, `ML_DB_HOST`, `HOST` and `SECRET_KEY_BASE`. `PORT` defaults to `5050`. This release contains migrations.
+
+### Added
+
+- Each run saves its time, result and event count on the account, so a wrong API key (401) is no longer silent
+- Accounts page shows the result of the last run and masks the API key
+- Events page shows a run in progress or a summary of the last run
+- Trigger Run shows a "Run started" message
+- Dev stores sent emails at `/sent_emails`
+
+### Changed
+
+- Migrate from Bamboo to Swoosh; password reset emails go through the Mailgun EU API with Req
+- Replace HTTPoison and hackney with Req for the Mailgun events API and S3 (`ExAws.Request.Req`, 60 s receive timeout)
+- Replace `plug_cowboy` with Bandit
+- Move to Phoenix 1.8 HTML modules and layouts; templates live next to their controllers, routes use `~p`
+- Remove `phoenix_view`, `phoenix_html_helpers`, `floki`, `httpoison` and `hackney`
+- Pin 0.x dependencies to their minor version
+- Use `Flop.Schema` with Flop options (Flop 0.29)
+- `ML_PAGESIZE` and `ML_LOG_LEVEL` are read at boot instead of at compile time
+- CI runs the tests on Postgres with the versions from `.tool-versions`, on every pull request, and checks unused dependencies, compiler warnings and formatting
+
+### Fixed
+
+- Render the error view instead of a bare "Something went wrong"
+- Setup redirect crashed when no users exist
+- Keep the "Signed out" flash after logout
+- Delete role links together with the user (migration)
+- Redirect an unknown password reset token to the error page
+- Show the password reset error and keep the reset form a POST
+- English labels and a separate heading on each password reset page
+- Account filter defaults to all accounts
+- Drop empty `first` and `last` parameters from pagination links
+- Subject header has the same color as the other headers
+- Flash inside the panel on the login and reset pages
+- Show 0 for empty counts and "none" for no linked events
+- Alignment of checkboxes, select height, panel and alert spacing
+
+### Security
+
+- Mailgun API key is sent as a Basic auth header; stored message URLs no longer contain the key
+- Password values are never rendered back into the page
+- Password reset request page no longer confirms that an account exists
+- Removes the hackney advisories EEF-CVE-2026-47071, -47075, -47076 and -47069 and the cowlib advisory
+- `.dockerignore` excludes `.env` files
+
+## 2026.4.0 (2026-04-27)
+
+### Fixed
+
+- Read `ML_STORE_MESSAGES` at runtime and parse it as a boolean
+- Cursor pagination on the events index repeated the same rows; the cursor is now based on `(timestamp, id)` with a matching index (migration)
+
 ## 2026.3.1 (2026-03-11)
 
 ### Fixed
