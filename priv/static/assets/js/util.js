@@ -72,3 +72,58 @@
       });
   });
 })();
+
+// Keyboard shortcuts on the events list: "/" focuses the search, "j" and "k"
+// move between rows, Enter opens the selected event and Escape leaves a field.
+(function () {
+  if (!document.querySelector(".log-table")) return;
+
+  var current = -1;
+
+  function rows() {
+    return Array.prototype.slice.call(document.querySelectorAll(".log-row"));
+  }
+
+  function select(index) {
+    var list = rows();
+    if (list.length === 0) return;
+
+    current = Math.max(0, Math.min(index, list.length - 1));
+    list.forEach(function (row, i) {
+      row.classList.toggle("is-selected", i === current);
+    });
+    list[current].scrollIntoView({ block: "nearest" });
+  }
+
+  function isTyping(element) {
+    return (
+      element &&
+      (["INPUT", "SELECT", "TEXTAREA"].indexOf(element.tagName) !== -1 ||
+        element.isContentEditable)
+    );
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    if (isTyping(e.target)) {
+      if (e.key === "Escape") e.target.blur();
+      return;
+    }
+
+    if (e.key === "/") {
+      var search = document.querySelector("#events-filter input[type='text']");
+      if (search) {
+        e.preventDefault();
+        search.focus();
+      }
+    } else if (e.key === "j") {
+      select(current + 1);
+    } else if (e.key === "k") {
+      select(current - 1);
+    } else if (e.key === "Enter" && current >= 0) {
+      var detail = rows()[current].querySelector(".log-col-actions a:last-child");
+      if (detail) window.location.href = detail.href;
+    }
+  });
+})();

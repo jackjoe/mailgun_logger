@@ -789,8 +789,15 @@ footer a:hover {
 
 .page-header-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
+}
+
+.page-header-actions .btn,
+.page-header-actions button {
+  white-space: nowrap;
 }
 
 .run-status {
@@ -915,7 +922,38 @@ footer a:hover {
 }
 
 .pagination-wrapper {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
   margin-top: 16px;
+}
+
+.pagination-wrapper .shortcuts-hint {
+  grid-column: 1;
+}
+
+.pagination-wrapper .pagination-nav {
+  grid-column: 2;
+}
+
+.pagination-wrapper .page-size {
+  grid-column: 3;
+  justify-self: end;
+}
+
+kbd {
+  padding: 0 4px;
+  font-family: var(--font);
+  font-size: 11px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+}
+
+@media (max-width: 800px) {
+  .shortcuts-hint {
+    display: none;
+  }
 }
 
 .pagination-nav {
@@ -983,6 +1021,15 @@ footer a:hover {
   background: var(--c-surface-raised);
 }
 
+.log-row.is-selected {
+  background: var(--c-surface-raised);
+  box-shadow: -6px 0 0 var(--c-accent);
+}
+
+.shortcuts-hint {
+  font-size: 11px;
+}
+
 .log-col-event { width: 80px; flex-shrink: 0; }
 .log-col-level { width: 50px; flex-shrink: 0; color: var(--c-text-dim); }
 .log-col-dir   { width: 30px; flex-shrink: 0; color: var(--c-text-dim); }
@@ -993,6 +1040,38 @@ footer a:hover {
 .log-col-actions { width: 80px; flex-shrink: 0; text-align: right; white-space: nowrap; }
 
 .log-row .log-col-subject { color: var(--c-text-bright); }
+
+/* Click a sender, recipient or event to filter on it */
+.log-col-event a,
+.log-col-from a,
+.log-col-to a {
+  color: inherit;
+}
+
+.log-col-event a:hover,
+.log-col-from a:hover,
+.log-col-to a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.active-filter {
+  display: inline-flex;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--c-accent-bg);
+  border: 1px solid var(--c-border);
+}
+
+.message-events {
+  margin-left: 10px;
+}
+
+.failure-reason {
+  color: var(--c-danger);
+}
 
 .log-col-actions a {
   color: var(--c-text-dim);
@@ -1218,6 +1297,20 @@ tr {
 }
 
 @media (max-width: 800px) {
+  .page-header {
+    margin-bottom: 12px;
+  }
+
+  /* The columns of the event list keep their width; the list scrolls instead */
+  .log-table {
+    overflow-x: auto;
+  }
+
+  .log-header,
+  .log-row {
+    min-width: 960px;
+  }
+
   .stat-tiles {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -1,6 +1,9 @@
 defmodule MailgunLoggerTest do
   use MailgunLogger.DataCase
 
+  # The error paths log on purpose; keep that out of the test output.
+  @moduletag :capture_log
+
   alias MailgunLogger.Account
 
   defp raw_event(id) do

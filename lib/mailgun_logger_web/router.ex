@@ -73,6 +73,7 @@ defmodule MailgunLoggerWeb.Router do
 
     get("/logout", AuthController, :logout)
 
+    get("/events/export.csv", EventController, :export)
     resources("/events", EventController, only: [:index, :show])
     get("/events/:id/stored_message", EventController, :stored_message)
     resources("/accounts", AccountController, except: [:show])

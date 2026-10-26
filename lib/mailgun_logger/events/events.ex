@@ -19,10 +19,83 @@ defmodule MailgunLogger.Events do
 
     Event
     |> select([e], ^fields)
+    |> select_merge([e], %{
+      failure_reason:
+        fragment(
+          "CASE WHEN ? = 'failed' THEN ? -> 'delivery-status' ->> 'message' END",
+          e.event,
+          e.raw
+        )
+    })
     |> Flop.validate_and_run(params,
       for: Event,
+      replace_invalid_params: true,
       default_limit: Application.get_env(:mailgun_logger, :page_size)
     )
+  end
+
+  @csv_header ~w(timestamp_utc event log_level method account from recipient subject message_id failure_reason)
+
+  @doc """
+  Streams the events that match the filters in `params` as CSV lines, newest
+  first and at most `limit` events. Calls `fun` with the stream inside a
+  transaction, which a database stream needs, and returns `{:ok, result}`.
+  """
+  def export_csv(params, limit, fun) do
+    {:ok, flop} =
+      Flop.validate(init_filters(params), for: Event, replace_invalid_params: true)
+
+    query =
+      from(e in Event,
+        join: a in assoc(e, :account),
+        limit: ^limit,
+        select: [
+          e.timestamp,
+          e.event,
+          e.log_level,
+          e.method,
+          a.domain,
+          e.message_from,
+          e.recipient,
+          e.message_subject,
+          e.message_id,
+          fragment(
+            "CASE WHEN ? = 'failed' THEN ? -> 'delivery-status' ->> 'message' END",
+            e.event,
+            e.raw
+          )
+        ]
+      )
+      |> Flop.filter(flop, for: Event)
+      |> Flop.order_by(flop, for: Event)
+
+    Repo.transaction(
+      fn ->
+        query
+        |> Repo.stream(max_rows: 1000)
+        |> Stream.map(&csv_line/1)
+        |> then(&Stream.concat([csv_line(@csv_header)], &1))
+        |> fun.()
+      end,
+      timeout: :infinity
+    )
+  end
+
+  defp csv_line(values), do: [Enum.map_intersperse(values, ",", &csv_value/1), "\r\n"]
+
+  defp csv_value(nil), do: ""
+  defp csv_value(%NaiveDateTime{} = at), do: Calendar.strftime(at, "%Y-%m-%d %H:%M:%S")
+
+  defp csv_value(value) do
+    value = to_string(value)
+
+    # A spreadsheet runs a cell that starts with one of these characters as a
+    # formula. Senders choose the subject, so neutralize it.
+    value = if String.starts_with?(value, ["=", "+", "-", "@"]), do: "'" <> value, else: value
+
+    if String.contains?(value, [",", "\"", "\n", "\r"]),
+      do: [?", String.replace(value, "\"", "\"\""), ?"],
+      else: value
   end
 
   def init_filters(%{"filters" => filters} = params) do

@@ -26,6 +26,213 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     refute html =~ delivered.recipient
   end
 
+  describe "rows" do
+    defp first_row(conn, path) do
+      conn
+      |> get(path)
+      |> html_response(200)
+      |> LazyHTML.from_document()
+      |> LazyHTML.query(".log-row")
+      |> Enum.at(0)
+    end
+
+    defp href_filters(node, selector) do
+      [href] = node |> LazyHTML.query(selector) |> LazyHTML.attribute("href")
+      query = href |> URI.parse() |> Map.fetch!(:query) |> Plug.Conn.Query.decode()
+      query |> Map.get("filters", %{}) |> Map.values() |> Enum.sort_by(& &1["field"])
+    end
+
+    test "links the sender, recipient and event to a filter that keeps the other filters",
+         %{conn: conn} do
+      event = insert(:event, event: "delivered", message_from: "a@x.com", recipient: "b@y.com")
+
+      account = %{"field" => "account_id", "op" => "==", "value" => to_string(event.account_id)}
+      row = first_row(conn, ~p"/events?#{%{filters: %{"0" => account}}}")
+
+      assert href_filters(row, ".log-col-from a") == [
+               account,
+               %{"field" => "message_from", "op" => "ilike", "value" => "a@x.com"}
+             ]
+
+      assert href_filters(row, ".log-col-to a") == [
+               account,
+               %{"field" => "recipient", "op" => "ilike", "value" => "b@y.com"}
+             ]
+
+      assert href_filters(row, ".log-col-event a") == [
+               account,
+               %{"field" => "event", "op" => "==", "value" => "delivered"}
+             ]
+    end
+
+    test "a new filter replaces a filter on the same field", %{conn: conn} do
+      insert(:event, event: "delivered")
+      old = %{"field" => "event", "op" => "==", "value" => "failed"}
+
+      row = first_row(conn, ~p"/events")
+      assert [%{"value" => "delivered"}] = href_filters(row, ".log-col-event a")
+
+      insert(:event, event: "failed")
+      row = first_row(conn, ~p"/events?#{%{filters: %{"0" => old}}}")
+      assert [%{"value" => "failed"}] = href_filters(row, ".log-col-event a")
+    end
+
+    test "shows the failure reason of a failed event", %{conn: conn} do
+      insert(:event, event: "failed", raw: %{"delivery-status" => %{"message" => "mailbox full"}})
+      row = first_row(conn, ~p"/events")
+
+      assert row |> LazyHTML.query(".failure-reason") |> LazyHTML.text() =~ "mailbox full"
+      assert [title] = row |> LazyHTML.query(".log-col-event a") |> LazyHTML.attribute("title")
+      assert title =~ "mailbox full"
+    end
+
+    test "shows no failure reason for a delivered event", %{conn: conn} do
+      insert(:event, event: "delivered", raw: %{"delivery-status" => %{"message" => "OK"}})
+      row = first_row(conn, ~p"/events")
+      assert row |> LazyHTML.query(".failure-reason") |> Enum.count() == 0
+    end
+
+    test "shows the UTC time with the relative time as tooltip", %{conn: conn} do
+      insert(:event, timestamp: ~N[2026-10-01 02:10:00])
+
+      [time] =
+        conn |> first_row(~p"/events") |> LazyHTML.query(".log-col-ts time") |> Enum.to_list()
+
+      assert time |> LazyHTML.text() |> String.trim() == "2026-10-01 02:10:00"
+      assert [title] = LazyHTML.attribute(time, "title")
+      assert title =~ "ago"
+    end
+  end
+
+  describe "page size" do
+    defp rows(html),
+      do: html |> LazyHTML.from_document() |> LazyHTML.query(".log-row") |> Enum.count()
+
+    test "shows the chosen page size", %{conn: conn} do
+      insert_list(3, :event)
+      assert conn |> get(~p"/events?first=2") |> html_response(200) |> rows() == 2
+    end
+
+    test "falls back to the default page size above 250", %{conn: conn} do
+      page_size = Application.get_env(:mailgun_logger, :page_size)
+      Application.put_env(:mailgun_logger, :page_size, 2)
+      on_exit(fn -> Application.put_env(:mailgun_logger, :page_size, page_size) end)
+
+      insert_list(3, :event)
+      html = conn |> get(~p"/events?first=251") |> html_response(200)
+      assert rows(html) == 2
+      refute html =~ "Something went wrong"
+    end
+
+    test "links to each page size and keeps the filters", %{conn: conn} do
+      failed = %{"field" => "event", "op" => "==", "value" => "failed"}
+      html = conn |> get(~p"/events?#{%{filters: %{"0" => failed}}}") |> html_response(200)
+
+      links =
+        html
+        |> LazyHTML.from_document()
+        |> LazyHTML.query(".page-size a")
+        |> Enum.map(fn link ->
+          [href] = LazyHTML.attribute(link, "href")
+          query = href |> URI.parse() |> Map.fetch!(:query) |> Plug.Conn.Query.decode()
+          {String.trim(LazyHTML.text(link)), query["first"], Map.values(query["filters"])}
+        end)
+
+      assert links == [
+               {"50", "50", [failed]},
+               {"100", "100", [failed]},
+               {"250", "250", [failed]}
+             ]
+    end
+
+    test "the filter form keeps a chosen page size", %{conn: conn} do
+      html = conn |> get(~p"/events?first=100") |> html_response(200)
+
+      assert html
+             |> LazyHTML.from_document()
+             |> LazyHTML.query(~s(#events-filter input[name="first"]))
+             |> LazyHTML.attribute("value") == ["100"]
+    end
+  end
+
+  describe "CSV export" do
+    test "downloads the filtered events", %{conn: conn} do
+      insert(:event, event: "failed", recipient: "failed@example.com")
+      insert(:event, event: "delivered", recipient: "delivered@example.com")
+
+      failed = %{"field" => "event", "op" => "==", "value" => "failed"}
+      conn = get(conn, ~p"/events/export.csv?#{%{filters: %{"0" => failed}}}")
+
+      assert response_content_type(conn, :csv) =~ "text/csv"
+
+      assert [~s(attachment; filename="events.csv")] =
+               get_resp_header(conn, "content-disposition")
+
+      body = response(conn, 200)
+      assert body =~ "failed@example.com"
+      refute body =~ "delivered@example.com"
+    end
+
+    test "the events page links to the export with the same filters", %{conn: conn} do
+      failed = %{"field" => "event", "op" => "==", "value" => "failed"}
+      html = conn |> get(~p"/events?#{%{filters: %{"0" => failed}}}") |> html_response(200)
+
+      [href] =
+        html
+        |> LazyHTML.from_document()
+        |> LazyHTML.query("a.export")
+        |> LazyHTML.attribute("href")
+
+      query = href |> URI.parse() |> Map.fetch!(:query) |> Plug.Conn.Query.decode()
+      assert URI.parse(href).path == "/events/export.csv"
+      assert Map.values(query["filters"]) == [failed]
+    end
+  end
+
+  describe "message filter" do
+    test "the detail page links to all events of the message", %{conn: conn} do
+      event = insert(:event, message_id: "abc@mg.example.com")
+      html = conn |> get(~p"/events/#{event}") |> html_response(200)
+
+      [href] =
+        html
+        |> LazyHTML.from_document()
+        |> LazyHTML.query("a.message-events")
+        |> LazyHTML.attribute("href")
+
+      query = href |> URI.parse() |> Map.fetch!(:query) |> Plug.Conn.Query.decode()
+
+      assert Map.values(query["filters"]) == [
+               %{"field" => "message_id", "op" => "==", "value" => "abc@mg.example.com"}
+             ]
+    end
+
+    test "lists the events of one message and shows the filter with a remove link", %{
+      conn: conn
+    } do
+      insert(:event, message_id: "abc@mg.example.com", recipient: "one@example.com")
+      insert(:event, message_id: "other@mg.example.com", recipient: "two@example.com")
+
+      message = %{"field" => "message_id", "op" => "==", "value" => "abc@mg.example.com"}
+      failed = %{"field" => "event", "op" => "==", "value" => "delivered"}
+
+      html =
+        conn
+        |> get(~p"/events?#{%{filters: %{"0" => message, "1" => failed}}}")
+        |> html_response(200)
+
+      assert html =~ "one@example.com"
+      refute html =~ "two@example.com"
+
+      chip = html |> LazyHTML.from_document() |> LazyHTML.query(".active-filter")
+      assert LazyHTML.text(chip) =~ "abc@mg.example.com"
+
+      [href] = chip |> LazyHTML.query("a") |> LazyHTML.attribute("href")
+      query = href |> URI.parse() |> Map.fetch!(:query) |> Plug.Conn.Query.decode()
+      assert Map.values(query["filters"]) == [failed]
+    end
+  end
+
   describe "run status" do
     defp run_status(conn) do
       conn
