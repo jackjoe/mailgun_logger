@@ -190,6 +190,24 @@ defmodule MailgunLoggerWeb.EventControllerTest do
   end
 
   describe "message filter" do
+    test "the filter form keeps the message filter", %{conn: conn} do
+      message = %{"field" => "message_id", "op" => "==", "value" => "abc@mg.example.com"}
+      html = conn |> get(~p"/events?#{%{filters: %{"0" => message}}}") |> html_response(200)
+
+      hidden =
+        html
+        |> LazyHTML.from_document()
+        |> LazyHTML.query(~s(#events-filter input[type="hidden"][name^="filters"]))
+        |> Enum.map(&{hd(LazyHTML.attribute(&1, "name")), hd(LazyHTML.attribute(&1, "value"))})
+        |> Enum.filter(fn {name, _} -> name =~ "[message_id]" or name =~ "filters[99]" end)
+
+      assert hidden == [
+               {"filters[99][field]", "message_id"},
+               {"filters[99][op]", "=="},
+               {"filters[99][value]", "abc@mg.example.com"}
+             ]
+    end
+
     test "the detail page links to all events of the message", %{conn: conn} do
       event = insert(:event, message_id: "abc@mg.example.com")
       html = conn |> get(~p"/events/#{event}") |> html_response(200)
