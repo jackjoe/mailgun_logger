@@ -92,6 +92,7 @@ defmodule MailgunLogger.User do
     user
     |> cast(params, [:reset_token, :password])
     |> validate_required([:password])
+    |> validate_length(:password, min: 8)
     |> validate_confirmation(:password)
     |> hash_password()
   end

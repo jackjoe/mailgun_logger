@@ -1,27 +1,124 @@
 <Layouts.app flash={@flash} conn={@conn}>
-  <h1>Main dashboard</h1>
-
-  <div>
-    <div :if={@total_accounts == 0} class="warn">
-      <strong>Note:</strong>
-      no accounts found... <.link href={~p"/accounts/new"}>create an account</.link>
-      to start receiving logs.
+  <div class="page-header">
+    <h1>Stats</h1>
+    <div class="page-header-actions">
+      <nav class="segmented" aria-label="Range">
+        <.link
+          :for={range <- @ranges}
+          href={stats_path(range, @account_id)}
+          class={if range == @range, do: "is-active", else: ""}
+        >
+          {range}
+        </.link>
+      </nav>
+      <form action={~p"/stats"} method="get" class="stats-account">
+        <input type="hidden" name="range" value={@range} />
+        <select name="account_id" aria-label="Account" onchange="this.form.submit()">
+          <option value="">all accounts</option>
+          <option
+            :for={account <- @accounts}
+            value={account.id}
+            selected={account.id == @account_id}
+          >
+            {account.domain}
+          </option>
+        </select>
+        <noscript><.button type="submit">Show</.button></noscript>
+      </form>
     </div>
-    <h2>Some stats</h2>
-    <h3>Event counts by type (all time)</h3>
-    <dl>
-      <dt>Failed:</dt>
-      <dd>{Map.get(@event_counts.by_type, "failed", 0)}</dd>
-      <dt>Accepted:</dt>
-      <dd>{Map.get(@event_counts.by_type, "accepted", 0)}</dd>
-      <dt>Delivered:</dt>
-      <dd>{Map.get(@event_counts.by_type, "delivered", 0)}</dd>
-      <dt>Clicked:</dt>
-      <dd>{Map.get(@event_counts.by_type, "clicked", 0)}</dd>
-      <dt>Opened:</dt>
-      <dd>{Map.get(@event_counts.by_type, "opened", 0)}</dd>
-      <dt>Stored:</dt>
-      <dd>{Map.get(@event_counts.by_type, "stored", 0)}</dd>
-    </dl>
   </div>
+
+  <div :if={@accounts == []} class="warn">
+    No accounts yet. <.link href={~p"/accounts/new"}>Create an account</.link>
+    to start receiving logs.
+  </div>
+
+  <div class="stat-tiles">
+    <div :for={tile <- stat_tiles(@counts, @previous)} class="stat-tile">
+      <.link href={events_path([{:event, :==, tile.type}], @period.from, @period.to, @account_id)}>
+        <span class="stat-label">{tile.label}</span>
+        <span class={"stat-value log-event--#{tile.type}"}>{tile.count}</span>
+        <span :if={tile.rate} class="stat-rate">{tile.rate}</span>
+        <span :if={tile.change} class="stat-change text-dim">
+          {tile.change} vs previous {@range}
+        </span>
+      </.link>
+    </div>
+  </div>
+
+  <section class="stats-section">
+    <h2>Events per {@period.bucket}</h2>
+    <.volume_chart volume={@volume} bucket={@period.bucket} account_id={@account_id} />
+  </section>
+
+  <div class="stats-columns">
+    <section class="stats-section">
+      <h2>Top failure reasons</h2>
+      <table :if={@reasons != []} cellspacing="0" class="table">
+        <tbody>
+          <tr :for={{reason, count} <- @reasons}>
+            <td>{reason}</td>
+            <td class="num">{count}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p :if={@reasons == []} class="text-dim">No failed events.</p>
+    </section>
+
+    <section class="stats-section">
+      <h2>Top failing domains</h2>
+      <table :if={@domains != []} cellspacing="0" class="table">
+        <tbody>
+          <tr :for={{domain, count} <- @domains}>
+            <td>
+              <.link href={
+                events_path(
+                  [{:event, :==, "failed"}, {:recipient, :ilike, "@" <> domain}],
+                  @period.from,
+                  @period.to,
+                  @account_id
+                )
+              }>
+                {domain}
+              </.link>
+            </td>
+            <td class="num">{count}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p :if={@domains == []} class="text-dim">No failed events.</p>
+    </section>
+  </div>
+
+  <section :if={@accounts != []} class="stats-section">
+    <h2>Accounts</h2>
+    <table cellspacing="0" class="table">
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th>Active</th>
+          <th>Last run</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr :for={account <- @accounts}>
+          <td>{account.domain}</td>
+          <td>{if account.is_active, do: "yes", else: "no"}</td>
+          <td>
+            <.relative_time :if={account.last_run_at} at={account.last_run_at} />
+            <span :if={!account.last_run_at} class="text-dim">never</span>
+          </td>
+          <td>
+            <span :if={account.last_run_status == "ok"} class="text-success">
+              ok, {account.last_run_event_count} events
+            </span>
+            <span :if={account.last_run_status == "error"} class="text-danger">
+              {account.last_run_error}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
 </Layouts.app>

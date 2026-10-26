@@ -12,6 +12,7 @@
           <% true -> %>
         <% end %>
       </span>
+      <.link href={export_path(@meta)} class="btn export">Export CSV</.link>
       <.form for={%{}} action={~p"/trigger-run"}>
         <.button type="submit">Trigger Run</.button>
       </.form>
@@ -19,9 +20,11 @@
   </div>
 
   <.events_filter_form meta={@meta} accounts={cbo_accounts(@accounts)} id="events-filter" />
-  <div :if={Enum.count(@events) >= 1_000} class="warn">
-    Note: listing the first 1 000 results. Want to see more? Refine your search.
-    Paging with Scrivener was too slow, using offset. Want paging? PR's are welcome :)
+  <div :if={message_id = filter_value(@meta, :message_id)} class="active-filter">
+    Message ID: {message_id}
+    <.link href={remove_filter_path(@meta, :message_id)} aria-label="Remove the message filter">
+      remove
+    </.link>
   </div>
 
   <div class="log-table">
@@ -29,20 +32,37 @@
       <span class="log-col-event">event</span>
       <span class="log-col-level">level</span>
       <span class="log-col-dir" title="Direction: -> outbound, <- inbound">dir</span>
-      <span class="log-col-ts">timestamp</span>
+      <span class="log-col-ts">timestamp (utc)</span>
       <span class="log-col-from">from</span>
       <span class="log-col-to">recipient</span>
       <span class="log-col-subject">subject</span>
       <span class="log-col-actions"></span>
     </div>
     <div :for={event <- @events} class="log-row">
-      <span class="log-col-event">{event_name(event.event)}</span>
+      <span class="log-col-event">
+        <.link
+          href={filter_path(@meta, :event, :==, event.event)}
+          title={event.failure_reason || "Show only #{event.event} events"}
+        >{event_name(event.event)}</.link>
+      </span>
       <span class="log-col-level">{event_type(event.log_level)}</span>
       <span class="log-col-dir">{send_recv(event.method)}</span>
-      <span class="log-col-ts">{event.timestamp}</span>
-      <span class="log-col-from" title={event.message_from}>{event.message_from}</span>
-      <span class="log-col-to" title={event.recipient}>{event.recipient}</span>
-      <span class="log-col-subject" title={event.message_subject}>{event.message_subject}</span>
+      <span class="log-col-ts">{event_time(event.timestamp)}</span>
+      <span class="log-col-from" title={event.message_from}>
+        <.link
+          :if={event.message_from}
+          href={filter_path(@meta, :message_from, :ilike, event.message_from)}
+        >{event.message_from}</.link>
+      </span>
+      <span class="log-col-to" title={event.recipient}>
+        <.link
+          :if={event.recipient}
+          href={filter_path(@meta, :recipient, :ilike, event.recipient)}
+        >{event.recipient}</.link>
+      </span>
+      <span class="log-col-subject" title={event.message_subject}>
+        {event.message_subject}<span :if={event.failure_reason} class="failure-reason"> · {event.failure_reason}</span>
+      </span>
       <span class="log-col-actions">
         <a
           :if={event.event in ~w(delivered accepted failed)}
@@ -55,6 +75,9 @@
   </div>
 
   <div class="pagination-wrapper">
+    <span class="shortcuts-hint text-dim">
+      Keys: <kbd>/</kbd> search, <kbd>j</kbd> <kbd>k</kbd> move, <kbd>Enter</kbd> open
+    </span>
     <Flop.Phoenix.pagination
       meta={@meta}
       path={&events_path/1}
@@ -68,5 +91,14 @@
         Next →
       </:next>
     </Flop.Phoenix.pagination>
+    <nav class="segmented page-size" aria-label="Events per page">
+      <.link
+        :for={size <- page_sizes()}
+        href={page_size_path(@meta, size)}
+        class={if size == page_size(@meta), do: "is-active", else: ""}
+      >
+        {size}
+      </.link>
+    </nav>
   </div>
 </Layouts.app>

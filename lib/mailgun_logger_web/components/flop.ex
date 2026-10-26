@@ -28,10 +28,15 @@ defmodule MailgunLoggerWeb.Components.Flop do
   end
 
   def events_filter_form(%{meta: meta} = assigns) do
-    assigns = assign(assigns, :form, Phoenix.Component.to_form(meta))
+    message_id = Enum.find_value(meta.flop.filters, &(&1.field == :message_id && &1.value))
+    assigns = assign(assigns, form: Phoenix.Component.to_form(meta), message_id: message_id)
 
     ~H"""
-    <.form for={@form} class="flex-1 py-2 pr-4 h-full" id={@id}>
+    <.form for={@form} id={@id}>
+      <%!-- The message filter has no input; keep it when the form is sent --%>
+      <input :if={@message_id} type="hidden" name="filters[99][field]" value="message_id" />
+      <input :if={@message_id} type="hidden" name="filters[99][op]" value="==" />
+      <input :if={@message_id} type="hidden" name="filters[99][value]" value={@message_id} />
       <.filter_fields
         :let={i}
         form={@form}
@@ -43,7 +48,9 @@ defmodule MailgunLoggerWeb.Components.Flop do
           message_from: [op: :ilike, placeholder: "From"],
           recipient: [op: :ilike, placeholder: "Recipient"],
           message_subject: [op: :ilike, placeholder: "Subject"],
-          account_id: [type: "select", options: [{"all", ""}] ++ @accounts]
+          account_id: [type: "select", options: [{"all", ""}] ++ @accounts],
+          timestamp: [op: :>=, type: "datetime-local", label: "Since", title: "Since (UTC)"],
+          timestamp: [op: :<=, type: "datetime-local", label: "Until", title: "Until (UTC)"]
         ]}
       >
         <CoreComponents.input

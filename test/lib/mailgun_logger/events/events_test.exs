@@ -21,6 +21,91 @@ defmodule MailgunLogger.EventsTest do
     end
   end
 
+  describe "search_events/2 time range" do
+    setup do
+      account = insert(:account)
+
+      for {hour, subject} <- [{8, "early"}, {10, "middle"}, {12, "late"}] do
+        insert(:event,
+          account: account,
+          message_subject: subject,
+          timestamp: NaiveDateTime.new!(~D[2026-10-26], Time.new!(hour, 0, 0))
+        )
+      end
+
+      :ok
+    end
+
+    defp subjects(filters) do
+      {:ok, {events, _meta}} = Events.search_events(%{"filters" => filters})
+      events |> Enum.map(& &1.message_subject) |> Enum.sort()
+    end
+
+    test "from a time" do
+      filters = %{"0" => %{"field" => "timestamp", "op" => ">=", "value" => "2026-10-26T10:00"}}
+      assert subjects(filters) == ["late", "middle"]
+    end
+
+    test "until a time" do
+      filters = %{"0" => %{"field" => "timestamp", "op" => "<=", "value" => "2026-10-26T10:00"}}
+      assert subjects(filters) == ["early", "middle"]
+    end
+
+    test "between two times" do
+      filters = %{
+        "0" => %{"field" => "timestamp", "op" => ">=", "value" => "2026-10-26T09:00"},
+        "1" => %{"field" => "timestamp", "op" => "<=", "value" => "2026-10-26T11:00"}
+      }
+
+      assert subjects(filters) == ["middle"]
+    end
+  end
+
+  describe "export_csv/3" do
+    defp export(params, limit) do
+      {:ok, lines} = Events.export_csv(params, limit, &Enum.to_list/1)
+      lines |> IO.iodata_to_binary() |> String.split("\r\n", trim: true)
+    end
+
+    test "writes a header and one line per matching event, newest first" do
+      account = insert(:account, domain: "mg.example.com")
+
+      insert(:event,
+        account: account,
+        event: "failed",
+        timestamp: ~N[2026-10-26 10:00:00],
+        message_subject: "Hello, \"you\"",
+        raw: %{"delivery-status" => %{"message" => "mailbox full"}}
+      )
+
+      insert(:event, account: account, event: "delivered", timestamp: ~N[2026-10-26 09:00:00])
+      insert(:event, account: account, event: "opened", timestamp: ~N[2026-10-26 11:00:00])
+
+      filters = %{"0" => %{"field" => "event", "op" => "in", "value" => ["failed", "delivered"]}}
+      [header | lines] = export(%{"filters" => filters}, 10)
+
+      assert header ==
+               "timestamp_utc,event,log_level,method,account,from,recipient,subject,message_id,failure_reason"
+
+      assert [failed, delivered] = lines
+      assert failed =~ ~s(2026-10-26 10:00:00,failed,info,http,mg.example.com,)
+      assert failed =~ ~s("Hello, ""you""")
+      assert failed =~ ~s(,mailbox full)
+      assert delivered =~ "2026-10-26 09:00:00,delivered,"
+    end
+
+    test "stops at the limit" do
+      insert_list(3, :event)
+      assert length(export(%{}, 2)) == 3
+    end
+
+    test "neutralizes values that a spreadsheet would run as a formula" do
+      insert(:event, message_subject: "=HYPERLINK(1)")
+      [_header, line] = export(%{}, 10)
+      assert line =~ ",'=HYPERLINK(1),"
+    end
+  end
+
   describe "search_events/2 cursor pagination" do
     test "next page returns rows that are not on the previous page" do
       account = insert(:account)
