@@ -59,7 +59,8 @@ defmodule MailgunLogger.Event do
       :message_to,
       :message_subject,
       :account_id,
-      :timestamp
+      :timestamp,
+      :message_id
     ],
     sortable: [:timestamp, :id],
     default_order: %{
@@ -67,7 +68,8 @@ defmodule MailgunLogger.Event do
       order_directions: [:desc, :asc]
     },
     default_pagination_type: :first,
-    pagination_types: [:first, :last]
+    pagination_types: [:first, :last],
+    max_limit: 250
   ]
 
   @type t :: %__MODULE__{
@@ -106,6 +108,7 @@ defmodule MailgunLogger.Event do
     field(:raw, :map, default: %{})
 
     field(:linked_events, {:array, :map}, virtual: true)
+    field(:failure_reason, :string, virtual: true)
     field(:account_domain, :string, virtual: true)
 
     belongs_to(:account, Account)

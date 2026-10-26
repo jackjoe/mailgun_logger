@@ -61,6 +61,51 @@ defmodule MailgunLogger.EventsTest do
     end
   end
 
+  describe "export_csv/3" do
+    defp export(params, limit) do
+      {:ok, lines} = Events.export_csv(params, limit, &Enum.to_list/1)
+      lines |> IO.iodata_to_binary() |> String.split("\r\n", trim: true)
+    end
+
+    test "writes a header and one line per matching event, newest first" do
+      account = insert(:account, domain: "mg.example.com")
+
+      insert(:event,
+        account: account,
+        event: "failed",
+        timestamp: ~N[2026-10-26 10:00:00],
+        message_subject: "Hello, \"you\"",
+        raw: %{"delivery-status" => %{"message" => "mailbox full"}}
+      )
+
+      insert(:event, account: account, event: "delivered", timestamp: ~N[2026-10-26 09:00:00])
+      insert(:event, account: account, event: "opened", timestamp: ~N[2026-10-26 11:00:00])
+
+      filters = %{"0" => %{"field" => "event", "op" => "in", "value" => ["failed", "delivered"]}}
+      [header | lines] = export(%{"filters" => filters}, 10)
+
+      assert header ==
+               "timestamp_utc,event,log_level,method,account,from,recipient,subject,message_id,failure_reason"
+
+      assert [failed, delivered] = lines
+      assert failed =~ ~s(2026-10-26 10:00:00,failed,info,http,mg.example.com,)
+      assert failed =~ ~s("Hello, ""you""")
+      assert failed =~ ~s(,mailbox full)
+      assert delivered =~ "2026-10-26 09:00:00,delivered,"
+    end
+
+    test "stops at the limit" do
+      insert_list(3, :event)
+      assert length(export(%{}, 2)) == 3
+    end
+
+    test "neutralizes values that a spreadsheet would run as a formula" do
+      insert(:event, message_subject: "=HYPERLINK(1)")
+      [_header, line] = export(%{}, 10)
+      assert line =~ ",'=HYPERLINK(1),"
+    end
+  end
+
   describe "search_events/2 cursor pagination" do
     test "next page returns rows that are not on the previous page" do
       account = insert(:account)

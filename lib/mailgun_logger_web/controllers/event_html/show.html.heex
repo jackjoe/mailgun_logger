@@ -17,7 +17,19 @@
     <dt>Attachments</dt>
     <dd>{list_attachments(@event.raw)}</dd>
     <dt>Timestamp</dt>
-    <dd>{@event.timestamp}</dd>
+    <dd>
+      {utc_label(@event.timestamp)} <span class="text-dim">({time_ago(@event.timestamp)})</span>
+    </dd>
+    <dt>Message ID</dt>
+    <dd>
+      <span :if={!@event.message_id} class="text-dim">none</span>
+      <span :if={@event.message_id}>
+        {@event.message_id}
+        <.link href={message_events_path(@event.message_id)} class="message-events">
+          all events for this message
+        </.link>
+      </span>
+    </dd>
     <dt>From</dt>
     <dd>{@event.message_from}</dd>
     <dt>Linked events</dt>
