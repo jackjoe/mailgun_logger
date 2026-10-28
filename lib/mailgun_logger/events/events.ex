@@ -25,7 +25,8 @@ defmodule MailgunLogger.Events do
           "CASE WHEN ? = 'failed' THEN ? -> 'delivery-status' ->> 'message' END",
           e.event,
           e.raw
-        )
+        ),
+      has_storage_url: fragment("? -> 'storage' ->> 'url' IS NOT NULL", e.raw)
     })
     |> Flop.validate_and_run(params,
       for: Event,
@@ -190,10 +191,23 @@ defmodule MailgunLogger.Events do
     |> DateTime.from_unix!()
   end
 
-  @spec has_stored_message(Event.t()) :: Event.t()
-  def has_stored_message(event) do
+  @doc "The events since `since` for which Mailgun stored the message, with their account."
+  @spec list_events_with_storage_url(NaiveDateTime.t()) :: [Event.t()]
+  def list_events_with_storage_url(since) do
+    from(
+      e in Event,
+      where: e.timestamp >= ^since,
+      where: fragment("? -> 'storage' ->> 'url' IS NOT NULL", e.raw),
+      preload: :account
+    )
+    |> Repo.all()
+  end
+
+  @spec set_has_stored_message(Event.t(), boolean) ::
+          {:ok, Event.t()} | {:error, Ecto.Changeset.t()}
+  def set_has_stored_message(event, stored?) do
     event
-    |> Event.changeset_has_stored_message()
+    |> Event.changeset_has_stored_message(stored?)
     |> Repo.update()
   end
 

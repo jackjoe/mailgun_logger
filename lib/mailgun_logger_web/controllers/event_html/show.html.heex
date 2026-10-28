@@ -43,9 +43,11 @@
         </li>
       </ol>
     </dd>
-    <%= if Application.get_env(:mailgun_logger, :store_messages) and @event.has_stored_message do %>
+    <%= if @event.has_stored_message do %>
       <dt>Raw Stored Message data</dt>
       <dd><a href={stored_message_url(@event.api_id)}>view json file on S3</a></dd>
+    <% end %>
+    <%= if @event.has_stored_message or get_in(@event.raw, ["storage", "url"]) do %>
       <dt>Actual sent email</dt>
       <dd><a href={~p"/events/#{@event}/stored_message"} target="_blank">view</a></dd>
     <% end %>

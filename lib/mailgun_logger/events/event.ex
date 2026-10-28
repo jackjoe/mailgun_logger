@@ -109,6 +109,7 @@ defmodule MailgunLogger.Event do
 
     field(:linked_events, {:array, :map}, virtual: true)
     field(:failure_reason, :string, virtual: true)
+    field(:has_storage_url, :boolean, virtual: true)
     field(:account_domain, :string, virtual: true)
 
     belongs_to(:account, Account)
@@ -125,7 +126,7 @@ defmodule MailgunLogger.Event do
     |> unique_constraint(:api_id)
   end
 
-  def changeset_has_stored_message(%__MODULE__{} = event) do
-    change(event, %{has_stored_message: true})
+  def changeset_has_stored_message(%__MODULE__{} = event, stored?) do
+    change(event, %{has_stored_message: stored?})
   end
 end

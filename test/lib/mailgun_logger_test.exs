@@ -83,4 +83,58 @@ defmodule MailgunLoggerTest do
     assert %{last_run_status: "ok", last_run_error: nil, last_run_event_count: 0} =
              reload(account)
   end
+
+  describe "store_recent_messages/1" do
+    setup do
+      store_messages = Application.get_env(:mailgun_logger, :store_messages)
+      Application.put_env(:mailgun_logger, :store_messages, true)
+      on_exit(fn -> Application.put_env(:mailgun_logger, :store_messages, store_messages) end)
+    end
+
+    defp event_with_storage(api_id, hours_ago) do
+      timestamp =
+        NaiveDateTime.utc_now()
+        |> NaiveDateTime.add(-hours_ago * 3600, :second)
+        |> NaiveDateTime.truncate(:second)
+
+      raw = %{"storage" => %{"url" => "https://storage.api.mailgun.net/v3/messages/#{api_id}"}}
+      insert(:event, api_id: api_id, timestamp: timestamp, raw: raw, has_stored_message: true)
+    end
+
+    test "stores the messages of the recent events on S3 again" do
+      test = self()
+      recent = event_with_storage("recent", 2)
+      event_with_storage("old", 30)
+      insert(:event, api_id: "no_storage", timestamp: NaiveDateTime.utc_now())
+
+      Req.Test.stub(Mailgun.Client, fn conn ->
+        send(test, {:mailgun, conn.request_path})
+        Req.Test.json(conn, %{"body-html" => "<p>Hi</p>"})
+      end)
+
+      Req.Test.stub(ExAws, fn conn ->
+        send(test, {:s3, conn.method, conn.request_path})
+        Plug.Conn.send_resp(conn, 200, "")
+      end)
+
+      assert MailgunLogger.store_recent_messages(24) == %{stored: 1, failed: 0}
+
+      assert_received {:mailgun, "/v3/messages/recent"}
+      assert_received {:s3, "PUT", "/test-bucket/messages/recent.json"}
+      refute_received {:mailgun, _}
+      assert Repo.get!(MailgunLogger.Event, recent.id).has_stored_message
+    end
+
+    test "counts and flags the messages that Mailgun no longer has" do
+      recent = event_with_storage("recent", 2)
+
+      Req.Test.stub(
+        Mailgun.Client,
+        &Req.Test.json(Plug.Conn.put_status(&1, 404), %{"message" => "not found"})
+      )
+
+      assert MailgunLogger.store_recent_messages(24) == %{stored: 0, failed: 1}
+      refute Repo.get!(MailgunLogger.Event, recent.id).has_stored_message
+    end
+  end
 end

@@ -1,6 +1,7 @@
 defmodule MailgunLoggerWeb.EventController do
   use MailgunLoggerWeb, :controller
 
+  alias MailgunLogger.Event
   alias MailgunLogger.Events
   alias MailgunLogger.Accounts
 
@@ -53,15 +54,16 @@ defmodule MailgunLoggerWeb.EventController do
   end
 
   def stored_message(conn, %{"id" => event_id}) do
-    event = Events.get_event(event_id)
-
-    if event.has_stored_message do
-      content = Mailgun.Events.get_stored_message_content(event)
-      content = String.replace(content, "bgcolor", "_bgcolor")
-
-      html(conn, content)
+    with %Event{} = event <- Events.get_event(event_id),
+         event = Events.preload(event, :account),
+         client = Mailgun.Client.new(event.account),
+         {:ok, content} <- Mailgun.Events.get_stored_message_content(event, client) do
+      html(conn, String.replace(content, "bgcolor", "_bgcolor"))
     else
-      redirect(conn, to: ~p"/events")
+      _ ->
+        conn
+        |> put_status(:not_found)
+        |> text("Stored message not available. Mailgun keeps a message for a few days only.")
     end
   end
 end
