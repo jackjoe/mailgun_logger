@@ -458,10 +458,76 @@ defmodule MailgunLoggerWeb.EventControllerTest do
     end
   end
 
-  test "redirects when the event has no stored message", %{conn: conn} do
-    event = insert(:event)
-    conn = get(conn, ~p"/events/#{event}/stored_message")
-    assert redirected_to(conn) == ~p"/events"
+  describe "stored message" do
+    @storage_url "https://storage-europe-west1.api.mailgun.net/v3/domains/mg.example.com/messages/key1"
+
+    defp stored_event(attrs \\ []),
+      do: insert(:event, [raw: %{"storage" => %{"url" => @storage_url}}] ++ attrs)
+
+    test "shows the message from S3", %{conn: conn} do
+      event = stored_event(has_stored_message: true)
+      body = Jason.encode!(%{"body-html" => ~s(<td bgcolor="red">Hi</td>)})
+      Req.Test.stub(ExAws, &Plug.Conn.send_resp(&1, 200, body))
+
+      conn = get(conn, ~p"/events/#{event}/stored_message")
+      assert html_response(conn, 200) == ~s(<td _bgcolor="red">Hi</td>)
+    end
+
+    @tag :capture_log
+    test "shows the message from Mailgun when it is not on S3", %{conn: conn} do
+      event = stored_event(has_stored_message: true)
+      Req.Test.stub(ExAws, &Plug.Conn.send_resp(&1, 404, "<Error>NoSuchKey</Error>"))
+      Req.Test.stub(Mailgun.Client, &Req.Test.json(&1, %{"body-html" => "<p>Hi</p>"}))
+
+      conn = get(conn, ~p"/events/#{event}/stored_message")
+      assert html_response(conn, 200) == "<p>Hi</p>"
+    end
+
+    @tag :capture_log
+    test "is not found when neither S3 nor Mailgun has the message", %{conn: conn} do
+      event = stored_event(has_stored_message: true)
+      Req.Test.stub(ExAws, &Plug.Conn.send_resp(&1, 404, "<Error>NoSuchKey</Error>"))
+
+      Req.Test.stub(
+        Mailgun.Client,
+        &Req.Test.json(Plug.Conn.put_status(&1, 404), %{"message" => "not found"})
+      )
+
+      conn = get(conn, ~p"/events/#{event}/stored_message")
+      assert text_response(conn, 404) =~ "Stored message not available"
+    end
+
+    test "is not found for an event without a stored message", %{conn: conn} do
+      event = insert(:event)
+      conn = get(conn, ~p"/events/#{event}/stored_message")
+      assert text_response(conn, 404) =~ "Stored message not available"
+    end
+
+    test "is not found for an unknown event", %{conn: conn} do
+      conn = get(conn, ~p"/events/0/stored_message")
+      assert text_response(conn, 404) =~ "Stored message not available"
+    end
+
+    test "the events page links to the message only when Mailgun stored it", %{conn: conn} do
+      stored = stored_event(event: "delivered", recipient: "stored@example.com")
+      insert(:event, event: "delivered", recipient: "none@example.com")
+
+      links =
+        conn
+        |> get(~p"/events")
+        |> html_response(200)
+        |> LazyHTML.from_document()
+        |> LazyHTML.query(".log-col-actions a[target=_blank]")
+        |> LazyHTML.attribute("href")
+
+      assert links == ["/events/#{stored.id}/stored_message"]
+    end
+
+    test "the detail page links to the message when Mailgun stored it", %{conn: conn} do
+      event = stored_event()
+      html = conn |> get(~p"/events/#{event}") |> html_response(200)
+      assert html =~ ~s(href="/events/#{event.id}/stored_message")
+    end
   end
 
   defp error_detail(conn, event) do

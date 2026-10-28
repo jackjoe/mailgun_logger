@@ -33,22 +33,41 @@ defmodule Mailgun.Events do
     |> List.flatten()
   end
 
-  @doc "Retrieve the actual sent message"
-  def get_stored_message(client, %Event{raw: raw} = event) do
-    case get_in(raw, ["storage", "url"]) do
-      nil ->
-        event
-
-      url ->
-        stored_message = Client.get(client, url)
-
-        if Application.get_env(:mailgun_logger, :store_messages) do
-          save_stored_message(event.api_id, stored_message)
+  @doc """
+  Retrieve the actual sent message from Mailgun and store it on S3.
+  `has_stored_message` is true only when the message is on S3.
+  """
+  def get_stored_message(client, %Event{} = event) do
+    if Application.get_env(:mailgun_logger, :store_messages) do
+      stored? =
+        case fetch_stored_message(client, event) do
+          {:ok, stored_message} -> save_stored_message(event.api_id, stored_message) == :ok
+          {:error, _} -> false
         end
 
-        case Events.has_stored_message(event) do
-          {:ok, event} -> event
-          _ -> event
+      case Events.set_has_stored_message(event, stored?) do
+        {:ok, event} -> event
+        _ -> event
+      end
+    else
+      event
+    end
+  end
+
+  # Mailgun keeps the message for a couple of days only.
+  defp fetch_stored_message(client, %Event{raw: raw} = event) do
+    case get_in(raw, ["storage", "url"]) do
+      nil ->
+        {:error, :no_storage_url}
+
+      url ->
+        case Client.get(client, url) do
+          %{} = stored_message ->
+            {:ok, stored_message}
+
+          error ->
+            Logger.warning("Failed to get stored message #{event.api_id}: #{inspect(error)}")
+            {:error, error}
         end
     end
   end
@@ -67,23 +86,39 @@ defmodule Mailgun.Events do
     end
   end
 
-  def get_stored_message(event) do
-    bucket = bucket()
+  defp read_stored_message(%Event{has_stored_message: false}), do: {:error, :not_stored}
 
-    ExAws.S3.download_file(bucket, file_path(event), :memory)
-    |> ExAws.stream!()
-    |> Enum.join("")
-    |> Jason.decode!()
+  defp read_stored_message(%Event{} = event) do
+    case bucket() |> S3.get_object(file_path(event)) |> ExAws.request() do
+      {:ok, %{body: body}} ->
+        Jason.decode(body)
+
+      {:error, reason} ->
+        Logger.warning(
+          "Failed to read stored message #{event.api_id} from S3: #{inspect(reason)}"
+        )
+
+        {:error, reason}
+    end
   end
 
-  def get_stored_message_content(event) do
-    msg = get_stored_message(event)
-    content_type = Map.get(msg, "Content-Type", "")
+  @doc "The body of the sent message, from S3 or else from Mailgun."
+  def get_stored_message_content(%Event{} = event, %Client{} = client) do
+    with {:error, _} <- read_stored_message(event),
+         {:error, _} <- fetch_stored_message(client, event) do
+      {:error, :not_found}
+    else
+      {:ok, stored_message} -> {:ok, message_body(stored_message)}
+    end
+  end
+
+  defp message_body(stored_message) do
+    content_type = Map.get(stored_message, "Content-Type", "")
 
     if String.contains?(content_type, "text/plain") do
-      Map.get(msg, "body-plain", "")
+      Map.get(stored_message, "body-plain", "")
     else
-      Map.get(msg, "body-html", "")
+      Map.get(stored_message, "body-html", "")
     end
   end
 

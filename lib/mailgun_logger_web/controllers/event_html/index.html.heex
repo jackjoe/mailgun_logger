@@ -65,7 +65,7 @@
       </span>
       <span class="log-col-actions">
         <a
-          :if={event.event in ~w(delivered accepted failed)}
+          :if={event.has_storage_url}
           href={~p"/events/#{event.id}/stored_message"}
           target="_blank"
         >msg</a>

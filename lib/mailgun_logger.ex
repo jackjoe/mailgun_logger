@@ -79,6 +79,28 @@ defmodule MailgunLogger do
   end
 
   @doc """
+  Fetch the messages of the events of the last `hours` from Mailgun again
+  and store them on S3. Mailgun keeps a message for a few days only.
+
+  In production:
+
+      bin/production rpc "MailgunLogger.store_recent_messages(24) |> IO.inspect()"
+  """
+  @spec store_recent_messages(pos_integer()) :: %{stored: integer, failed: integer}
+  def store_recent_messages(hours) do
+    since = NaiveDateTime.add(NaiveDateTime.utc_now(), -hours * 3600, :second)
+
+    since
+    |> MailgunLogger.Events.list_events_with_storage_url()
+    |> Enum.group_by(& &1.account)
+    |> Enum.flat_map(fn {account, events} ->
+      Events.get_stored_messages(Mailgun.Client.new(account), events)
+    end)
+    |> Enum.split_with(& &1.has_stored_message)
+    |> then(fn {stored, failed} -> %{stored: length(stored), failed: length(failed)} end)
+  end
+
+  @doc """
   Process a single Mailgun account.
 
   - generate a valid timerange, [today - 2 days, today]
